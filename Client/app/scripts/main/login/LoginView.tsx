@@ -15,7 +15,7 @@ namespace login {
 
             React.render(
                 <h1>Hello, world! -{a}-|-{m}-</h1>,
-                document.getElementById('example')
+                document.getElementById('main')
             );
         }
 
