@@ -4,7 +4,9 @@
   "dependencies": {},
   "devDependencies": {
     "gulp": "^3.9.0",
-    "gulp-typescript": "^2.9.2"
+    "gulp-typescript": "^2.9.2",
+    "merge2": "^0.3.6",
+    "typescript": "^1.6.2"
   },
   "engines": {
     "node": ">=0.10.0"
