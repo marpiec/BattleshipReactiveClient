@@ -14,7 +14,7 @@ gulp.task('html', function() {
 
 gulp.task('bower', function() {
     return bower()
-        .pipe(gulp.dest('release/scripts-lib/'))
+        .pipe(gulp.dest('release/scripts-libs/'))
 });
 
 
@@ -48,4 +48,6 @@ gulp.task('browser-sync', function() {
     });
 });
 
-gulp.task('default', ['html', 'scripts', 'bower']);
+gulp.task('default', ['html', 'bower', 'scripts']);
+
+gulp.task('server', ['default', 'browser-sync']);
