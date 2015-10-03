@@ -20,17 +20,20 @@ gulp.task('bower', function() {
 });
 
 gulp.task('preprocess-scripts', function () {
+
+
+    var module = function(dir, name) {
+        return gulp
+            .src("app/"+dir+"/**/*.ts*")
+            .pipe(concat(name + ".tsx"))
+            .pipe(gulp.dest('.tmp/'+dir+'/'));
+    };
+
     return merge([
         gulp.src('app/scripts/main/Main.ts')
             .pipe(gulp.dest('.tmp/scripts/main/')),
-        gulp
-            .src("app/scripts/main/calculator/*.ts*")
-            .pipe(concat("calculator.tsx"))
-            .pipe(gulp.dest('.tmp/scripts/main/calculator/')),
-        gulp
-            .src("app/scripts/main/login/*.ts*")
-            .pipe(concat("login.tsx"))
-            .pipe(gulp.dest('.tmp/scripts/main/login/'))]);
+        module("scripts/main/calculator", "calculator"),
+        module("scripts/main/login", "login")]);
 });
 
 
