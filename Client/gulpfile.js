@@ -2,11 +2,19 @@ var gulp = require('gulp');
 var bower = require('gulp-bower');
 var ts = require('gulp-typescript');
 var merge = require('merge2');
+var browserSync = require('browser-sync').create();
+
+
+// HTML
+gulp.task('html', function() {
+    return gulp.src('app/*.html')
+        .pipe(gulp.dest('release'))
+});
 
 
 gulp.task('bower', function() {
     return bower()
-        .pipe(gulp.dest('lib/'))
+        .pipe(gulp.dest('release/scripts-lib/'))
 });
 
 
@@ -29,4 +37,15 @@ gulp.task('scripts', function () {
 });
 
 
-gulp.task('default', ['scripts']);
+
+
+// Static server
+gulp.task('browser-sync', function() {
+    browserSync.init({
+        server: {
+            baseDir: "./release/"
+        }
+    });
+});
+
+gulp.task('default', ['html', 'scripts', 'bower']);
