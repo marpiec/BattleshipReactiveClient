@@ -2,12 +2,9 @@
 import calculator = require("calculator/module");
 import Adder = calculator.Adder;
 
-namespace main {
-    export class Main {
-        hello() {
-            alert("Hello!");
+import login = require("login/module");
+import LoginView = login.LoginView;
 
-            alert(new Adder().calculate(1, 2));
-        }
-    }
-}
+
+
+new LoginView().render();
