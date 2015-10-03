@@ -30,7 +30,7 @@ gulp.task('preprocess-scripts', function () {
     };
 
     return merge([
-        gulp.src('app/scripts/main/Main.ts')
+        gulp.src('app/scripts/main/main.ts')
             .pipe(gulp.dest('.tmp/scripts/main/')),
         module("scripts/main/calculator", "calculator"),
         module("scripts/main/login", "login")]);
