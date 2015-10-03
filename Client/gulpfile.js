@@ -5,7 +5,7 @@ var merge = require('merge2');
 
 gulp.task('scripts', function () {
 
-    var tsProject = ts.createProject('src/scripts/tsconfig.json', {
+    var tsProject = ts.createProject('app/scripts/tsconfig.json', {
         gulpConcat: true,
         gulpSourcemaps: true,
         noExternalResolve: true,
