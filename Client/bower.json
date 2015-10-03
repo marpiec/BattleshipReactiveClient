@@ -1,0 +1,21 @@
+{
+  "name": "project-manager-client",
+  "version": "0.0.1",
+  "homepage": "https://github.com/marpiec/ProjectManager",
+  "authors": [
+    "Marcin Pieciukiewicz <m.pieciukiewicz@gmail.com>"
+  ],
+  "main": "add/index.html",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.4",
+    "react": "~0.13.3"
+  }
+}
