@@ -1,8 +1,9 @@
-module Calculator {
-
+namespace calculator {
     export class Adder {
-        multiply(a: number, b: number) {
+        calculate(a: number, b: number) {
             return a + b;
         }
     }
+
 }
+
