@@ -4,6 +4,7 @@ namespace tasks {
 
     export class TasksViewProps {
         name: string;
+        startWith: number;
     }
 
     export class TasksViewState {
@@ -18,7 +19,7 @@ namespace tasks {
     export class TasksView2 extends React.Component<TasksViewProps, TasksViewState> {
         constructor(props: TasksViewProps) {
             super(props);
-            this.state = new TasksViewState(0);
+            this.state = new TasksViewState(props.startWith);
         }
 
         tick() {
@@ -26,9 +27,12 @@ namespace tasks {
         }
 
        render() {return (
+            <div>
+            <p>Hello {this.props.name}</p>
             <div onClick={this.tick.bind(this)}>
                 Clicks: {this.state.count}
             </div>
+        </div>
     )}
 }
 
