@@ -7,6 +7,7 @@ var concat = require("gulp-concat");
 var browserSync = require('browser-sync').create();
 var sass = require('gulp-sass');
 var jasmine = require('gulp-jasmine');
+var clean = require('gulp-clean');
 
 
 // TODO webpack???
@@ -33,11 +34,12 @@ gulp.task('preprocess-scripts', function () {
     };
 
     return merge([
-        gulp.src('app/scripts/main/main.ts')
+        gulp.src('app/scripts/main/main.tsx')
             .pipe(gulp.dest('.tmp/scripts/main/')),
         gulp.src('app/scripts/test/**/*.*')
             .pipe(gulp.dest('.tmp/scripts/test/')),
         module("scripts/main/calculator"),
+        module("scripts/main/tasks"),
         module("scripts/main/login")]);
 });
 
@@ -89,6 +91,12 @@ gulp.task('browser-sync', function() {
             baseDir: "./release/"
         }
     });
+});
+
+gulp.task('clean', function() {
+    return merge([
+        gulp.src('.tmp', {read: false}).pipe(clean()),
+        gulp.src('release', {read: false}).pipe(clean())]);
 });
 
 gulp.task('default', ['html', 'bower', 'scripts', 'styles']);
