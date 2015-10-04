@@ -5,6 +5,7 @@ var merge = require('merge2');
 //var order = require("gulp-order");
 var concat = require("gulp-concat");
 var browserSync = require('browser-sync').create();
+var sass = require('gulp-sass');
 
 
 // HTML
@@ -72,6 +73,14 @@ gulp.task('scripts', ['preprocess-scripts'], function () {
 });
 
 
+gulp.task('styles', function () {
+    gulp.src('app/styles/**/*.scss')
+        .pipe(sass().on('error', sass.logError))
+        .pipe(gulp.dest('release/styles'));
+});
+
+
+
 
 
 
@@ -84,6 +93,6 @@ gulp.task('browser-sync', function() {
     });
 });
 
-gulp.task('default', ['html', 'bower', 'scripts']);
+gulp.task('default', ['html', 'bower', 'scripts', 'styles']);
 
 gulp.task('server', ['default', 'browser-sync']);
