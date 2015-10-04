@@ -7,17 +7,30 @@ namespace tasks {
     }
 
     export class TasksViewState {
+        count: number;
 
+        constructor(count:number) {
+            this.count = count;
+        }
     }
 
 
     export class TasksView2 extends React.Component<TasksViewProps, TasksViewState> {
-        render() {return <p>
-                    Hello {this.props.name}, <input type="text" placeholder="Your name here" />!
-                    It is now
-                  </p>}
+        constructor(props: TasksViewProps) {
+            super(props);
+            this.state = new TasksViewState(0);
+        }
 
-    }
+        tick() {
+            this.setState(new TasksViewState(this.state.count + 1));
+        }
+
+       render() {return (
+            <div onClick={this.tick.bind(this)}>
+                Clicks: {this.state.count}
+            </div>
+    )}
+}
 
 
 

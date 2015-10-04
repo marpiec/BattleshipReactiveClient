@@ -85,7 +85,7 @@ gulp.task('test', ['scripts'], function () {
 
 
 // Static server
-gulp.task('browser-sync', function() {
+gulp.task('browser-sync', ['scripts'], function() {
     browserSync.init({
         server: {
             baseDir: "./release/"
