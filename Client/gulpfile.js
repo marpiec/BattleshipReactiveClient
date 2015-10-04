@@ -22,7 +22,6 @@ gulp.task('bower', function() {
 
 gulp.task('preprocess-scripts', function () {
 
-
     var module = function(dir, name) {
         return gulp
             .src("app/"+dir+"/**/*.ts*")
@@ -40,15 +39,6 @@ gulp.task('preprocess-scripts', function () {
 
 gulp.task('scripts', ['preprocess-scripts'], function () {
 
-    //var tsProject = ts.createProject('.tmp/scripts/tsconfig.json', {
-    //    gulpConcat: true,
-    //    gulpSourcemaps: true,
-    //    noExternalResolve: true,
-    //    typescript: require('typescript')
-    //});
-
-    //var tsResult = tsProject.src()
-      //  .pipe(ts(tsProject));
     var tsResult = gulp.src(['.tmp/scripts/**/*.ts*', 'app/scripts/libs.d/**/*.ts'])
         .pipe(ts({
             "module": "amd",
