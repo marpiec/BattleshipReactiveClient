@@ -6,7 +6,10 @@ var merge = require('merge2');
 var concat = require("gulp-concat");
 var browserSync = require('browser-sync').create();
 var sass = require('gulp-sass');
+var jasmine = require('gulp-jasmine');
 
+
+// TODO webpack???
 
 // HTML
 gulp.task('html', function() {
@@ -32,6 +35,8 @@ gulp.task('preprocess-scripts', function () {
     return merge([
         gulp.src('app/scripts/main/main.ts')
             .pipe(gulp.dest('.tmp/scripts/main/')),
+        gulp.src('app/scripts/test/**/*.*')
+            .pipe(gulp.dest('.tmp/scripts/test/')),
         module("scripts/main/calculator", "calculator"),
         module("scripts/main/login", "login")]);
 });
@@ -71,7 +76,10 @@ gulp.task('styles', function () {
 
 
 
-
+gulp.task('test', ['scripts'], function () {
+    return gulp.src('release/scripts/test/**/*.js')
+        .pipe(jasmine());
+});
 
 
 // Static server
