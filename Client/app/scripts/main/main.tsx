@@ -5,6 +5,6 @@ import tasks = require("tasks/module");
 //new tasks.TasksView().render();
 
 React.render(
-    <tasks.TasksView2></tasks.TasksView2>,
+    <tasks.TasksView2 name="Marcin"></tasks.TasksView2>,
     document.getElementById('main')
 );
