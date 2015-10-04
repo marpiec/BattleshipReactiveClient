@@ -1,5 +1,5 @@
 
-import login = require("login/login");
+import login = require("login/module");
 import LoginView = login.LoginView;
 
 

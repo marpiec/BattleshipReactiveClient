@@ -1,4 +1,4 @@
-import calculator = require("../../main/calculator/calculator");
+import calculator = require("../../main/calculator/module");
 import Adder = calculator.Adder;
 
 describe("A suite", function() {

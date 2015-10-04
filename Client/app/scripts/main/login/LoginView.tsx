@@ -1,4 +1,4 @@
-import calculator = require("../calculator/calculator");
+import calculator = require("../calculator/module");
 
 namespace login {
 

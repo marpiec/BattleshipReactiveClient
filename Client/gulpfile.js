@@ -25,10 +25,10 @@ gulp.task('bower', function() {
 
 gulp.task('preprocess-scripts', function () {
 
-    var module = function(dir, name) {
+    var module = function(dir) {
         return gulp
             .src("app/"+dir+"/**/*.ts*")
-            .pipe(concat(name + ".tsx"))
+            .pipe(concat("module.tsx"))
             .pipe(gulp.dest('.tmp/'+dir+'/'));
     };
 
@@ -37,8 +37,8 @@ gulp.task('preprocess-scripts', function () {
             .pipe(gulp.dest('.tmp/scripts/main/')),
         gulp.src('app/scripts/test/**/*.*')
             .pipe(gulp.dest('.tmp/scripts/test/')),
-        module("scripts/main/calculator", "calculator"),
-        module("scripts/main/login", "login")]);
+        module("scripts/main/calculator"),
+        module("scripts/main/login")]);
 });
 
 
