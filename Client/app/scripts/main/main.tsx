@@ -1,10 +1,10 @@
-import login = require("login/module");
-import tasks = require("tasks/module");
+import login = require("./login/module");
+import tasks = require("./tasks/module");
 
-//new login.LoginView().render();
-//new tasks.TasksView().render();
+const TasksView = tasks.TasksView;
 
 React.render(
-    <tasks.TasksView2 name="Marcin" startWith={6}></tasks.TasksView2>,
+    <TasksView name="Marcin" startWith={6} />,
     document.getElementById('main')
 );
+
