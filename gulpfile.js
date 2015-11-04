@@ -76,6 +76,11 @@ gulp.task('browser-sync', ['scripts'], function() {
             baseDir: "./release/"
         }
     });
+
+    gulp.watch("app/**/*.ts*", ['scripts']);
+    gulp.watch("app/**/*.scss", ['styles']);
+    gulp.watch("app/**/*.html", ['html']);
+    gulp.watch("app/**/*.html").on('change', browserSync.reload);
 });
 
 gulp.task('icons', function() {
