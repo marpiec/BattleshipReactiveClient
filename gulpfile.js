@@ -24,7 +24,8 @@ gulp.task('bower', function() {
     var min = "";
     return gulp.src([
         "bower_components/react/react"+min+".js",
-        "bower_components/jquery/dist/jquery"+min+".js"
+        "bower_components/jquery/dist/jquery"+min+".js",
+        "bower_components/bootstrap-sass/assets/javascripts/bootstrap"+min+".js"
     ]).pipe(concat('libs.js')).pipe(gulp.dest('release/scripts/'))
 });
 
