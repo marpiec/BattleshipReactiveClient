@@ -64,6 +64,11 @@ gulp.task('styles', function () {
         .pipe(gulp.dest('release/styles'));
 });
 
+// HTML
+gulp.task('fonts', function() {
+    return gulp.src(["bower_components/font-awesome/fonts/*"])
+        .pipe(gulp.dest('release/fonts'))
+});
 
 
 gulp.task('test', ['scripts'], function () {
@@ -86,10 +91,6 @@ gulp.task('browser-sync', ['scripts'], function() {
     gulp.watch("app/**/*.html").on('change', browserSync.reload);
 });
 
-gulp.task('icons', function() {
-    return gulp.src(config.bowerDir + '/fontawesome/fonts/**.*')
-        .pipe(gulp.dest('release/fonts'));
-});
 
 gulp.task('clean', function() {
     return merge([
@@ -97,6 +98,6 @@ gulp.task('clean', function() {
         gulp.src('release', {read: false}).pipe(clean())]);
 });
 
-gulp.task('default', ['html', 'bower', 'scripts', 'styles', 'icons']);
+gulp.task('default', ['html', 'bower', 'scripts', 'styles', 'fonts']);
 
 gulp.task('server', ['default', 'browser-sync']);

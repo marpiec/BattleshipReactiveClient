@@ -32,6 +32,7 @@ namespace tasks {
                     <div onClick={this.tick.bind(this)}>
                         Clicks: {this.state.count}
                     </div>
+                    <i className="fa fa-arrow-circle-o-left" />
                 </div>
             )
         }
