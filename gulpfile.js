@@ -8,6 +8,10 @@ var sass = require('gulp-sass');
 var jasmine = require('gulp-jasmine');
 var clean = require('gulp-clean');
 
+var config = {
+    bowerDir: './bower_components'
+};
+
 // HTML
 gulp.task('html', function() {
     return gulp.src('app/*.html')
@@ -16,16 +20,17 @@ gulp.task('html', function() {
 
 
 gulp.task('bower', function() {
-    return bower()
-        .pipe(gulp.dest('release/scripts-libs/'))
+    var min = "";
+    return gulp.src([
+        "bower_components/react/react"+min+".js",
+        "bower_components/jquery/dist/jquery"+min+".js"
+    ]).pipe(concat('libs.js')).pipe(gulp.dest('release/scripts/'))
 });
-
-
 
 
 gulp.task('scripts', [], function () {
 
-    var tsResult = gulp.src(['app/scripts/**/*.ts*', 'app/scripts/libs.d/**/*.ts'])
+    var tsResult = gulp.src(['app/scripts/main/**/*.ts*', 'app/scripts/libs.d/**/*.ts'])
         .pipe(ts({
             "module": "amd",
             "noImplicitAny": true,
@@ -73,12 +78,17 @@ gulp.task('browser-sync', ['scripts'], function() {
     });
 });
 
+gulp.task('icons', function() {
+    return gulp.src(config.bowerDir + '/fontawesome/fonts/**.*')
+        .pipe(gulp.dest('release/fonts'));
+});
+
 gulp.task('clean', function() {
     return merge([
         gulp.src('.tmp', {read: false}).pipe(clean()),
         gulp.src('release', {read: false}).pipe(clean())]);
 });
 
-gulp.task('default', ['html', 'bower', 'scripts', 'styles']);
+gulp.task('default', ['html', 'bower', 'scripts', 'styles', 'icons']);
 
 gulp.task('server', ['default', 'browser-sync']);
