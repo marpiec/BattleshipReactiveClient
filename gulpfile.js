@@ -7,6 +7,7 @@ var browserSync = require('browser-sync').create();
 var sass = require('gulp-sass');
 var jasmine = require('gulp-jasmine');
 var clean = require('gulp-clean');
+var sourcemaps = require('gulp-sourcemaps');
 
 var config = {
     bowerDir: './bower_components'
@@ -57,7 +58,9 @@ gulp.task('scripts', [], function () {
 
 gulp.task('styles', function () {
     gulp.src('app/styles/**/*.scss')
-        .pipe(sass().on('error', sass.logError))
+        .pipe(sourcemaps.init())
+        .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
+        .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest('release/styles'));
 });
 
