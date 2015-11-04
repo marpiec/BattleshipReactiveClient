@@ -1,4 +1,5 @@
-import calculator = require("../calculator/module");
+/// <reference path="../calculator/Adder.ts"/>
+/// <reference path="../calculator/Multiplier.ts"/>
 
 namespace login {
 

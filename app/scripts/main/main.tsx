@@ -1,10 +1,14 @@
-import login = require("./login/module");
-import tasks = require("./tasks/module");
+/// <reference path="./tasks/TasksView.tsx"/>
 
-const TasksView = tasks.TasksView;
+namespace main {
 
-React.render(
-    <TasksView name="Marcin" startWith={6} />,
-    document.getElementById('main')
-);
+    const TasksView = tasks.TasksView;
+
+    React.render(
+        <TasksView name="Marcin" startWith={6} />,
+        document.getElementById('main')
+    );
+
+}
+
 

@@ -2,15 +2,11 @@ var gulp = require('gulp');
 var bower = require('gulp-bower');
 var ts = require('gulp-typescript');
 var merge = require('merge2');
-//var order = require("gulp-order");
 var concat = require("gulp-concat");
 var browserSync = require('browser-sync').create();
 var sass = require('gulp-sass');
 var jasmine = require('gulp-jasmine');
 var clean = require('gulp-clean');
-
-
-// TODO webpack???
 
 // HTML
 gulp.task('html', function() {
@@ -24,29 +20,12 @@ gulp.task('bower', function() {
         .pipe(gulp.dest('release/scripts-libs/'))
 });
 
-gulp.task('preprocess-scripts', function () {
-
-    var module = function(dir) {
-        return gulp
-            .src("app/"+dir+"/**/*.ts*")
-            .pipe(concat("module.tsx"))
-            .pipe(gulp.dest('.tmp/'+dir+'/'));
-    };
-
-    return merge([
-        gulp.src('app/scripts/main/main.tsx')
-            .pipe(gulp.dest('.tmp/scripts/main/')),
-        gulp.src('app/scripts/test/**/*.*')
-            .pipe(gulp.dest('.tmp/scripts/test/')),
-        module("scripts/main/calculator"),
-        module("scripts/main/tasks"),
-        module("scripts/main/login")]);
-});
 
 
-gulp.task('scripts', ['preprocess-scripts'], function () {
 
-    var tsResult = gulp.src(['.tmp/scripts/**/*.ts*', 'app/scripts/libs.d/**/*.ts'])
+gulp.task('scripts', [], function () {
+
+    var tsResult = gulp.src(['app/scripts/**/*.ts*', 'app/scripts/libs.d/**/*.ts'])
         .pipe(ts({
             "module": "amd",
             "noImplicitAny": true,
@@ -56,6 +35,7 @@ gulp.task('scripts', ['preprocess-scripts'], function () {
             "declaration": true,
             "target": "ES3",
             "jsx": "React",
+            sortOutput: true,
             gulpConcat: true,
             gulpSourcemaps: true,
             noExternalResolve: true,
@@ -64,8 +44,8 @@ gulp.task('scripts', ['preprocess-scripts'], function () {
 
 
     return merge([
-        tsResult.dts.pipe(gulp.dest('release/definitions')),
-        tsResult.js.pipe(gulp.dest('release/scripts'))
+        tsResult.dts.pipe(concat('main.d.ts')).pipe(gulp.dest('release/scripts')),
+        tsResult.js.pipe(concat('main.js')).pipe(gulp.dest('release/scripts'))
     ]);
 });
 
