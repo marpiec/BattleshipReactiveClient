@@ -1,0 +1,20 @@
+.gameBoard {
+  $cellSize: 4rem;
+
+  border: solid #555;
+  border-width: 0 1px 1px 0;
+  display: inline-block;
+  margin: $cellSize;
+
+  .boardRow {
+    height: $cellSize;
+    .boardCell {
+      width: $cellSize;
+      height: $cellSize;
+      border: solid #555;
+      border-width: 1px 0 0 1px;
+      display: inline-block;
+    }
+
+  }
+}
