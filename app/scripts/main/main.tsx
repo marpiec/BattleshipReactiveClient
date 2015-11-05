@@ -11,12 +11,13 @@ namespace main {
     import Router = ReactRouter.Router;
     import Route = ReactRouter.Route;
     import IndexRoute = ReactRouter.IndexRoute;
+    import AppTemplate = page.AppTemplate;
 
     ReactDOM.render((
         <Router>
-            <Route path="/">
+            <Route path="/" component={AppTemplate}>
                 <IndexRoute component={MainPage} />
-                <Route path="game" component={GamePage}/>
+                <Route path="game/:gameId" component={GamePage}/>
                 <Route path="*" component={NotFoundPage}/>
             </Route>
         </Router>

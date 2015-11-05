@@ -1,7 +1,12 @@
 namespace page {
 
 
+    export class GamePageParams {
+        gameId: string;
+    }
+
     export class GamePageProps {
+        params: GamePageParams;
     }
 
     export class GamePageState {
@@ -17,7 +22,7 @@ namespace page {
         render() {
             return (
                 <div>
-                    <p>Game page</p>
+                    <p>Game page {this.props.params.gameId}</p>
                 </div>
             )
         }
