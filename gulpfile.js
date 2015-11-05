@@ -2,46 +2,48 @@ var gulp = require('gulp');
 var bower = require('gulp-bower');
 var ts = require('gulp-typescript');
 var merge = require('merge2');
-var concat = require("gulp-concat");
+var concat = require('gulp-concat');
 var browserSync = require('browser-sync').create();
 var sass = require('gulp-sass');
 var jasmine = require('gulp-jasmine');
 var clean = require('gulp-clean');
 var sourcemaps = require('gulp-sourcemaps');
 
-var config = {
-    bowerDir: './bower_components'
-};
+
+var appDir = function(path) {return './app/' + path};
+var bowerDir = function(path) {return './bower_components/' + path};
+var releaseDir = function(path) {return './release/' + path};
+
 
 // HTML
 gulp.task('html', function() {
     return gulp.src('app/*.html')
-        .pipe(gulp.dest('release'))
+        .pipe(gulp.dest(releaseDir('')))
 });
 
 
-gulp.task('bower', function() {
-    var min = "";
+gulp.task('scripts-libs', function() {
+    var min = '';
     return gulp.src([
-        "bower_components/react/react"+min+".js",
-        "bower_components/jquery/dist/jquery"+min+".js",
-        "bower_components/bootstrap-sass/assets/javascripts/bootstrap"+min+".js"
-    ]).pipe(concat('libs.js')).pipe(gulp.dest('release/scripts/'))
+        bowerDir('react/react'+min+'.js'),
+        bowerDir('jquery/dist/jquery'+min+'.js'),
+        bowerDir('bootstrap-sass/assets/javascripts/bootstrap'+min+'.js')
+    ]).pipe(concat('libs.js')).pipe(gulp.dest(releaseDir('scripts/')))
 });
 
 
 gulp.task('scripts', [], function () {
 
-    var tsResult = gulp.src(['app/scripts/main/**/*.ts*', 'app/scripts/libs.d/**/*.ts'])
+    var tsResult = gulp.src([appDir('scripts/main/**/*.ts*'), appDir('scripts/libs.d/**/*.ts')])
         .pipe(ts({
-            "module": "amd",
-            "noImplicitAny": true,
-            "removeComments": true,
-            "preserveConstEnums": true,
-            "sourceMap": true,
-            "declaration": true,
-            "target": "ES3",
-            "jsx": "React",
+            'module': 'amd',
+            'noImplicitAny': true,
+            'removeComments': true,
+            'preserveConstEnums': true,
+            'sourceMap': true,
+            'declaration': true,
+            'target': 'ES3',
+            'jsx': 'React',
             sortOutput: true,
             gulpConcat: true,
             gulpSourcemaps: true,
@@ -51,29 +53,29 @@ gulp.task('scripts', [], function () {
 
 
     return merge([
-        tsResult.dts.pipe(concat('main.d.ts')).pipe(gulp.dest('release/scripts')),
-        tsResult.js.pipe(concat('main.js')).pipe(gulp.dest('release/scripts'))
+        tsResult.dts.pipe(concat('main.d.ts')).pipe(gulp.dest(releaseDir('scripts'))),
+        tsResult.js.pipe(concat('main.js')).pipe(gulp.dest(releaseDir('scripts')))
     ]);
 });
 
 
 gulp.task('styles', function () {
-    gulp.src('app/styles/**/*.scss')
+    gulp.src(appDir('styles/**/*.scss'))
         .pipe(sourcemaps.init())
         .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
         .pipe(sourcemaps.write('.'))
-        .pipe(gulp.dest('release/styles'));
+        .pipe(gulp.dest(releaseDir('styles')));
 });
 
 // HTML
 gulp.task('fonts', function() {
-    return gulp.src(["bower_components/font-awesome/fonts/*"])
-        .pipe(gulp.dest('release/fonts'))
+    return gulp.src([bowerDir('font-awesome/fonts/*')])
+        .pipe(gulp.dest(releaseDir('fonts')))
 });
 
 
 gulp.task('test', ['scripts'], function () {
-    return gulp.src('release/scripts/test/**/*.js')
+    return gulp.src(releaseDir('scripts/test/**/*.js'))
         .pipe(jasmine());
 });
 
@@ -82,14 +84,14 @@ gulp.task('test', ['scripts'], function () {
 gulp.task('browser-sync', ['scripts'], function() {
     browserSync.init({
         server: {
-            baseDir: "./release/"
+            baseDir: releaseDir('')
         }
     });
 
-    gulp.watch("app/**/*.ts*", ['scripts']);
-    gulp.watch("app/**/*.scss", ['styles']);
-    gulp.watch("app/**/*.html", ['html']);
-    gulp.watch("app/**/*.html").on('change', browserSync.reload);
+    gulp.watch(appDir('**/*.ts*'), ['scripts']);
+    gulp.watch(appDir('**/*.scss'), ['styles']);
+    gulp.watch(appDir('**/*.html'), ['html']);
+    gulp.watch(appDir('**/*.html')).on('change', browserSync.reload);
 });
 
 
@@ -99,6 +101,6 @@ gulp.task('clean', function() {
         gulp.src('release', {read: false}).pipe(clean())]);
 });
 
-gulp.task('default', ['html', 'bower', 'scripts', 'styles', 'fonts']);
+gulp.task('default', ['html', 'scripts-libs', 'scripts', 'styles', 'fonts']);
 
 gulp.task('server', ['default', 'browser-sync']);

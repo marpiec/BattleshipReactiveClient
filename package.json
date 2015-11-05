@@ -2,18 +2,18 @@
   "name": "project-manager-ui",
   "version": "0.0.1",
   "devDependencies": {
-    "browser-sync": "^2.9.8",
-    "gulp": "^3.9.0",
+    "browser-sync": "2.9.12",
+    "gulp": "3.9.0",
     "gulp-bower": "0.0.10",
-    "gulp-clean": "^0.3.1",
-    "gulp-concat": "^2.6.0",
-    "gulp-jasmine": "^2.1.0",
-    "gulp-order": "^1.1.1",
-    "gulp-sass": "^2.0.4",
-    "gulp-sourcemaps": "^1.6.0",
-    "gulp-typescript": "^2.9.2",
-    "merge2": "^0.3.6",
-    "typescript": "^1.6.2"
+    "gulp-clean": "0.3.1",
+    "gulp-concat": "2.6.0",
+    "gulp-jasmine": "2.2.0",
+    "gulp-order": "1.1.1",
+    "gulp-sass": "2.1.0",
+    "gulp-sourcemaps": "1.6.0",
+    "gulp-typescript": "2.9.2",
+    "typescript": "1.6.2",
+    "merge2": "0.3.6"
   },
   "engines": {
     "node": ">=0.10.0"
