@@ -15,14 +15,18 @@ var bowerDir = function(path) {return './bower_components/' + path};
 var releaseDir = function(path) {return './release/' + path};
 
 
+gulp.task('bower', function() {
+  return bower()
+});
+
 // HTML
-gulp.task('html', function() {
+gulp.task('html', ['bower'], function() {
     return gulp.src('app/*.html')
         .pipe(gulp.dest(releaseDir('')))
 });
 
 
-gulp.task('scripts-libs', function() {
+gulp.task('scripts-libs', ['bower'], function() {
     var min = '';
     return gulp.src([
         bowerDir('react/react'+min+'.js'),
@@ -32,7 +36,7 @@ gulp.task('scripts-libs', function() {
 });
 
 
-gulp.task('scripts', [], function () {
+gulp.task('scripts', ['bower'], function () {
 
     var tsResult = gulp.src([appDir('scripts/main/**/*.ts*'), appDir('scripts/libs.d/**/*.ts')])
         .pipe(ts({
@@ -59,7 +63,7 @@ gulp.task('scripts', [], function () {
 });
 
 
-gulp.task('styles', function () {
+gulp.task('styles', ['bower'], function () {
     gulp.src(appDir('styles/**/*.scss'))
         .pipe(sourcemaps.init())
         .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
