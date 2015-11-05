@@ -35,7 +35,8 @@ gulp.task('scripts-libs', ['bower'], function() {
         nodeDir('history/umd/History' +min+ '.js'),
         nodeDir('react-router/umd/ReactRouter' +min+ '.js'),
         bowerDir('jquery/dist/jquery'+min+'.js'),
-        bowerDir('bootstrap-sass/assets/javascripts/bootstrap'+min+'.js')
+        bowerDir('bootstrap-sass/assets/javascripts/bootstrap'+min+'.js'),
+        nodeDir('immutable/dist/immutable' +min+ '.js')
     ]).pipe(concat('libs.js')).pipe(gulp.dest(releaseDir('scripts/')))
 });
 
