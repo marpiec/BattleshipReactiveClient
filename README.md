@@ -20,4 +20,4 @@ And maybe those:
 * **D3** for data visualization
 * **Flux** Architecture framework for React.js
 
-It communicates with server using REST calls
+It communicates with server using REST calls.
