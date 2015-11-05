@@ -28,7 +28,7 @@ namespace tasks {
         render() {
             return (
                 <div>
-                    <p>Hello {this.props.name}</p>
+                    <p>Clicker {this.props.name}</p>
                     <div onClick={this.tick.bind(this)}>
                         Clicks: {this.state.count}
                     </div>

@@ -12,8 +12,12 @@
     "gulp-sass": "2.1.0",
     "gulp-sourcemaps": "1.6.0",
     "gulp-typescript": "2.9.2",
-    "typescript": "1.6.2",
-    "merge2": "0.3.6"
+    "history": "1.13.0",
+    "merge2": "0.3.6",
+    "react": "0.14.2",
+    "react-dom": "0.14.2",
+    "react-router": "1.0.0-rc4",
+    "typescript": "1.6.2"
   },
   "engines": {
     "node": ">=0.10.0"
