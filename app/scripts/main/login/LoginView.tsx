@@ -14,7 +14,7 @@ namespace login {
             const m = new Multiplier().calculate(5, 10);
 
 
-            React.render(
+            ReactDOM.render(
                 <h1>Hello, world! -{a}-|-{m}-</h1>,
                 document.getElementById('main')
             );

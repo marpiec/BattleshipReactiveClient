@@ -12,6 +12,7 @@ var sourcemaps = require('gulp-sourcemaps');
 
 var appDir = function(path) {return './app/' + path};
 var bowerDir = function(path) {return './bower_components/' + path};
+var nodeDir = function(path) {return './node_modules/' + path};
 var releaseDir = function(path) {return './release/' + path};
 
 
@@ -29,7 +30,10 @@ gulp.task('html', ['bower'], function() {
 gulp.task('scripts-libs', ['bower'], function() {
     var min = '';
     return gulp.src([
-        bowerDir('react/react'+min+'.js'),
+        nodeDir('react/dist/react'+min+'.js'),
+        nodeDir('react-dom/dist/react-dom'+min+'.js'),
+        nodeDir('history/umd/History' +min+ '.js'),
+        nodeDir('react-router/umd/ReactRouter' +min+ '.js'),
         bowerDir('jquery/dist/jquery'+min+'.js'),
         bowerDir('bootstrap-sass/assets/javascripts/bootstrap'+min+'.js')
     ]).pipe(concat('libs.js')).pipe(gulp.dest(releaseDir('scripts/')))
@@ -38,7 +42,7 @@ gulp.task('scripts-libs', ['bower'], function() {
 
 gulp.task('scripts', ['bower'], function () {
 
-    var tsResult = gulp.src([appDir('scripts/main/**/*.ts*'), appDir('scripts/libs.d/**/*.ts')])
+    var tsResult = gulp.src([appDir('scripts/main/**/*.ts*'), appDir('scripts/libs.d/**/*.d.ts')])
         .pipe(ts({
             'module': 'amd',
             'noImplicitAny': true,
