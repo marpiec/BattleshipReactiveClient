@@ -4,21 +4,9 @@ namespace game {
     import GamePage = page.GamePage;
     const GAME_BOARD_SIZE = 10;
     export const enum CellState {empty, miss, ship, hit}
-    export type Board = Immutable.List<Immutable.List<Cell>>;
+    export type Board = Immutable.List<Immutable.List<CellState>>;
 
     export const enum GamePhase {initBothPlayers, initPlayerA, initPlayerB, moveA, moveB, finished}
-
-    export class Cell {
-        x: number;
-        y: number;
-        state: CellState;
-
-        constructor(x:number, y:number, state:game.CellState) {
-            this.x = x;
-            this.y = y;
-            this.state = state;
-        }
-    }
 
     export class GameState {
 
@@ -45,7 +33,7 @@ namespace game {
         private static createEmptyBoard(): Board {
             return Immutable.Range(0, GAME_BOARD_SIZE).map(y =>
                 Immutable.Range(0, GAME_BOARD_SIZE).map(x =>
-                    new Cell(x, y, CellState.empty)).toList()
+                    CellState.empty).toList()
             ).toList();
 
         }

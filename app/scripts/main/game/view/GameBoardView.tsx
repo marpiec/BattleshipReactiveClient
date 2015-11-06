@@ -16,11 +16,11 @@ namespace game {
         }
 
         render() {
-            const rows = this.props.board.map((cells:Immutable.List<Cell>) => {
-                const cellsElements = cells.map((cell: Cell) => {
-                    return (<div className="boardCell" key={cell.x}></div>)
+            const rows = this.props.board.map((cells:Immutable.List<CellState>, y: number) => {
+                const cellsElements = cells.map((cell: CellState, x: number) => {
+                    return (<div className="boardCell" key={x}></div>)
                 });
-                return (<div className="boardRow" key={cells.first().y}>{cellsElements}</div>)
+                return (<div className="boardRow" key={y}>{cellsElements}</div>)
             });
 
             return (
