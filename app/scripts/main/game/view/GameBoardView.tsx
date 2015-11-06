@@ -2,7 +2,7 @@ namespace game {
 
     import Board = game.Board;
     export class GameBoardViewProps {
-        board: Board;
+        board:Board;
     }
 
     export class GameBoardViewState {
@@ -15,23 +15,29 @@ namespace game {
             this.state = new GameBoardViewState();
         }
 
-        cellClicked(x: number, y:number) {
-            console.log("clicked " + x + " "+y);
+        cellClicked(x:number, y:number) {
+            console.log("clicked " + x + " " + y);
             //this.setState(new TasksViewState(this.state.count + 1));
         }
 
-        render() {
-            const rows = this.props.board.map((cells:Immutable.List<CellState>, y: number) => {
-                const cellsElements = cells.map((cell: CellState, x: number) => {
-                    return (<div className="boardCell" key={x} onClick={this.cellClicked.bind(this, x, y)}></div>)
-                });
-                return (<div className="boardRow" key={y}>{cellsElements}</div>)
-            });
+        render = () => (
+            <div className="gameBoard">
+                {this.renderRows(this.props.board)}
+            </div>
+        );
 
-            return (
-                <div className="gameBoard">{rows}</div>
-            )
-        }
+        renderRows = (board:Board) => board.map((cells:Immutable.List<CellState>, y:number) => (
+            <div className="boardRow" key={y}>
+                {this.renderCells(y, cells)}
+            </div>
+        ));
+
+
+        renderCells = (y:number, cells:Immutable.List<CellState>) => cells.map((cell:CellState, x:number) => (
+            <div className="boardCell" key={x}
+                 onClick={this.cellClicked.bind(this, x, y)}>
+            </div>
+        ));
     }
 
 }
