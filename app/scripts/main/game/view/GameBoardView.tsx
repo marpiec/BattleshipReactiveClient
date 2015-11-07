@@ -1,12 +1,11 @@
 namespace gameView {
 
     import Board = game.Board;
-    import GameInterface = game.GameInterface;
     import CellState = game.CellState;
 
     export class GameBoardViewProps {
         board:Board;
-        gameInterface: GameInterface;
+        gameInterface:GameInterface;
     }
 
     export class GameBoardViewState {
@@ -33,22 +32,39 @@ namespace gameView {
             );
         }
 
-        renderRows(board:Board){
-          return board.map((cells:Immutable.List<CellState>, y:number) => (
-              <div className="boardRow" key={y}>
-                  {this.renderCells(y, cells)}
-              </div>
-          ));
+        renderRows(board:Board) {
+            return board.map((cells:Immutable.List<CellState>, y:number) => (
+                <div className="boardRow" key={y}>
+                    {this.renderCells(y, cells)}
+                </div>
+            ));
+        }
+
+        cellToClassName(cell:CellState): string {
+            switch (cell) {
+                case CellState.empty:
+                    return "empty";
+                case CellState.hit:
+                    return "hit";
+                case CellState.miss:
+                    return "miss";
+                case CellState.ship:
+                    return "ship";
+                default:
+                    throw new Error("Unsupported cell type");
+            }
         }
 
 
         renderCells(y:number, cells:Immutable.List<CellState>) {
-            return cells.map((cell:CellState, x:number) => (
-                <div className="boardCell" key={x}
-                     onClick={this.cellClicked.bind(this, x, y)}>
-                    {cell}
-                </div>
-            ));
+            return cells.map((cell:CellState, x:number) => {
+                const cellClasses:string = classNames("boardCell", this.cellToClassName(cell));
+                return (
+                    <div className={cellClasses} key={x}
+                         onClick={this.cellClicked.bind(this, x, y)}>
+                    </div>
+                )
+            });
         }
     }
 

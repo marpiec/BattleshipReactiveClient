@@ -5,7 +5,6 @@ namespace gameView {
 
     import GameState = game.GameState;
     import GameEngine = game.GameEngine;
-    import GameInterface = game.GameInterface;
 
     export class GamePageParams {
         gameId: string;
@@ -22,21 +21,25 @@ namespace gameView {
             this.gameState = gameState;
         }
 
-        static setGameState(other: GamePageState, gameState: GameState) {
+        static changeGameState(other: GamePageState, gameState: GameState) {
             return new GamePageState(gameState);
         }
 
     }
 
+    export interface GameInterface {
+        toggleCell(x: number, y: number): void;
+        submitBoard(): void;
+    }
 
     export class GamePage extends React.Component<GamePageProps, GamePageState> {
 
         gameInterface: GameInterface = {
             toggleCell: (x: number, y: number) => {
-                this.setState(GamePageState.setGameState(this.state, GameEngine.toggleCell(this.state.gameState, x, y)));
+                this.setState(GamePageState.changeGameState(this.state, GameEngine.toggleCell(this.state.gameState, x, y)));
             },
             submitBoard: () => {
-                this.setState(GamePageState.setGameState(this.state, GameEngine.submitBoard(this.state.gameState)));
+                this.setState(GamePageState.changeGameState(this.state, GameEngine.submitBoard(this.state.gameState)));
             }
         };
 
