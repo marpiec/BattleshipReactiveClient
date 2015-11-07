@@ -50,7 +50,7 @@ namespace game {
     }
 
 
-    export class Game {
+    export class GameEngine {
 
         static toggleCell(state: GameState, x: number, y: number): GameState {
             if(state.gamePhase === GamePhase.initPlayerBoard) {

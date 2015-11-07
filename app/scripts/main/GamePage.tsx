@@ -5,7 +5,7 @@ namespace page {
 
     import GameState = game.GameState;
     import GameBoardView = game.GameBoardView;
-    import Game = game.Game;
+    import Game = game.GameEngine;
     import GameInterface = game.GameInterface;
 
     export class GamePageParams {
