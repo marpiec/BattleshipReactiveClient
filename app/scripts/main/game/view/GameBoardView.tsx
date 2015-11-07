@@ -20,24 +20,30 @@ namespace game {
             //this.setState(new TasksViewState(this.state.count + 1));
         }
 
-        render = () => (
-            <div className="gameBoard">
-                {this.renderRows(this.props.board)}
-            </div>
-        );
+        render() {
+            return (
+                <div className="gameBoard">
+                    {this.renderRows(this.props.board)}
+                </div>
+            );
+        }
 
-        renderRows = (board:Board) => board.map((cells:Immutable.List<CellState>, y:number) => (
-            <div className="boardRow" key={y}>
-                {this.renderCells(y, cells)}
-            </div>
-        ));
+        renderRows(board:Board){
+          return board.map((cells:Immutable.List<CellState>, y:number) => (
+              <div className="boardRow" key={y}>
+                  {this.renderCells(y, cells)}
+              </div>
+          ));
+        }
 
 
-        renderCells = (y:number, cells:Immutable.List<CellState>) => cells.map((cell:CellState, x:number) => (
-            <div className="boardCell" key={x}
-                 onClick={this.cellClicked.bind(this, x, y)}>
-            </div>
-        ));
+        renderCells(y:number, cells:Immutable.List<CellState>) {
+            return cells.map((cell:CellState, x:number) => (
+                <div className="boardCell" key={x}
+                     onClick={this.cellClicked.bind(this, x, y)}>
+                </div>
+            ));
+        }
     }
 
 }
