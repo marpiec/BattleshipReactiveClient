@@ -1,10 +1,9 @@
 /// <reference path="game/model/Game.ts"/>
 /// <reference path="game/view/GameBoardView.tsx"/>
 
-namespace page {
+namespace gameView {
 
     import GameState = game.GameState;
-    import GameBoardView = game.GameBoardView;
     import GameEngine = game.GameEngine;
     import GameInterface = game.GameInterface;
 

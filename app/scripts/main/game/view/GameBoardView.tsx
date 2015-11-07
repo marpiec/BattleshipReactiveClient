@@ -1,7 +1,8 @@
-namespace game {
+namespace gameView {
 
     import Board = game.Board;
-    import GameEngine = game.GameEngine;
+    import GameInterface = game.GameInterface;
+    import CellState = game.CellState;
 
     export class GameBoardViewProps {
         board:Board;
