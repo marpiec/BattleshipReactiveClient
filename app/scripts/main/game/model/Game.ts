@@ -1,34 +1,39 @@
 namespace game {
 
-    import GamePageState = page.GamePageState;
     import GamePage = page.GamePage;
+    import GamePageState = page.GamePageState;
     const GAME_BOARD_SIZE = 10;
     export const enum CellState {empty, miss, ship, hit}
     export type Board = Immutable.List<Immutable.List<CellState>>;
 
-    export const enum GamePhase {initBothPlayers, initPlayerA, initPlayerB, moveA, moveB, finished}
+    export const enum GamePhase {initPlayerBoard, waitForSecondPlayer, playerTurn, otherPlayerTurn, gameEnded}
 
     export class GameState {
 
         private static EMPTY_BOARD = GameState.createEmptyBoard();
 
-        boardA: Board;
-        boardB: Board;
+        playerBoard: Board;
+        opponentBoard: Board;
+        gamePhase: GamePhase;
 
-        static initial = new GameState(GameState.EMPTY_BOARD, GameState.EMPTY_BOARD);
-        constructor(boardA: Board, boardB: Board) {
-            this.boardA = boardA;
-            this.boardB = boardB;
+        static initial = new GameState(GamePhase.initPlayerBoard, GameState.EMPTY_BOARD, GameState.EMPTY_BOARD);
+        constructor(gamePhase: GamePhase, playerBoard: Board, opponentBoard: Board) {
+            this.gamePhase = gamePhase;
+            this.playerBoard = playerBoard;
+            this.opponentBoard = opponentBoard;
         }
 
-        setBoardA(boardA: Board) {
-            return new GameState(boardA, this.boardB);
+        setPlayerBoard(playerBoard: Board) {
+            return new GameState(this.gamePhase, playerBoard, this.opponentBoard);
         }
 
-        setBoardB(boardB: Board) {
-            return new GameState(this.boardA, boardB);
+        setOpponentBoard(opponentBoard: Board) {
+            return new GameState(this.gamePhase, this.playerBoard, opponentBoard);
         }
 
+        setGamePhase(gamePhase: GamePhase) {
+            return new GameState(gamePhase, this.playerBoard, this.opponentBoard);
+        }
 
         private static createEmptyBoard(): Board {
             return Immutable.Range(0, GAME_BOARD_SIZE).map(y =>
@@ -42,33 +47,33 @@ namespace game {
     export class Game {
 
         state: GameState;
-        phase: GamePhase;
 
-        static initial = new Game(GameState.initial, GamePhase.initBothPlayers);
+
+        static initial = new Game(GameState.initial, GamePhase.initPlayerBoard);
         constructor(state: GameState, phase: GamePhase) {
             this.state = state;
-            this.phase = phase;
         }
 
-        setBoardA(boardA: Board): Game {
-            if (this.phase === GamePhase.initBothPlayers) {
-                return new Game(this.state.setBoardA(boardA), GamePhase.initPlayerB);
-            } else if(this.phase === GamePhase.initPlayerA) {
-                return new Game(this.state, GamePhase.moveA);
+
+        toggleCell(x: number, y: number) {
+            if(this.state.gamePhase === GamePhase.initPlayerBoard) {
+                const currentCellState:CellState = this.state.playerBoard.get(y).get(x);
+                const newCellState = currentCellState === CellState.empty ? CellState.ship : CellState.empty;
+                const newPlayerBoard = this.state.playerBoard.setIn([y, x], newCellState);
+                this.state = this.state.setPlayerBoard(newPlayerBoard);
             } else {
-                throw new Error("Unsupported operation in phase " + this.phase);
+                throw new Error("Unsupported operation in gamePhase " + this.state.gamePhase);
             }
         }
 
-        setBoardB(boardB: Board): Game {
-            if (this.phase === GamePhase.initBothPlayers) {
-                return new Game(this.state.setBoardB(boardB), GamePhase.initPlayerA);
-            } else if(this.phase === GamePhase.initPlayerB) {
-                return new Game(this.state, GamePhase.moveA);
+        submitBoard() {
+            if(this.state.gamePhase === GamePhase.initPlayerBoard) {
+                this.state = this.state.setGamePhase(GamePhase.waitForSecondPlayer);
             } else {
-                throw new Error("Unsupported operation in phase " + this.phase);
+                throw new Error("Unsupported operation in gamePhase " + this.state.gamePhase);
             }
         }
+
     }
 
 

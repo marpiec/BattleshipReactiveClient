@@ -30,8 +30,8 @@ namespace page {
                 <div>
                     <p>Game page</p>
                     <p>{this.props.params.gameId}</p>
-                    <GameBoardView board={this.state.gameState.boardA} />
-                    <GameBoardView board={this.state.gameState.boardB} />
+                    <GameBoardView board={this.state.gameState.playerBoard} />
+                    <GameBoardView board={this.state.gameState.opponentBoard} />
                 </div>
             )
         }
