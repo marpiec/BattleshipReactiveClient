@@ -44,44 +44,33 @@ namespace game {
         }
     }
 
+    export interface GameInterface {
+        toggleCell(x: number, y: number): void;
+        submitBoard(): void;
+    }
+
+
     export class Game {
 
-        state: GameState;
-
-        changeListener: (game: Game) => void;
-
-        static initial(changeListener: (state: Game) => void) {
-            return new Game(GameState.initial, changeListener);
-        }
-        constructor(state: GameState, changeListener: (state: Game) => void) {
-            this.state = state;
-            this.changeListener = changeListener;
-        }
-
-        toggleCell(x: number, y: number) {
-            if(this.state.gamePhase === GamePhase.initPlayerBoard) {
-                const currentCellState:CellState = this.state.playerBoard.get(y).get(x);
+        static toggleCell(state: GameState, x: number, y: number): GameState {
+            if(state.gamePhase === GamePhase.initPlayerBoard) {
+                const currentCellState:CellState = state.playerBoard.get(y).get(x);
                 const newCellState = currentCellState === CellState.empty ? CellState.ship : CellState.empty;
-                const newPlayerBoard = this.state.playerBoard.setIn([y, x], newCellState);
-                this.setState(this.state.setPlayerBoard(newPlayerBoard));
-                console.log("Toggled cell")
+                const newPlayerBoard = state.playerBoard.setIn([y, x], newCellState);
+                return state.setPlayerBoard(newPlayerBoard);
             } else {
-                throw new Error("Unsupported operation in gamePhase " + this.state.gamePhase);
+                throw new Error("Unsupported operation in gamePhase " + state.gamePhase);
             }
         }
 
-        submitBoard() {
-            if(this.state.gamePhase === GamePhase.initPlayerBoard) {
-                this.setState(this.state.setGamePhase(GamePhase.waitForSecondPlayer));
+        static submitBoard(state: GameState): GameState {
+            if(state.gamePhase === GamePhase.initPlayerBoard) {
+                return state.setGamePhase(GamePhase.waitForSecondPlayer);
             } else {
-                throw new Error("Unsupported operation in gamePhase " + this.state.gamePhase);
+                throw new Error("Unsupported operation in gamePhase " + state.gamePhase);
             }
         }
 
-        setState(state: GameState) {
-            this.state = state;
-            this.changeListener(this);
-        }
 
     }
 

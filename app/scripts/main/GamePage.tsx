@@ -6,6 +6,7 @@ namespace page {
     import GameState = game.GameState;
     import GameBoardView = game.GameBoardView;
     import Game = game.Game;
+    import GameInterface = game.GameInterface;
 
     export class GamePageParams {
         gameId: string;
@@ -16,35 +17,43 @@ namespace page {
     }
 
     export class GamePageState {
-        game: Game;
+        gameState: GameState;
 
-        constructor(game: Game) {
-            this.game = game;
+        constructor(gameState: GameState) {
+            this.gameState = gameState;
         }
 
-        setGame(game: Game) {
-            return new GamePageState(game);
+        static setGameState(other: GamePageState, gameState: GameState) {
+            return new GamePageState(gameState);
         }
+
     }
 
 
     export class GamePage extends React.Component<GamePageProps, GamePageState> {
+
+        gameInterface: GameInterface = {
+            toggleCell: (x: number, y: number) => {
+                this.setState(GamePageState.setGameState(this.state, Game.toggleCell(this.state.gameState, x, y)));
+            },
+            submitBoard: () => {
+                this.setState(GamePageState.setGameState(this.state, Game.submitBoard(this.state.gameState)));
+            }
+        };
+
         constructor(props:GamePageProps) {
             super(props);
-            this.state = new GamePageState(Game.initial((game: Game) => {
-                console.log("State updated", game);
-                this.setState(this.state.setGame(game));
-            }));
+            this.state = new GamePageState(GameState.initial);
         }
 
         render() {
             return (
                 <div>
                     <p>Game page</p>
-                    <p>Game Phase: {this.state.game.state.gamePhase}</p>
+                    <p>Game Phase: {this.state.gameState.gamePhase}</p>
                     <p>Game Id: {this.props.params.gameId}</p>
-                    <GameBoardView board={this.state.game.state.playerBoard} game={this.state.game} />
-                    <GameBoardView board={this.state.game.state.opponentBoard} game={this.state.game} />
+                    <GameBoardView board={this.state.gameState.playerBoard} gameInterface={this.gameInterface} />
+                    <GameBoardView board={this.state.gameState.opponentBoard} gameInterface={this.gameInterface} />
                 </div>
             )
         }
