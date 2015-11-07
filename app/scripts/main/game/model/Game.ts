@@ -6,15 +6,15 @@ namespace game {
 
     export const enum GamePhase {initPlayerBoard, waitForSecondPlayer, playerTurn, otherPlayerTurn, gameEnded}
 
-    export class GameState {
+    export class GameStateSimple {
 
-        private static EMPTY_BOARD = GameState.createEmptyBoard();
+        private static EMPTY_BOARD = GameStateSimple.createEmptyBoard();
 
         playerBoard:Board;
         opponentBoard:Board;
         gamePhase:GamePhase;
 
-        static initial = new GameState(GamePhase.initPlayerBoard, GameState.EMPTY_BOARD, GameState.EMPTY_BOARD);
+        static initial = new GameStateSimple(GamePhase.initPlayerBoard, GameStateSimple.EMPTY_BOARD, GameStateSimple.EMPTY_BOARD);
 
         constructor(gamePhase:GamePhase, playerBoard:Board, opponentBoard:Board) {
             this.gamePhase = gamePhase;
@@ -23,15 +23,15 @@ namespace game {
         }
 
         setPlayerBoard(playerBoard:Board) {
-            return new GameState(this.gamePhase, playerBoard, this.opponentBoard);
+            return new GameStateSimple(this.gamePhase, playerBoard, this.opponentBoard);
         }
 
         setOpponentBoard(opponentBoard:Board) {
-            return new GameState(this.gamePhase, this.playerBoard, opponentBoard);
+            return new GameStateSimple(this.gamePhase, this.playerBoard, opponentBoard);
         }
 
         setGamePhase(gamePhase:GamePhase) {
-            return new GameState(gamePhase, this.playerBoard, this.opponentBoard);
+            return new GameStateSimple(gamePhase, this.playerBoard, this.opponentBoard);
         }
 
         private static createEmptyBoard():Board {
@@ -41,6 +41,57 @@ namespace game {
             ).toList();
 
         }
+    }
+
+    export class GameState {
+
+        private static EMPTY_BOARD = GameState.createEmptyBoard();
+        private static createEmptyBoard():Board {
+            return Immutable.Range(0, GAME_BOARD_SIZE).map(y =>
+                Immutable.Range(0, GAME_BOARD_SIZE).map(x =>
+                    CellState.empty).toList()
+            ).toList();
+
+        }
+
+        private _record: Immutable.Map<String, any>;
+
+        static initial = new GameState(Immutable.Map({
+            gamePhase: GamePhase.initPlayerBoard,
+            playerBoard: GameState.EMPTY_BOARD,
+            opponentBoard: GameState.EMPTY_BOARD,
+        }));
+
+
+        constructor(record: Immutable.Map<String, any>) {
+            this._record = record;
+        }
+
+        get playerBoard():Board {
+            return this._record.get("playerBoard");
+        }
+
+        get opponentBoard():Board {
+            return this._record.get("opponentBoard");
+        }
+
+        get gamePhase():GamePhase {
+            return this._record.get("gamePhase");
+        }
+
+        setPlayerBoard(playerBoard:Board) {
+            return new GameState(this._record.set("playerBoard", playerBoard));
+        }
+
+        setOpponentBoard(opponentBoard:Board) {
+            return new GameState(this._record.set("opponentBoard", opponentBoard));
+        }
+
+        setGamePhase(gamePhase:GamePhase) {
+            return new GameState(this._record.set("gamePhase", gamePhase));
+        }
+
+
     }
 
 
