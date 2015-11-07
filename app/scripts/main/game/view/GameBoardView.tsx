@@ -1,8 +1,11 @@
 namespace game {
 
     import Board = game.Board;
+    import Game = game.Game;
+
     export class GameBoardViewProps {
         board:Board;
+        game: Game;
     }
 
     export class GameBoardViewState {
@@ -16,7 +19,8 @@ namespace game {
         }
 
         cellClicked(x:number, y:number) {
-            console.log("clicked " + x + " " + y);
+
+            this.props.game.toggleCell(x, y);
             //this.setState(new TasksViewState(this.state.count + 1));
         }
 
@@ -41,6 +45,7 @@ namespace game {
             return cells.map((cell:CellState, x:number) => (
                 <div className="boardCell" key={x}
                      onClick={this.cellClicked.bind(this, x, y)}>
+                    {cell}
                 </div>
             ));
         }
