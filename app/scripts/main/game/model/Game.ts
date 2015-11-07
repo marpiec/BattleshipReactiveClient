@@ -48,19 +48,23 @@ namespace game {
 
         state: GameState;
 
+        changeListener: (game: Game) => void;
 
-        static initial = new Game(GameState.initial, GamePhase.initPlayerBoard);
-        constructor(state: GameState, phase: GamePhase) {
-            this.state = state;
+        static initial(changeListener: (state: Game) => void) {
+            return new Game(GameState.initial, changeListener);
         }
-
+        constructor(state: GameState, changeListener: (state: Game) => void) {
+            this.state = state;
+            this.changeListener = changeListener;
+        }
 
         toggleCell(x: number, y: number) {
             if(this.state.gamePhase === GamePhase.initPlayerBoard) {
                 const currentCellState:CellState = this.state.playerBoard.get(y).get(x);
                 const newCellState = currentCellState === CellState.empty ? CellState.ship : CellState.empty;
                 const newPlayerBoard = this.state.playerBoard.setIn([y, x], newCellState);
-                this.state = this.state.setPlayerBoard(newPlayerBoard);
+                this.setState(this.state.setPlayerBoard(newPlayerBoard));
+                console.log("Toggled cell")
             } else {
                 throw new Error("Unsupported operation in gamePhase " + this.state.gamePhase);
             }
@@ -68,10 +72,15 @@ namespace game {
 
         submitBoard() {
             if(this.state.gamePhase === GamePhase.initPlayerBoard) {
-                this.state = this.state.setGamePhase(GamePhase.waitForSecondPlayer);
+                this.setState(this.state.setGamePhase(GamePhase.waitForSecondPlayer));
             } else {
                 throw new Error("Unsupported operation in gamePhase " + this.state.gamePhase);
             }
+        }
+
+        setState(state: GameState) {
+            this.state = state;
+            this.changeListener(this);
         }
 
     }
