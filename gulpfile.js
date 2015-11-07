@@ -34,6 +34,7 @@ gulp.task('scripts-libs', ['bower'], function() {
         nodeDir('react-dom/dist/react-dom'+min+'.js'),
         nodeDir('history/umd/History' +min+ '.js'),
         nodeDir('react-router/umd/ReactRouter' +min+ '.js'),
+        nodeDir('classnames/index.js'),
         bowerDir('jquery/dist/jquery'+min+'.js'),
         bowerDir('bootstrap-sass/assets/javascripts/bootstrap'+min+'.js'),
         nodeDir('immutable/dist/immutable' +min+ '.js')

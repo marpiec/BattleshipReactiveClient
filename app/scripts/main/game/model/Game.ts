@@ -42,10 +42,6 @@ namespace game {
         }
     }
 
-    export interface GameInterface {
-        toggleCell(x: number, y: number): void;
-        submitBoard(): void;
-    }
 
 
     export class GameEngine {

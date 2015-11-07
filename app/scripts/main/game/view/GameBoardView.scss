@@ -1,5 +1,14 @@
 .gameBoard {
+  @extend .noselect;
+
+
+  $cellEmptyColor: #f0f8fa;
+  $cellHoverColor: #fafafa;
+  $cellShipColor: #999;
+  $cellMissColor: #ffffff;
+  $cellHitColor: #ecb182;
   $cellSize: 4rem;
+  $gridBorderColor: #555;
 
   border: solid #555;
   border-width: 0 1px 1px 0;
@@ -11,9 +20,30 @@
     .boardCell {
       width: $cellSize;
       height: $cellSize;
-      border: solid #555;
+      border: solid $gridBorderColor;
       border-width: 1px 0 0 1px;
       display: inline-block;
+      cursor: pointer;
+
+      &:hover {
+        background-color: $cellHoverColor;
+      }
+
+      &.empty {
+        background-color: $cellEmptyColor;
+      }
+
+      &.ship {
+        background-color: $cellShipColor;
+      }
+
+      &.miss {
+        background-color: $cellMissColor;
+      }
+
+      &.hit {
+        background-color: $cellHitColor;
+      }
     }
 
   }

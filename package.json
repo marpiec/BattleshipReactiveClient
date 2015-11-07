@@ -3,6 +3,7 @@
   "version": "0.1.1",
   "devDependencies": {
     "browser-sync": "2.9.12",
+    "classnames": "^2.2.0",
     "gulp": "3.9.0",
     "gulp-bower": "0.0.10",
     "gulp-clean": "0.3.1",
