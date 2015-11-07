@@ -6,7 +6,7 @@ namespace main {
 
     import NotFoundPage = page.NotFoundPage;
     import MainPage = page.MainPage;
-    import GamePage = page.GamePage;
+    import GamePage = gameView.GamePage;
 
     import Router = ReactRouter.Router;
     import Route = ReactRouter.Route;

@@ -1,7 +1,5 @@
 namespace game {
 
-    import GamePage = page.GamePage;
-    import GamePageState = page.GamePageState;
     const GAME_BOARD_SIZE = 10;
     export const enum CellState {empty, miss, ship, hit}
     export type Board = Immutable.List<Immutable.List<CellState>>;
