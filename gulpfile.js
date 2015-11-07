@@ -52,7 +52,7 @@ gulp.task('scripts', ['bower'], function () {
             'preserveConstEnums': true,
             'sourceMap': true,
             'declaration': true,
-            'target': 'ES3',
+            'target': 'ES5',
             'jsx': 'React',
             sortOutput: true,
             gulpConcat: true,
