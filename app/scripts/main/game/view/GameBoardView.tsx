@@ -1,7 +1,7 @@
 namespace game {
 
     import Board = game.Board;
-    import Game = game.GameEngine;
+    import GameEngine = game.GameEngine;
 
     export class GameBoardViewProps {
         board:Board;
