@@ -10,30 +10,31 @@ namespace game {
 
         private static EMPTY_BOARD = GameState.createEmptyBoard();
 
-        playerBoard: Board;
-        opponentBoard: Board;
-        gamePhase: GamePhase;
+        playerBoard:Board;
+        opponentBoard:Board;
+        gamePhase:GamePhase;
 
         static initial = new GameState(GamePhase.initPlayerBoard, GameState.EMPTY_BOARD, GameState.EMPTY_BOARD);
-        constructor(gamePhase: GamePhase, playerBoard: Board, opponentBoard: Board) {
+
+        constructor(gamePhase:GamePhase, playerBoard:Board, opponentBoard:Board) {
             this.gamePhase = gamePhase;
             this.playerBoard = playerBoard;
             this.opponentBoard = opponentBoard;
         }
 
-        setPlayerBoard(playerBoard: Board) {
+        setPlayerBoard(playerBoard:Board) {
             return new GameState(this.gamePhase, playerBoard, this.opponentBoard);
         }
 
-        setOpponentBoard(opponentBoard: Board) {
+        setOpponentBoard(opponentBoard:Board) {
             return new GameState(this.gamePhase, this.playerBoard, opponentBoard);
         }
 
-        setGamePhase(gamePhase: GamePhase) {
+        setGamePhase(gamePhase:GamePhase) {
             return new GameState(gamePhase, this.playerBoard, this.opponentBoard);
         }
 
-        private static createEmptyBoard(): Board {
+        private static createEmptyBoard():Board {
             return Immutable.Range(0, GAME_BOARD_SIZE).map(y =>
                 Immutable.Range(0, GAME_BOARD_SIZE).map(x =>
                     CellState.empty).toList()
@@ -43,11 +44,10 @@ namespace game {
     }
 
 
-
     export class GameEngine {
 
-        static toggleCell(state: GameState, x: number, y: number): GameState {
-            if(state.gamePhase === GamePhase.initPlayerBoard) {
+        static toggleCell(state:GameState, x:number, y:number):GameState {
+            if (state.gamePhase === GamePhase.initPlayerBoard) {
                 const currentCellState:CellState = state.playerBoard.get(y).get(x);
                 const newCellState = currentCellState === CellState.empty ? CellState.ship : CellState.empty;
                 const newPlayerBoard = state.playerBoard.setIn([y, x], newCellState);
@@ -57,8 +57,8 @@ namespace game {
             }
         }
 
-        static submitBoard(state: GameState): GameState {
-            if(state.gamePhase === GamePhase.initPlayerBoard) {
+        static submitBoard(state:GameState):GameState {
+            if (state.gamePhase === GamePhase.initPlayerBoard) {
                 return state.setGamePhase(GamePhase.waitForSecondPlayer);
             } else {
                 throw new Error("Unsupported operation in gamePhase " + state.gamePhase);
@@ -67,15 +67,6 @@ namespace game {
 
 
     }
-
-
-
-
-
-
-
-
-
 
 
 }
