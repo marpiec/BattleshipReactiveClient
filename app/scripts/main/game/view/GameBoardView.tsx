@@ -5,7 +5,7 @@ namespace game {
 
     export class GameBoardViewProps {
         board:Board;
-        game: Game;
+        gameInterface: GameInterface;
     }
 
     export class GameBoardViewState {
@@ -20,7 +20,7 @@ namespace game {
 
         cellClicked(x:number, y:number) {
 
-            this.props.game.toggleCell(x, y);
+            this.props.gameInterface.toggleCell(x, y);
             //this.setState(new TasksViewState(this.state.count + 1));
         }
 
