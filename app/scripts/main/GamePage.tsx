@@ -5,7 +5,7 @@ namespace page {
 
     import GameState = game.GameState;
     import GameBoardView = game.GameBoardView;
-    import Game = game.GameEngine;
+    import GameEngine = game.GameEngine;
     import GameInterface = game.GameInterface;
 
     export class GamePageParams {
@@ -34,10 +34,10 @@ namespace page {
 
         gameInterface: GameInterface = {
             toggleCell: (x: number, y: number) => {
-                this.setState(GamePageState.setGameState(this.state, Game.toggleCell(this.state.gameState, x, y)));
+                this.setState(GamePageState.setGameState(this.state, GameEngine.toggleCell(this.state.gameState, x, y)));
             },
             submitBoard: () => {
-                this.setState(GamePageState.setGameState(this.state, Game.submitBoard(this.state.gameState)));
+                this.setState(GamePageState.setGameState(this.state, GameEngine.submitBoard(this.state.gameState)));
             }
         };
 
