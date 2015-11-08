@@ -13,13 +13,13 @@ class EventBus implements EventBusInterface {
 
     constructor() {
 
-        var methods: string[] = this.getMethods(this);
+        var methods: string[] = this.event_bus_priv_getMethods(this);
 
         for (var i = 0; i < methods.length; i++) {
-            if (methods[i] !== "getMethods" && methods[i] !== "on" && methods[i] !== "unsubscribe" && methods[i] !== "myWrapper") {
+            if (methods[i] !== "event_bus_priv_getMethods" && methods[i] !== "on" && methods[i] !== "unsubscribe" && methods[i] !== "event_bus_priv_Wrapper") {
                 var wrapper: any;
-                console.log(methods[i]+" "+this.originals.length);
-                eval(`wrapper = function() { this.myWrapper(${this.originals.length}, arguments); }`);
+               // console.log(methods[i]+" "+this.originals.length);
+                eval(`wrapper = function() { this.event_bus_priv_Wrapper(${this.originals.length}, arguments); }`);
                 (<any>this)[methods[i]] = wrapper;
                 this.callbacks[i] = [];
                 this.originals.push(wrapper);
@@ -29,8 +29,8 @@ class EventBus implements EventBusInterface {
 
     }
 
-    private myWrapper(index: number, methodArguments: any) {
-        console.log("Called " + index+",  callbacks length " + this.callbacks[index].length+" arguments: "+JSON.stringify(methodArguments));
+    private event_bus_priv_Wrapper(index: number, methodArguments: any) {
+        //console.log("Called " + index+",  callbacks length " + this.callbacks[index].length+" arguments: "+JSON.stringify(methodArguments));
         for (var p = 0; p < this.callbacks[index].length; p++)
             if (this.callbacks[index][p] !== undefined)
                 this.callbackQueue.push([this.callbacks[index][p], methodArguments]);
@@ -41,7 +41,7 @@ class EventBus implements EventBusInterface {
 
     }
 
-    private getMethods(obj: any) {
+    private event_bus_priv_getMethods(obj: any) {
         var res: any[] = [];
         for (var m in obj) {
             if (typeof obj[m] == "function") {
