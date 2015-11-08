@@ -82,17 +82,28 @@ namespace test {
 
             let callbacks = 0;
 
-            testEventBus.on(testEventBus.eventHappened, (value: number) => {
+            const subscriptionA = testEventBus.on(testEventBus.eventHappened, (value: number) => {
                 callbacks += value;
             });
 
-            testEventBus.on(testEventBus.eventHappened, (value: number) => {
-                callbacks += value;
+            const subscriptionB = testEventBus.on(testEventBus.eventHappened, (value: number) => {
+                callbacks += value + 1;
             });
 
             testEventBus.eventHappened(5);
+            expect(callbacks).toBe(11);
+            testEventBus.eventHappened(5);
+            expect(callbacks).toBe(22);
 
-            expect(callbacks).toBe(10);
+            testEventBus.unsubscribe(subscriptionA);
+            testEventBus.eventHappened(5);
+            expect(callbacks).toBe(28);
+
+            testEventBus.unsubscribe(subscriptionB);
+
+            testEventBus.eventHappened(5);
+            expect(callbacks).toBe(28);
+
         });
     });
 }
