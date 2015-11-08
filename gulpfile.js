@@ -10,6 +10,7 @@ var clean = require('gulp-clean');
 var sourcemaps = require('gulp-sourcemaps');
 
 
+var testTmpDir = function(path) {return './testTmp/' + path};
 var appDir = function(path) {return './app/' + path};
 var bowerDir = function(path) {return './bower_components/' + path};
 var nodeDir = function(path) {return './node_modules/' + path};
@@ -44,7 +45,7 @@ gulp.task('scripts-libs', ['bower'], function() {
 
 gulp.task('scripts', ['bower'], function () {
 
-    var tsResult = gulp.src([appDir('scripts/main/**/*.ts*'), appDir('scripts/libs.d/**/*.d.ts')])
+    var tsResult = gulp.src([appDir('scripts/main/**/*.ts*'), appDir('scripts/test/**/*.ts'), appDir('scripts/libs.d/**/*.d.ts')])
         .pipe(ts({
             'module': 'amd',
             'noImplicitAny': true,
@@ -64,7 +65,8 @@ gulp.task('scripts', ['bower'], function () {
 
     return merge([
         tsResult.dts.pipe(concat('main.d.ts')).pipe(gulp.dest(releaseDir('scripts'))),
-        tsResult.js.pipe(concat('main.js')).pipe(gulp.dest(releaseDir('scripts')))
+        tsResult.js.pipe(concat('main.js')).pipe(gulp.dest(releaseDir('scripts'))),
+        tsResult.js.pipe(gulp.dest(testTmpDir('scripts')))
     ]);
 });
 
@@ -84,9 +86,10 @@ gulp.task('fonts', function() {
 });
 
 
-gulp.task('test', ['scripts'], function () {
-    return gulp.src(releaseDir('scripts/test/**/*.js'))
+gulp.task('test', ['scripts', 'scripts-libs'], function () {
+    return gulp.src([testTmpDir('scripts/utils/EventBus.js')])
         .pipe(jasmine());
+    //)
 });
 
 
