@@ -1,4 +1,3 @@
-
 interface EventBusInterface {
     on(call: (...params: any[]) => void, callback: (...params: any[]) => void): number;
     unsubscribe(subscription: number): void;
@@ -16,33 +15,36 @@ class EventBus implements EventBusInterface {
 
         var methods: string[] = this.getMethods(this);
 
-        for(var i = 0; i<methods.length;i++) {
-            if(methods[i] !== "getMethods" && methods[i] !== "on" && methods[i] !== "init" && methods[i] !== "unsubscribe") {
-                var wrapper:any;
-                eval(`
-        wrapper = function() {
-          for(var p=0;p<this.callbacks[${this.originals.length}].length;p++)
-            if(this.callbacks[${this.originals.length}][p]!==undefined)
-              this.callbackQueue.push([this.callbacks[${this.originals.length}][p], arguments]);
-          while(this.callbackQueue.length > 0) {
-            var callback = this.callbackQueue.shift();
-            callback[0].apply(this, callback[1]);
-          }
-        }`);
+        for (var i = 0; i < methods.length; i++) {
+            if (methods[i] !== "getMethods" && methods[i] !== "on" && methods[i] !== "unsubscribe" && methods[i] !== "myWrapper") {
+                var wrapper: any;
+                console.log(methods[i]+" "+this.originals.length);
+                eval(`wrapper = function() { this.myWrapper(${this.originals.length}, arguments); }`);
                 (<any>this)[methods[i]] = wrapper;
                 this.callbacks[i] = [];
                 this.originals.push(wrapper);
+
             }
         }
 
     }
 
+    private myWrapper(index: number, methodArguments: any) {
+        console.log("Called " + index+",  callbacks length " + this.callbacks[index].length+" arguments: "+JSON.stringify(methodArguments));
+        for (var p = 0; p < this.callbacks[index].length; p++)
+            if (this.callbacks[index][p] !== undefined)
+                this.callbackQueue.push([this.callbacks[index][p], methodArguments]);
+        while (this.callbackQueue.length > 0) {
+            var callback = this.callbackQueue.shift();
+            callback[0].apply(this, callback[1]);
+        }
 
-    private getMethods(obj: any)
-    {
+    }
+
+    private getMethods(obj: any) {
         var res: any[] = [];
-        for(var m in obj) {
-            if(typeof obj[m] == "function") {
+        for (var m in obj) {
+            if (typeof obj[m] == "function") {
                 res.push(m)
             }
         }
@@ -70,13 +72,13 @@ class EventBus implements EventBusInterface {
 
 namespace test {
     class TestEventBus extends EventBus {
-        eventHappened(value: number) {}
+        eventHappened(value: number) {
+        }
     }
 
 
-
-    describe("A suite", function() {
-        it("contains spec with an expectation", function() {
+    describe("A suite", function () {
+        it("contains spec with an expectation", function () {
 
             const testEventBus = new TestEventBus();
 
