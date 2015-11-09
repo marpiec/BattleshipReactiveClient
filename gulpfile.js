@@ -87,7 +87,7 @@ gulp.task('fonts', function() {
 
 
 gulp.task('test', ['scripts', 'scripts-libs'], function () {
-    return gulp.src([testTmpDir('scripts/utils/EventBus.js')])
+    return gulp.src([testTmpDir('scripts/utils/EventBus.js'), testTmpDir('scripts/utils/ImmutablePath.js')])
         .pipe(jasmine());
     //)
 });
