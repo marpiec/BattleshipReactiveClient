@@ -3,40 +3,86 @@ interface EventBusInterface {
     unsubscribe(subscription: number): void;
 }
 
+class Handler {
+    methodName: string;
+    handler: () => void; //function
+
+    constructor(methodName: string, handler: () => void) {
+        this.methodName = methodName;
+        this.handler = handler;
+    }
+}
+
+class Subscription {
+    subscriptionId: number;
+    methodName: string;
+
+
+    constructor(subscriptionId: number, methodName: string) {
+        this.subscriptionId = subscriptionId;
+        this.methodName = methodName;
+    }
+}
+
+class Callback {
+    subscriptionId: number;
+    callback: () => void; //function
+
+    constructor(subscriptionId: number, callback: () => void) {
+        this.subscriptionId = subscriptionId;
+        this.callback = callback;
+    }
+}
+
+class CallbackExecution {
+    callback: () => void;
+    callbackArguments: any[];
+
+
+    constructor(callback: () => void, callbackArguments: any[]) {
+        this.callback = callback;
+        this.callbackArguments = callbackArguments;
+    }
+}
+
 class EventBus implements EventBusInterface {
 
-    private callbacks: any[][] = [];
-    private callbackQueue: any[][] = []; // callback, arguments
-    private originals: any[] = [];
+    private callbacks: {[methodName: string]: Callback[]} = {};
+    private handlers: Handler[] = [];
+
     private subscriptionsCounter = 0;
-    private subscriptions: [number, number][] = [];
+    private subscriptions: string[] = []; //subscriptionId => methodName
+
+    private callbackQueue: CallbackExecution[] = []; // callback, arguments
 
     constructor() {
 
         var methods: string[] = this.event_bus_priv_getMethods(this);
 
         for (var i = 0; i < methods.length; i++) {
-            if (methods[i] !== "event_bus_priv_getMethods" && methods[i] !== "on" && methods[i] !== "unsubscribe" && methods[i] !== "event_bus_priv_Wrapper") {
-                var wrapper: any;
-               // console.log(methods[i]+" "+this.originals.length);
-                eval(`wrapper = function() { this.event_bus_priv_Wrapper(${this.originals.length}, arguments); }`);
-                (<any>this)[methods[i]] = wrapper;
-                this.callbacks[i] = [];
-                this.originals.push(wrapper);
+            const methodName = methods[i];
+            if (methodName !== "event_bus_priv_getMethods" && methodName !== "on" && methodName !== "unsubscribe" && methodName !== "event_bus_priv_Handler") {
+                var handler: any;
+                eval(`handler = function() { this.event_bus_priv_Handler("${methodName}", arguments); }`);
+                (<any>this)[methodName] = handler;
+                this.callbacks[methodName] = [];
+                this.handlers.push(new Handler(methodName, handler));
 
             }
         }
 
     }
 
-    private event_bus_priv_Wrapper(index: number, methodArguments: any) {
+    // It uses queue to preserve order of function calls
+    private event_bus_priv_Handler(methodName: string, methodArguments: any[]) {
         //console.log("Called " + index+",  callbacks length " + this.callbacks[index].length+" arguments: "+JSON.stringify(methodArguments));
-        for (var p = 0; p < this.callbacks[index].length; p++)
-            if (this.callbacks[index][p] !== undefined)
-                this.callbackQueue.push([this.callbacks[index][p], methodArguments]);
+        const callbacksList = this.callbacks[methodName];
+        for (var p = 0; p < callbacksList.length; p++) {
+            this.callbackQueue.push(new CallbackExecution(callbacksList[p].callback, methodArguments));
+        }
         while (this.callbackQueue.length > 0) {
             var callback = this.callbackQueue.shift();
-            callback[0].apply(this, callback[1]);
+            (callback.callback).apply(this, callback.callbackArguments);
         }
 
     }
@@ -53,18 +99,38 @@ class EventBus implements EventBusInterface {
 
     on(call: (...params: any[]) => void, callback: (...params: any[]) => void): number {
 
-        var index = this.originals.indexOf(<any>call);
-        this.callbacks[index].push(callback);
+        var subscriptionId = this.subscriptionsCounter;
 
-        var subscription = this.subscriptionsCounter;
+        let handler:Handler = undefined;
+        for(let p=0;p<this.handlers.length;p++) {
+            if(this.handlers[p].handler === call) {
+                handler = this.handlers[p];
+                break;
+            }
+        }
+
+        this.callbacks[handler.methodName].push(new Callback(subscriptionId, callback));
+
         this.subscriptionsCounter++;
 
-        this.subscriptions[subscription] = [index, this.callbacks[index].length - 1];
-        return subscription;
+        this.subscriptions[subscriptionId] = handler.methodName;
+        return subscriptionId;
     }
 
-    unsubscribe(subscription: number): void {
-        this.callbacks[this.subscriptions[subscription][0]][this.subscriptions[subscription][1]] = undefined;
+    unsubscribe(subscriptionId: number): void {
+        const methodName = this.subscriptions[subscriptionId];
+        const methodCallbacks = this.callbacks[methodName];
+
+        let callbackIndex:number = -1;
+        for(let p=0;p<methodCallbacks.length;p++) {
+            if(methodCallbacks[p].subscriptionId === subscriptionId) {
+                callbackIndex = p;
+                break;
+            }
+        }
+
+        methodCallbacks.splice(callbackIndex, 1);
+
     }
 
 }
