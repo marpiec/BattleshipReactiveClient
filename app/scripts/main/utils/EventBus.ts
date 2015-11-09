@@ -107,9 +107,9 @@ class EventBus implements EventBusInterface {
 
         var subscriptionId = this.subscriptionsCounter;
 
-        let handler:Handler = undefined;
-        for(let p=0;p<this.handlers.length;p++) {
-            if(this.handlers[p].handler === call) {
+        let handler: Handler = undefined;
+        for (let p = 0; p < this.handlers.length; p++) {
+            if (this.handlers[p].handler === call) {
                 handler = this.handlers[p];
                 break;
             }
@@ -126,7 +126,7 @@ class EventBus implements EventBusInterface {
     subscribe(callbacks: any): void {
         var methods: string[] = this.event_bus_priv_getMethods(callbacks);
 
-        for(let p=0;p<methods.length;p++) {
+        for (let p = 0; p < methods.length; p++) {
             const methodName = methods[p];
             if (EventBus.innerMethods.indexOf(methodName) < 0) {
                 this.on((<any>this)[methodName], (<any>callbacks)[methodName]);
@@ -142,9 +142,9 @@ class EventBus implements EventBusInterface {
         const methodName = this.subscriptions[subscriptionId];
         const methodCallbacks = this.callbacks[methodName];
 
-        let callbackIndex:number = -1;
-        for(let p=0;p<methodCallbacks.length;p++) {
-            if(methodCallbacks[p].subscriptionId === subscriptionId) {
+        let callbackIndex: number = -1;
+        for (let p = 0; p < methodCallbacks.length; p++) {
+            if (methodCallbacks[p].subscriptionId === subscriptionId) {
                 callbackIndex = p;
                 break;
             }
@@ -169,46 +169,60 @@ namespace test {
     describe("A suite", function () {
         it("contains spec with an expectation", function () {
 
-            const testEventBus = new TestEventBus().init<TestEventBus>();
+            class A {
 
-            let callbacks = 0;
+                callbacks = 0;
 
-            class TestEventBusCallbacks extends TestEventBus {
-                eventHappened(value: number) {
-                    callbacks += value;
+                constructor() {
+
+                    const outer = this;
+
+
+                    const testEventBus = new TestEventBus().init<TestEventBus>();
+
+
+                    class TestEventBusCallbacks extends TestEventBus {
+                        eventHappened(value: number) {
+                            outer.callbacks += value;
+                        }
+                    }
+                    testEventBus.subscribe(new TestEventBusCallbacks());
+
+                    class SubscriptionA extends TestEventBus {
+                        eventHappened(value: number) {
+                            outer.callbacks += value + 1;
+                        }
+                    }
+                    testEventBus.subscribe(new SubscriptionA());
+
+
+                    const subscriptionA = testEventBus.on(testEventBus.eventHappened, (value: number) => {
+                        //callbacks += value;
+                    });
+
+                    const subscriptionB = testEventBus.on(testEventBus.eventHappened, (value: number) => {
+                        //callbacks += value + 1;
+                    });
+
+                    testEventBus.eventHappened(5);
+                    expect(this.callbacks).toBe(11);
+                    testEventBus.eventHappened(5);
+                    expect(this.callbacks).toBe(22);
+
+                    testEventBus.unsubscribe(subscriptionA);
+                    testEventBus.eventHappened(5);
+                    expect(this.callbacks).toBe(28);
+
+                    testEventBus.unsubscribe(subscriptionB);
+
+                    testEventBus.eventHappened(5);
+                    expect(this.callbacks).toBe(28);
                 }
+
             }
-            testEventBus.subscribe(new TestEventBusCallbacks());
-
-            class SubscriptionA extends TestEventBus {
-                eventHappened(value: number) {
-                    callbacks += value + 1;
-                }
-            }
-            testEventBus.subscribe(new SubscriptionA());
 
 
-            const subscriptionA = testEventBus.on(testEventBus.eventHappened, (value: number) => {
-                //callbacks += value;
-            });
-
-            const subscriptionB = testEventBus.on(testEventBus.eventHappened, (value: number) => {
-                //callbacks += value + 1;
-            });
-
-            testEventBus.eventHappened(5);
-            expect(callbacks).toBe(11);
-            testEventBus.eventHappened(5);
-            expect(callbacks).toBe(22);
-
-            testEventBus.unsubscribe(subscriptionA);
-            testEventBus.eventHappened(5);
-            expect(callbacks).toBe(28);
-
-            testEventBus.unsubscribe(subscriptionB);
-
-            testEventBus.eventHappened(5);
-            expect(callbacks).toBe(28);
+            new A();
 
         });
     });
