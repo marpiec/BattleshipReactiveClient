@@ -47,6 +47,10 @@ class CallbackExecution {
 
 class EventBus implements EventBusInterface {
 
+    private static innerMethods = ["event_bus_priv_getMethods", "on",
+        "unsubscribe", "event_bus_priv_Handler",
+        "subscribe", "constructor", "init"];
+
     private callbacks: {[methodName: string]: Callback[]} = {};
     private handlers: Handler[] = [];
 
@@ -63,9 +67,7 @@ class EventBus implements EventBusInterface {
 
         for (var i = 0; i < methods.length; i++) {
             const methodName = methods[i];
-            if (methodName !== "event_bus_priv_getMethods" && methodName !== "on" &&
-                methodName !== "unsubscribe" && methodName !== "event_bus_priv_Handler" &&
-                methodName !== "subscribe" && methodName !== "constructor" && methodName !== "init") {
+            if (EventBus.innerMethods.indexOf(methodName) < 0) {
                 var handler: any;
                 eval(`handler = function() { this.event_bus_priv_Handler("${methodName}", arguments); }`);
                 (<any>this)[methodName] = handler;
@@ -126,10 +128,7 @@ class EventBus implements EventBusInterface {
 
         for(let p=0;p<methods.length;p++) {
             const methodName = methods[p];
-            if (methodName !== "event_bus_priv_getMethods" && methodName !== "on" &&
-                methodName !== "unsubscribe" && methodName !== "event_bus_priv_Handler" &&
-                methodName !== "subscribe" && methodName !== "constructor" && methodName !== "init") {
-
+            if (EventBus.innerMethods.indexOf(methodName) < 0) {
                 this.on((<any>this)[methodName], (<any>callbacks)[methodName]);
             }
 
@@ -181,12 +180,12 @@ namespace test {
             }
             testEventBus.subscribe(new TestEventBusCallbacks());
 
-            class TestEventBusCallbacks1 extends TestEventBus {
+            class SubscriptionA extends TestEventBus {
                 eventHappened(value: number) {
                     callbacks += value + 1;
                 }
             }
-            testEventBus.subscribe(new TestEventBusCallbacks1());
+            testEventBus.subscribe(new SubscriptionA());
 
 
             const subscriptionA = testEventBus.on(testEventBus.eventHappened, (value: number) => {
