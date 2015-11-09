@@ -61,7 +61,9 @@ class EventBus implements EventBusInterface {
 
         for (var i = 0; i < methods.length; i++) {
             const methodName = methods[i];
-            if (methodName !== "event_bus_priv_getMethods" && methodName !== "on" && methodName !== "unsubscribe" && methodName !== "event_bus_priv_Handler") {
+            if (methodName !== "event_bus_priv_getMethods" && methodName !== "on" &&
+                methodName !== "unsubscribe" && methodName !== "event_bus_priv_Handler" &&
+                methodName !== "subscribe" && methodName !== "constructor") {
                 var handler: any;
                 eval(`handler = function() { this.event_bus_priv_Handler("${methodName}", arguments); }`);
                 (<any>this)[methodName] = handler;
@@ -117,6 +119,29 @@ class EventBus implements EventBusInterface {
         return subscriptionId;
     }
 
+    subscribe(callbacks: any): void {
+        console.log(callbacks);
+        console.log(2222222);
+        var methods: string[] = this.event_bus_priv_getMethods(callbacks);
+
+        console.log(methods);
+
+        for(let p=0;p<methods.length;p++) {
+            const methodName = methods[p];
+            if (methodName !== "event_bus_priv_getMethods" && methodName !== "on" &&
+                methodName !== "unsubscribe" && methodName !== "event_bus_priv_Handler" &&
+                methodName !== "subscribe" && methodName !== "constructor") {
+
+                console.log("Subscribing for " + methodName+" "+(<any>callbacks)[methodName]);
+                this.on((<any>this)[methodName], (<any>callbacks)[methodName]);
+            }
+
+
+        }
+
+
+    }
+
     unsubscribe(subscriptionId: number): void {
         const methodName = this.subscriptions[subscriptionId];
         const methodCallbacks = this.callbacks[methodName];
@@ -137,9 +162,19 @@ class EventBus implements EventBusInterface {
 
 
 namespace test {
+
     class TestEventBus extends EventBus {
         eventHappened(value: number) {
         }
+
+
+    }
+
+    class TestEventBus1 {
+        eventHappened(value: number) {
+        }
+
+
     }
 
 
@@ -150,12 +185,37 @@ namespace test {
 
             let callbacks = 0;
 
+            console.log("1111");
+
+            try {
+                console.log("333");
+                class TestEventBusCallbacks extends TestEventBus1 {
+                    eventHappened(value: number) {
+                        callbacks += value;
+                        console.log("It happened");
+                    }
+                }
+                console.log("333333");
+                const callbacks1 = new TestEventBusCallbacks();
+
+                console.log("444");
+                console.log("555" + callbacks1);
+                testEventBus.subscribe(callbacks1);
+
+            } catch(e) {
+                console.log("e" + e)
+            } finally {
+                console.log("finally")
+            }
+
+
+
             const subscriptionA = testEventBus.on(testEventBus.eventHappened, (value: number) => {
-                callbacks += value;
+                //callbacks += value;
             });
 
             const subscriptionB = testEventBus.on(testEventBus.eventHappened, (value: number) => {
-                callbacks += value + 1;
+                //callbacks += value + 1;
             });
 
             testEventBus.eventHappened(5);
