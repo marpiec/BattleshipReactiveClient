@@ -1,6 +1,9 @@
 /// <reference path="GameState.ts"/>
+/// <reference path="../../utils/ImmutablePath.ts"/>
 
 namespace game {
+
+    import I = ImmutablePath;
 
     export class GameEngine {
 
@@ -9,7 +12,7 @@ namespace game {
                 const currentCellState:CellState = state.playerBoard.get(y).get(x);
                 const newCellState = currentCellState === CellState.empty ? CellState.ship : CellState.empty;
 
-                return state.setIn([GameState.playerBoard, y, x], newCellState);
+                return state.setIn(I.path(I.of(state).playerBoard).concat([y, x]), newCellState);
             } else {
                 throw new Error("Unsupported operation in gamePhase " + state.gamePhase);
             }
@@ -17,7 +20,7 @@ namespace game {
 
         static submitBoard(state:GameState):GameState {
             if (state.gamePhase === GamePhase.initPlayerBoard) {
-                return state.set(GameState.gamePhase, GamePhase.waitForSecondPlayer);
+                return state.setIn(I.path(I.of(state).gamePhase), GamePhase.waitForSecondPlayer);
             } else {
                 throw new Error("Unsupported operation in gamePhase " + state.gamePhase);
             }

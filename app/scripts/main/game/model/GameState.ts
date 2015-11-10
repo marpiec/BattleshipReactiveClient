@@ -22,10 +22,6 @@ namespace game {
         playerBoard:undefined,
         opponentBoard:undefined}) {
 
-        static gamePhase = "gamePhase";
-        static playerBoard = "playerBoard";
-        static opponentBoard = "opponentBoard";
-
         gamePhase: GamePhase;
         playerBoard: Board;
         opponentBoard: Board;

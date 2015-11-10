@@ -12,6 +12,9 @@ namespace ImmutablePath {
 
         var pathAccumulator = new PathAccumulator(path);
 
+
+
+
         if(typeof something === "number" ||
             typeof something === "boolean" ||
             typeof something === "string") {
@@ -19,20 +22,33 @@ namespace ImmutablePath {
         } else {
             const anySomething: any = something;
 
-            for (var propertyName in anySomething) {
-                if (typeof anySomething[propertyName] == "function") {
-                    pathAccumulator[propertyName] = ImmutablePath.of(anySomething[propertyName], path.concat([propertyName]));
-                } else {
-                    pathAccumulator[propertyName] = ImmutablePath.of(anySomething[propertyName], path.concat([propertyName]));
+            if(something instanceof Immutable.Map || something instanceof Immutable.Record) {
+                const keys = (<Immutable.Map<any, any>><any>something).keySeq().toArray();
+                keys.forEach(key => {
+                    if (typeof anySomething[propertyName] == "function") {
+                        pathAccumulator[propertyName] = ImmutablePath.of(anySomething[propertyName], path.concat([propertyName]));
+                    } else {
+                        pathAccumulator[propertyName] = ImmutablePath.of(anySomething[propertyName], path.concat([propertyName]));
+                    }
+                });
+            } else {
+                for (var propertyName in anySomething) {
+                    if (typeof anySomething[propertyName] == "function") {
+                        pathAccumulator[propertyName] = ImmutablePath.of(anySomething[propertyName], path.concat([propertyName]));
+                    } else {
+                        pathAccumulator[propertyName] = ImmutablePath.of(anySomething[propertyName], path.concat([propertyName]));
+                    }
                 }
             }
+
+
 
             return <any>pathAccumulator;
         }
 
     }
 
-    export function path(somethingPath: any): string[] {
+    export function path(somethingPath: any): any[] {
         return (<PathAccumulator>somethingPath).___path;
     }
 
@@ -41,39 +57,39 @@ namespace ImmutablePath {
 
 
 
-
-namespace test {
-
-    class OtherClass {
-        b: SomeClass;
-        c: number;
-        ee: SomeClass[];
-        constructor(text: string) {
-            this.b = new SomeClass(text);
-            this.c = 1;
-            this.ee = [new SomeClass("ee1"), new SomeClass("ee2")];
-        }
-    }
-
-    class SomeClass {
-        a: string;
-        d: string;
-
-        constructor(a: string) {
-            this.a = a;
-            this.d = undefined;
-        }
-    }
-
-    describe("Immutable Path Suite", function () {
-        it("contains spec with an expectation", function () {
-
-            const I = ImmutablePath;
-            const someObject = new OtherClass("123");
-
-            const objectPath = I.path(I.of(someObject).ee[1].d);
-            console.log("path: " + JSON.stringify(objectPath));
-
-        });
-    });
-}
+//
+//namespace test {
+//
+//    class OtherClass {
+//        b: SomeClass;
+//        c: number;
+//        ee: SomeClass[];
+//        constructor(text: string) {
+//            this.b = new SomeClass(text);
+//            this.c = 1;
+//            this.ee = [new SomeClass("ee1"), new SomeClass("ee2")];
+//        }
+//    }
+//
+//    class SomeClass {
+//        a: string;
+//        d: string;
+//
+//        constructor(a: string) {
+//            this.a = a;
+//            this.d = undefined;
+//        }
+//    }
+//
+//    describe("Immutable Path Suite", function () {
+//        it("contains spec with an expectation", function () {
+//
+//            const I = ImmutablePath;
+//            const someObject = new OtherClass("123");
+//
+//            const objectPath = I.path(I.of(someObject).ee[1].d);
+//            console.log("path: " + JSON.stringify(objectPath));
+//
+//        });
+//    });
+//}
