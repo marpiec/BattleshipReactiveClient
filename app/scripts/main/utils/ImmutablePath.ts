@@ -67,13 +67,13 @@ namespace test {
 
     describe("Immutable Path Suite", function () {
         it("contains spec with an expectation", function () {
+            const I = ImmutablePath;
 
             const someObject = new OtherClass("123");
 
             try {
-                const [path, of] = [ImmutablePath.path, ImmutablePath.of];
 
-                const objectPath = path(of(someObject).ee[1]);
+                const objectPath = I.path(I.of(someObject).ee[1].a);
                 console.log("path: " + JSON.stringify(objectPath));
             } catch (e) {
                 console.log(e);
