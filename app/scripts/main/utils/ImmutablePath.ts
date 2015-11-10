@@ -1,14 +1,14 @@
-class PathAccumulator {
-    ___path: string[];
-    [name: string]: any;
-    constructor(path: string[]) {
-        this.___path = path;
+namespace ImmutablePath {
+
+    export class PathAccumulator {
+        ___path: string[];
+        [name: string]: any;
+        constructor(path: string[]) {
+            this.___path = path;
+        }
     }
-}
 
-class ImmutablePath {
-
-    static of<T>(something: T, path: string[] = []):T {
+    export function of<T>(something: T, path: string[] = []):T {
 
         var pathAccumulator = new PathAccumulator(path);
 
@@ -32,7 +32,7 @@ class ImmutablePath {
 
     }
 
-    static path(somethingPath: any): string[] {
+    export function path(somethingPath: any): string[] {
         return (<PathAccumulator>somethingPath).___path;
     }
 
@@ -68,17 +68,11 @@ namespace test {
     describe("Immutable Path Suite", function () {
         it("contains spec with an expectation", function () {
 
+            const I = ImmutablePath;
             const someObject = new OtherClass("123");
 
-            try {
-                const [path, of] = [ImmutablePath.path, ImmutablePath.of];
-
-                const objectPath = path(of(someObject).ee[1]);
-                console.log("path: " + JSON.stringify(objectPath));
-            } catch (e) {
-                console.log(e);
-            }
-            console.log("Finish");
+            const objectPath = I.path(I.of(someObject).ee[1].d);
+            console.log("path: " + JSON.stringify(objectPath));
 
         });
     });
