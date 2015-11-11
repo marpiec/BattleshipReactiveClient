@@ -5,26 +5,58 @@ namespace game {
 
     import I = ImmutablePath;
 
+
+
+    export abstract class PhaseHandler {
+
+        abstract getPhase(): GamePhase;
+
+        toggleCell(state:GameState, x:number, y:number):GameState {
+            throw "Method not allowed in this phase";
+        }
+        submitBoard(state:GameState):GameState {
+            throw "Method not allowed in this phase";
+        }
+    }
+
+
+    export class InitPlayerBoardHandler extends PhaseHandler {
+
+        getPhase() {
+            return GamePhase.initPlayerBoard;
+        }
+
+        toggleCell(state: game.GameState, x: number, y: number): game.GameState {
+            const currentCellState:CellState = state.playerBoard.get(y).get(x);
+            const newCellState = currentCellState === CellState.empty ? CellState.ship : CellState.empty;
+
+            return state.setIn(I.path(I.of(state).playerBoard).concat([y, x]), newCellState);
+        }
+
+        submitBoard(state: game.GameState): game.GameState {
+            return state.setIn(I.path(I.of(state).gamePhase), GamePhase.waitForSecondPlayer);
+        }
+    }
+
+
     export class GameEngine {
 
-        static toggleCell(state:GameState, x:number, y:number):GameState {
-            if (state.gamePhase === GamePhase.initPlayerBoard) {
-                const currentCellState:CellState = state.playerBoard.get(y).get(x);
-                const newCellState = currentCellState === CellState.empty ? CellState.ship : CellState.empty;
+        private static phaseHandlers = GameEngine.initPhaseHandlers(new InitPlayerBoardHandler());
 
-                return state.setIn(I.path(I.of(state).playerBoard).concat([y, x]), newCellState);
-            } else {
-                throw new Error("Unsupported operation in gamePhase " + state.gamePhase);
-            }
+        private static initPhaseHandlers(...handlers: PhaseHandler[]): {[phase: number]: PhaseHandler} {
+            const phaseHandlers:{[phase: number]: PhaseHandler} = {};
+
+            handlers.forEach((handler:PhaseHandler) => {
+                phaseHandlers[handler.getPhase()] = handler;
+            });
+
+            return phaseHandlers;
         }
 
-        static submitBoard(state:GameState):GameState {
-            if (state.gamePhase === GamePhase.initPlayerBoard) {
-                return state.setIn(I.path(I.of(state).gamePhase), GamePhase.waitForSecondPlayer);
-            } else {
-                throw new Error("Unsupported operation in gamePhase " + state.gamePhase);
-            }
+        static getPhaseHandler(state:GameState): PhaseHandler {
+            return GameEngine.phaseHandlers[state.gamePhase];
         }
+
 
 
     }

@@ -33,10 +33,10 @@ namespace gameView {
 
         gameInterface: GameInterface = {
             toggleCell: (x: number, y: number) => {
-                this.setState(new GamePageState(GameEngine.toggleCell(this.state.gameState, x, y)));
+                this.setState(new GamePageState(GameEngine.getPhaseHandler(this.state.gameState).toggleCell(this.state.gameState, x, y)));
             },
             submitBoard: () => {
-                this.setState(new GamePageState(GameEngine.submitBoard(this.state.gameState)));
+                this.setState(new GamePageState(GameEngine.getPhaseHandler(this.state.gameState).submitBoard(this.state.gameState)));
             }
         };
 
