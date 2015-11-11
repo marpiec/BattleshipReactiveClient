@@ -23,16 +23,16 @@ namespace ImmutablePath {
             const anySomething: any = something;
 
             if(something instanceof Immutable.Map || something instanceof Immutable.Record) {
-                const keys = (<Immutable.Map<any, any>><any>something).keySeq().toArray();
+                const keys = (<Immutable.Map<any, any>>anySomething).keySeq().toArray();
                 keys.forEach(key => {
-                    if (typeof anySomething[propertyName] == "function") {
-                        pathAccumulator[propertyName] = ImmutablePath.of(anySomething[propertyName], path.concat([propertyName]));
+                    if (typeof anySomething[key] == "function") {
+                        pathAccumulator[key] = ImmutablePath.of(anySomething[key], path.concat([key]));
                     } else {
-                        pathAccumulator[propertyName] = ImmutablePath.of(anySomething[propertyName], path.concat([propertyName]));
+                        pathAccumulator[key] = ImmutablePath.of(anySomething[key], path.concat([key]));
                     }
                 });
             } else {
-                for (var propertyName in anySomething) {
+                for (let propertyName in anySomething) {
                     if (typeof anySomething[propertyName] == "function") {
                         pathAccumulator[propertyName] = ImmutablePath.of(anySomething[propertyName], path.concat([propertyName]));
                     } else {
