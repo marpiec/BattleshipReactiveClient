@@ -56,6 +56,7 @@ class EventBus implements EventBusInterface {
 
     private subscriptionsCounter = 0;
     private subscriptions: string[] = []; //subscriptionId => methodName
+    private subscriptionGroup: {[group: number]: number[]} = {};
 
     private callbackQueue: CallbackExecution[] = []; // callback, arguments
 
@@ -123,107 +124,117 @@ class EventBus implements EventBusInterface {
         return subscriptionId;
     }
 
-    subscribe(callbacks: any): void {
+    subscribe(callbacks: any): number {
         var methods: string[] = this.event_bus_priv_getMethods(callbacks);
+
+        var subscriptionGroup: number[] = [];
 
         for (let p = 0; p < methods.length; p++) {
             const methodName = methods[p];
             if (EventBus.innerMethods.indexOf(methodName) < 0) {
-                this.on((<any>this)[methodName], (<any>callbacks)[methodName]);
+                subscriptionGroup.push(this.on((<any>this)[methodName], (<any>callbacks)[methodName]));
             }
-
-
         }
 
-
+        const subscriptionGroupId = this.subscriptionsCounter++;
+        this.subscriptionGroup[subscriptionGroupId] = subscriptionGroup;
+        return subscriptionGroupId;
     }
 
     unsubscribe(subscriptionId: number): void {
-        const methodName = this.subscriptions[subscriptionId];
-        const methodCallbacks = this.callbacks[methodName];
+        if(this.subscriptionGroup[subscriptionId]) {
 
-        let callbackIndex: number = -1;
-        for (let p = 0; p < methodCallbacks.length; p++) {
-            if (methodCallbacks[p].subscriptionId === subscriptionId) {
-                callbackIndex = p;
-                break;
+            this.subscriptionGroup[subscriptionId].forEach(subscriptionId => {
+               this.unsubscribe(subscriptionId);
+            });
+
+            delete this.subscriptionGroup[subscriptionId];
+        } else {
+            const methodName = this.subscriptions[subscriptionId];
+            const methodCallbacks = this.callbacks[methodName];
+
+            let callbackIndex: number = -1;
+            for (let p = 0; p < methodCallbacks.length; p++) {
+                if (methodCallbacks[p].subscriptionId === subscriptionId) {
+                    callbackIndex = p;
+                    break;
+                }
             }
+
+            methodCallbacks.splice(callbackIndex, 1);
         }
-
-        methodCallbacks.splice(callbackIndex, 1);
-
     }
 
 }
 
-//
-//namespace test {
-//
-//    class TestEventBus extends EventBus {
-//        eventHappened(value: number) {
-//        }
-//
-//
-//    }
-//
-//    describe("A suite", function () {
-//        it("contains spec with an expectation", function () {
-//
-//            class A {
-//
-//                callbacks = 0;
-//
-//                constructor() {
-//
-//                    const outer = this;
-//
-//
-//                    const testEventBus = new TestEventBus().init<TestEventBus>();
-//
-//
-//                    class TestEventBusCallbacks extends TestEventBus {
-//                        eventHappened(value: number) {
-//                            outer.callbacks += value;
-//                        }
-//                    }
-//                    testEventBus.subscribe(new TestEventBusCallbacks());
-//
-//                    class SubscriptionA extends TestEventBus {
-//                        eventHappened(value: number) {
-//                            outer.callbacks += value + 1;
-//                        }
-//                    }
-//                    testEventBus.subscribe(new SubscriptionA());
-//
-//
-//                    const subscriptionA = testEventBus.on(testEventBus.eventHappened, (value: number) => {
-//                        //callbacks += value;
-//                    });
-//
-//                    const subscriptionB = testEventBus.on(testEventBus.eventHappened, (value: number) => {
-//                        //callbacks += value + 1;
-//                    });
-//
-//                    testEventBus.eventHappened(5);
-//                    expect(this.callbacks).toBe(11);
-//                    testEventBus.eventHappened(5);
-//                    expect(this.callbacks).toBe(22);
-//
-//                    testEventBus.unsubscribe(subscriptionA);
-//                    testEventBus.eventHappened(5);
-//                    expect(this.callbacks).toBe(28);
-//
-//                    testEventBus.unsubscribe(subscriptionB);
-//
-//                    testEventBus.eventHappened(5);
-//                    expect(this.callbacks).toBe(28);
-//                }
-//
-//            }
-//
-//
-//            new A();
-//
-//        });
-//    });
-//}
+
+namespace test {
+
+    class TestEventBus extends EventBus {
+        eventHappened(value: number) {
+        }
+
+
+    }
+
+    describe("A suite", function () {
+        it("contains spec with an expectation", function () {
+
+            class A {
+
+                callbacks = 0;
+
+                constructor() {
+
+                    const outer = this;
+
+
+                    const testEventBus = new TestEventBus().init<TestEventBus>();
+
+
+                    class TestEventBusCallbacks extends TestEventBus {
+                        eventHappened(value: number) {
+                            outer.callbacks += value;
+                        }
+                    }
+                    const subscriptionA = testEventBus.subscribe(new TestEventBusCallbacks());
+
+                    class SubscriptionA extends TestEventBus {
+                        eventHappened(value: number) {
+                            outer.callbacks += value + 1;
+                        }
+                    }
+                    const subscriptionB = testEventBus.subscribe(new SubscriptionA());
+
+
+                    //const subscriptionA = testEventBus.on(testEventBus.eventHappened, (value: number) => {
+                    //    //callbacks += value;
+                    //});
+                    //
+                    //const subscriptionB = testEventBus.on(testEventBus.eventHappened, (value: number) => {
+                    //    //callbacks += value + 1;
+                    //});
+
+                    testEventBus.eventHappened(5);
+                    expect(this.callbacks).toBe(11);
+                    testEventBus.eventHappened(5);
+                    expect(this.callbacks).toBe(22);
+
+                    testEventBus.unsubscribe(subscriptionA);
+                    testEventBus.eventHappened(5);
+                    expect(this.callbacks).toBe(28);
+
+                    testEventBus.unsubscribe(subscriptionB);
+
+                    testEventBus.eventHappened(5);
+                    expect(this.callbacks).toBe(28);
+                }
+
+            }
+
+
+            new A();
+
+        });
+    });
+}
