@@ -35,6 +35,16 @@ namespace game {
                 opponentBoard:opponentBoard});
         }
 
+        get playerBoardActive() {
+            return this.gamePhase === GamePhase.initPlayerBoard;
+        }
+
+        get opponentBoardActive() {
+            return this.gamePhase === GamePhase.playerTurn;
+        }
+
+
+
         setIn(keyPath: Array<any>, value: any): GameState;
         setIn(keyPath: Immutable.Iterable<any, any>, value: any): GameState;
         setIn(keyPath: any, value: any): GameState {

@@ -25,8 +25,9 @@ namespace gameView {
     }
 
     export class GameBoardViewProps {
-        board:Board;
-        gameInterface:GameInterface;
+        active: boolean;
+        board: Board;
+        gameInterface: GameInterface;
     }
 
     export class GameBoardViewState {
@@ -39,23 +40,27 @@ namespace gameView {
 
 
     export class GameBoardView extends React.Component<GameBoardViewProps, GameBoardViewState> {
-        constructor(props:GameBoardViewProps) {
+        constructor(props: GameBoardViewProps) {
             super(props);
             this.state = new GameBoardViewState(None);
         }
 
-        cellClicked(x:number, y:number) {
-
-            this.props.gameInterface.toggleCell(x, y);
-            //this.setState(new TasksViewState(this.state.count + 1));
+        cellClicked(x: number, y: number) {
+            if (this.props.active) {
+                this.props.gameInterface.toggleCell(x, y);
+            }
         }
 
-        cellMouseDown(x:number, y:number) {
-            this.setState(new GameBoardViewState(Some(new BoardXY(x, y))));
+        cellMouseDown(x: number, y: number) {
+            if (this.props.active) {
+                this.setState(new GameBoardViewState(Some(new BoardXY(x, y))));
+            }
         }
 
         cellMouseUp() {
-            this.setState(new GameBoardViewState(None));
+            if (this.props.active) {
+                this.setState(new GameBoardViewState(None));
+            }
         }
 
         cellIsPressed(x: number, y: number) {
@@ -64,22 +69,23 @@ namespace gameView {
         }
 
         render() {
+            const boardClasses = classNames("gameBoard", {active: this.props.active});
             return (
-                <div className="gameBoard">
+                <div className={boardClasses}>
                     {this.renderRows(this.props.board)}
                 </div>
             );
         }
 
-        renderRows(board:Board) {
-            return board.map((cells:Immutable.List<CellState>, y:number) => (
+        renderRows(board: Board) {
+            return board.map((cells: Immutable.List<CellState>, y: number) => (
                 <div className="boardRow" key={y}>
                     {this.renderCells(y, cells)}
                 </div>
             ));
         }
 
-        cellToClassName(cell:CellState): string {
+        cellToClassName(cell: CellState): string {
             switch (cell) {
                 case CellState.empty:
                     return "empty";
@@ -95,9 +101,10 @@ namespace gameView {
         }
 
 
-        renderCells(y:number, cells:Immutable.List<CellState>) {
-            return cells.map((cell:CellState, x:number) => {
-                const cellClasses:string = classNames("boardCell", this.cellToClassName(cell), {pressed: this.cellIsPressed(x, y)});
+        renderCells(y: number, cells: Immutable.List<CellState>) {
+            return cells.map((cell: CellState, x: number) => {
+                const cellClasses: string = classNames("boardCell", this.cellToClassName(cell),
+                    {pressed: this.cellIsPressed(x, y)});
                 return (
                     <div className={cellClasses} key={x}
                          onClick={this.cellClicked.bind(this, x, y)}

@@ -23,21 +23,17 @@
       border: solid $gridBorderColor;
       border-width: 1px 0 0 1px;
       display: inline-block;
-      cursor: pointer;
+      cursor: default;
 
-      &:hover {
-        opacity: 0.5;
-      }
+
+
+
 
       &.empty {
         background-color: $cellEmptyColor;
       }
 
       &.ship {
-        background-color: $cellShipColor;
-      }
-
-      &.pressed {
         background-color: $cellShipColor;
       }
 
@@ -51,4 +47,23 @@
     }
 
   }
+
+  &.active {
+
+
+    .boardRow {
+      .boardCell {
+        cursor: pointer;
+        &:hover {
+          opacity: 0.5;
+        }
+
+        &.pressed {
+          background-color: $cellShipColor;
+        }
+      }
+    }
+  }
+
+
 }

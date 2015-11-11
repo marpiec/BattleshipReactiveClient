@@ -22,10 +22,6 @@ namespace gameView {
             this.gameState = gameState;
         }
 
-        static changeGameState(other: GamePageState, gameState: GameState) {
-            return new GamePageState(gameState);
-        }
-
     }
 
     export interface GameInterface {
@@ -37,10 +33,10 @@ namespace gameView {
 
         gameInterface: GameInterface = {
             toggleCell: (x: number, y: number) => {
-                this.setState(GamePageState.changeGameState(this.state, GameEngine.toggleCell(this.state.gameState, x, y)));
+                this.setState(new GamePageState(GameEngine.toggleCell(this.state.gameState, x, y)));
             },
             submitBoard: () => {
-                this.setState(GamePageState.changeGameState(this.state, GameEngine.submitBoard(this.state.gameState)));
+                this.setState(new GamePageState(GameEngine.submitBoard(this.state.gameState)));
             }
         };
 
@@ -55,8 +51,8 @@ namespace gameView {
                     <p>Game page</p>
                     <p>Game Phase: {this.state.gameState.gamePhase}</p>
                     <p>Game Id: {this.props.params.gameId}</p>
-                    <GameBoardView board={this.state.gameState.playerBoard} gameInterface={this.gameInterface} />
-                    <GameBoardView board={this.state.gameState.opponentBoard} gameInterface={this.gameInterface} />
+                    <GameBoardView board={this.state.gameState.playerBoard} gameInterface={this.gameInterface} active={this.state.gameState.playerBoardActive} />
+                    <GameBoardView board={this.state.gameState.opponentBoard} gameInterface={this.gameInterface} active={this.state.gameState.opponentBoardActive} />
                 </div>
             )
         }
