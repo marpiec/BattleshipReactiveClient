@@ -1,7 +1,28 @@
+/// <reference path="../../utils/Optional.ts"/>
+
 namespace gameView {
 
     import Board = game.Board;
     import CellState = game.CellState;
+
+    export class BoardXY {
+        private _x: number;
+        private _y: number;
+
+        constructor(x: number, y: number) {
+            this._x = x;
+            this._y = y;
+        }
+
+
+        get x(): number {
+            return this._x;
+        }
+
+        get y(): number {
+            return this._y;
+        }
+    }
 
     export class GameBoardViewProps {
         board:Board;
@@ -9,19 +30,37 @@ namespace gameView {
     }
 
     export class GameBoardViewState {
+        cellDown: Optional<BoardXY>;
+
+        constructor(cellDown: Optional<BoardXY>) {
+            this.cellDown = cellDown;
+        }
     }
 
 
     export class GameBoardView extends React.Component<GameBoardViewProps, GameBoardViewState> {
         constructor(props:GameBoardViewProps) {
             super(props);
-            this.state = new GameBoardViewState();
+            this.state = new GameBoardViewState(None);
         }
 
         cellClicked(x:number, y:number) {
 
             this.props.gameInterface.toggleCell(x, y);
             //this.setState(new TasksViewState(this.state.count + 1));
+        }
+
+        cellMouseDown(x:number, y:number) {
+            this.setState(new GameBoardViewState(Some(new BoardXY(x, y))));
+        }
+
+        cellMouseUp() {
+            this.setState(new GameBoardViewState(None));
+        }
+
+        cellIsPressed(x: number, y: number) {
+            const cellDown = this.state.cellDown;
+            return cellDown.isPresent && cellDown.value.x === x && cellDown.value.y === y;
         }
 
         render() {
@@ -58,10 +97,12 @@ namespace gameView {
 
         renderCells(y:number, cells:Immutable.List<CellState>) {
             return cells.map((cell:CellState, x:number) => {
-                const cellClasses:string = classNames("boardCell", this.cellToClassName(cell));
+                const cellClasses:string = classNames("boardCell", this.cellToClassName(cell), {pressed: this.cellIsPressed(x, y)});
                 return (
                     <div className={cellClasses} key={x}
-                         onClick={this.cellClicked.bind(this, x, y)}>
+                         onClick={this.cellClicked.bind(this, x, y)}
+                         onMouseDown={this.cellMouseDown.bind(this, x, y)}
+                         onMouseOut={this.cellMouseUp.bind(this)}>
                     </div>
                 )
             });

@@ -1,6 +1,6 @@
 /// <reference path="./GamePage.tsx"/>
 /// <reference path="./MainPage.tsx"/>
-/// <reference path="./NotFoundPage.tsx"/>
+    /// <reference path="./NotFoundPage.tsx"/>
 
 namespace main {
 
