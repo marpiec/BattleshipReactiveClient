@@ -52,23 +52,12 @@ namespace LensSpec {
 
             const someMap = Immutable.Map<string, string>().set("hello", "world");
 
-
-
             const someRecord = new SomeRecord().init(123, 456);
 
-            console.log("Phase 0 " + JSON.stringify(someMap));
-            console.log("Phase 0 " + (<any>someMap).hello+" "+someRecord.z);
-
-            console.log("Phase I");
-            console.log("someRecord " + JSON.stringify(someRecord)+" "+Immutable.Map.isMap(someRecord));
-            console.log(Lens.of(someRecord).z);
-
-            console.log("Phase II");
             const newValue: SomeRecord = Lens.setIn(Lens.of(someRecord).z, 111);
 
-            console.log("---- " + newValue+" "+ newValue.get("z")+ " "+newValue.z);
-            expect(newValue.get("z")).toBe(111);
-            expect(newValue.get("y")).toBe(456);
+            expect(newValue.z).toBe(111);
+            expect(newValue.y).toBe(456);
 
         });
 

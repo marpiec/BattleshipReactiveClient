@@ -27,6 +27,7 @@ namespace game {
         }
 
         toggleCell(state: game.GameState, x: number, y: number): game.GameState {
+            console.log(" playerBoard "+state.playerBoard);
             const currentCellState:CellState = state.playerBoard.get(y).get(x);
             const newCellState = currentCellState === CellState.empty ? CellState.ship : CellState.empty;
 

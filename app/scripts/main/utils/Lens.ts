@@ -12,7 +12,7 @@ module Lens {
 
     export function of<T>(something: T, path: string[] = [], root: any = null):T {
 
-        console.log("of1 " + path+" "+ JSON.stringify(something)+" "+JSON.stringify(root));
+        //console.log("of1 " + path+" "+ JSON.stringify(something)+" "+JSON.stringify(root));
 
         var pathAccumulator = new PathAccumulator(root?root:something, path);
 
@@ -25,7 +25,7 @@ module Lens {
             const anySomething: any = something;
 
             if(something instanceof Immutable.Map || something instanceof Immutable.Record) {
-                console.log("of - ImmutableMap");
+                //console.log("of - ImmutableMap");
                 const somethingMap = (<Immutable.Map<any, any>>anySomething);
                 const keys = somethingMap.keySeq().toArray();
                 keys.forEach(key => {
@@ -46,7 +46,7 @@ module Lens {
             }
 
 
-            console.log("of returns: " + JSON.stringify(pathAccumulator));
+            //console.log("of returns: " + JSON.stringify(pathAccumulator));
             return <any>pathAccumulator;
         }
 
@@ -63,10 +63,10 @@ module Lens {
             const pathAccumulator = <PathAccumulator><any>container;
 
 
-            console.log("Is map " + Immutable.Map.isMap(pathAccumulator.___rootElement));
+            //console.log("Is map " + Immutable.Map.isMap(pathAccumulator.___rootElement));
             //if(pathAccumulator.___rootElement instanceof Immutable.Map) {
-            console.log("----- setting in " + pathAccumulator.___rootElement + " " + pathAccumulator.___path+" "+value);
-            console.log("----- got "  + (<Immutable.Map<any, any>>pathAccumulator.___rootElement).setIn(pathAccumulator.___path, value));
+            //console.log("----- setting in " + pathAccumulator.___rootElement + " " + pathAccumulator.___path+" "+value);
+            //console.log("----- got "  + (<Immutable.Map<any, any>>pathAccumulator.___rootElement).setIn(pathAccumulator.___path, value));
                 return (<Immutable.Map<any, any>>pathAccumulator.___rootElement).setIn(pathAccumulator.___path, value);
             //} else if(pathAccumulator.___rootElement instanceof Immutable.List) {
             //    throw new Error("List not yet supported");
