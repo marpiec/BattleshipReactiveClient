@@ -1,9 +1,9 @@
 /// <reference path="GameState.ts"/>
-/// <reference path="../../utils/ImmutablePath.ts"/>
+/// <reference path="../../utils/Lens.ts"/>
 
 namespace game {
 
-    import I = ImmutablePath;
+    import I = Lens;
 
 
 

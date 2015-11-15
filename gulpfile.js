@@ -1,13 +1,14 @@
 var gulp = require('gulp');
 var bower = require('gulp-bower');
 var ts = require('gulp-typescript');
+var typescript = require('typescript');
 var merge = require('merge2');
 var concat = require('gulp-concat');
 var browserSync = require('browser-sync').create();
 var sass = require('gulp-sass');
-var jasmine = require('gulp-jasmine');
 var clean = require('gulp-clean');
 var sourcemaps = require('gulp-sourcemaps');
+var karmaServer = require('karma').Server;
 
 
 var testTmpDir = function(path) {return './testTmp/' + path};
@@ -45,7 +46,7 @@ gulp.task('scripts-libs', ['bower'], function() {
 
 gulp.task('scripts', ['bower'], function () {
 
-    var tsResult = gulp.src([appDir('scripts/main/**/*.ts*'), appDir('scripts/test/**/*.ts'), appDir('scripts/libs.d/**/*.d.ts')])
+    var tsResult = gulp.src([appDir('scripts/main/**/*.ts*'), appDir('scripts/main/libs.d/**/*.d.ts')])
         .pipe(ts({
             'module': 'amd',
             'noImplicitAny': true,
@@ -59,16 +60,45 @@ gulp.task('scripts', ['bower'], function () {
             gulpConcat: true,
             gulpSourcemaps: true,
             noExternalResolve: true,
-            typescript: require('typescript')
+            typescript: typescript
         }));
 
 
     return merge([
         tsResult.dts.pipe(concat('main.d.ts')).pipe(gulp.dest(releaseDir('scripts'))),
-        tsResult.js.pipe(concat('main.js')).pipe(gulp.dest(releaseDir('scripts'))),
+        tsResult.js.pipe(concat('main.js')).pipe(gulp.dest(releaseDir('scripts')))
+    ]);
+});
+
+
+gulp.task('test-scripts', ['scripts'], function () {
+
+    var tsResult = gulp.src([appDir('scripts/test/**/*.ts'), appDir('scripts/test/libs.d/**/*.d.ts'),
+                             appDir('scripts/main/utils/*.ts*'), appDir('scripts/main/libs.d/**/*.d.ts')],
+                            {base: appDir('scripts')})
+        .pipe(ts({
+            'module': 'amd',
+            'noImplicitAny': true,
+            'removeComments': true,
+            'preserveConstEnums': true,
+            'sourceMap': true,
+            'declaration': true,
+            'target': 'ES5',
+            'jsx': 'React',
+            sortOutput: true,
+            gulpConcat: true,
+            gulpSourcemaps: true,
+            noExternalResolve: true,
+            typescript: typescript
+        }));
+
+
+    return merge([
+        tsResult.dts.pipe(gulp.dest(testTmpDir('scripts'))),
         tsResult.js.pipe(gulp.dest(testTmpDir('scripts')))
     ]);
 });
+
 
 
 gulp.task('styles', ['bower'], function () {
@@ -86,10 +116,11 @@ gulp.task('fonts', function() {
 });
 
 
-gulp.task('test', ['scripts', 'scripts-libs'], function () {
-    return gulp.src([testTmpDir('scripts/utils/EventBus.js'), testTmpDir('scripts/utils/ImmutablePath.js')])
-        .pipe(jasmine());
-    //)
+gulp.task('test', ['test-scripts'], function (done) {
+    return new karmaServer({
+        configFile: __dirname + '/karma.conf.js',
+        singleRun: true
+    }, done).start();
 });
 
 
