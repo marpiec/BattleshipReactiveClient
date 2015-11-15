@@ -12,6 +12,8 @@ module Lens {
 
     export function of<T>(something: T, path: string[] = []):T {
 
+        console.log("of " + JSON.stringify(something));
+
         var pathAccumulator = new PathAccumulator(path, <any>something);
 
 
@@ -23,6 +25,7 @@ module Lens {
             const anySomething: any = something;
 
             if(something instanceof Immutable.Map || something instanceof Immutable.Record) {
+                console.log("of - ImmutableMap");
                 const keys = (<Immutable.Map<any, any>>anySomething).keySeq().toArray();
                 keys.forEach(key => {
                     if (typeof anySomething[key] == "function") {
@@ -42,7 +45,7 @@ module Lens {
             }
 
 
-
+            console.log("of returns: " + JSON.stringify(pathAccumulator));
             return <any>pathAccumulator;
         }
 
@@ -61,12 +64,14 @@ module Lens {
 
             if(pathAccumulator.___rootElement instanceof Immutable.Map) {
                 return (<Immutable.Map<any, any>>pathAccumulator.___rootElement).setIn(pathAccumulator.___path, value);
+            } else if(pathAccumulator.___rootElement instanceof Immutable.List) {
+                throw new Error("List not yet supported");
             } else {
-                throw new Error("Only Immutable.Map is supported");
+                throw new Error("Only Immutable.Map is supported, not " + (typeof pathAccumulator.___rootElement)+" "+ JSON.stringify(pathAccumulator));
             }
 
         } else {
-            throw new Error("Container must be PathAccumulator");
+            throw new Error("Container must be PathAccumulator, not " + (typeof container));
         }
 
     }

@@ -21,6 +21,20 @@ namespace LensSpec {
         }
     }
 
+
+    class SomeRecord extends Immutable.Record({z: undefined, y: undefined}) {
+        z: number;
+        y: number;
+
+        init(z: number, y: number): SomeRecord {
+            return <SomeRecord><any>this.merge({
+                z:z,
+                y:y});
+        }
+
+    }
+
+
     describe("Immutable Path Suite", function () {
         it("contains spec with an expectation", function () {
 
@@ -36,11 +50,16 @@ namespace LensSpec {
 
         it("can mutate Immutable Map", function () {
 
-            const someObject = new OtherClass("123");
+            const someRecord = new SomeRecord().init(123, 456);
 
-            const newValue:OtherClass = Lens.setIn(Lens.of(someObject).c, 123);
+            console.log("Phase I");
+            console.log(Lens.of(someRecord).z);
 
-            expect(newValue.c).toBe(123);
+            console.log("Phase II");
+            const newValue: SomeRecord = Lens.setIn(Lens.of(someRecord).z, 111);
+
+            expect(newValue.z).toBe(111);
+            expect(newValue.y).toBe(456);
 
         });
 

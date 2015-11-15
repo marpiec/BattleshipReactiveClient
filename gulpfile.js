@@ -71,7 +71,7 @@ gulp.task('scripts', ['bower'], function () {
 });
 
 
-gulp.task('test-scripts', ['scripts'], function () {
+gulp.task('test-scripts', function () {
 
     var tsResult = gulp.src([appDir('scripts/test/**/*.ts'), appDir('scripts/test/libs.d/**/*.d.ts'),
                              appDir('scripts/main/utils/*.ts*'), appDir('scripts/main/libs.d/**/*.d.ts')],
