@@ -10,14 +10,11 @@ module Lens {
         }
     }
 
-    export class MapPathAccumulator {
-        ___rootElement: any;
-        ___path: any[];
+    export class MapPathAccumulator extends PathAccumulator {
         ___currentElement: Immutable.Map<any, any>;
         [name: string]: any;
         constructor(rootElement: any, currentElement: Immutable.Map<any, any>, path: string[]) {
-            this.___rootElement = rootElement;
-            this.___path = path;
+            super(rootElement, path);
             this.___currentElement = currentElement;
         }
         get(index: number): any {
@@ -26,14 +23,11 @@ module Lens {
     }
 
 
-    export class ListPathAccumulator {
-        ___rootElement: any;
+    export class ListPathAccumulator extends PathAccumulator {
         ___currentElement: Immutable.List<any>;
-        ___path: any[];
         constructor(rootElement: any, currentElement: Immutable.List<any>, path: string[]) {
-            this.___rootElement = rootElement;
+            super(rootElement, path);
             this.___currentElement = currentElement;
-            this.___path = path;
         }
 
         get(index: number): any {
@@ -91,21 +85,8 @@ module Lens {
     export function setIn<T>(container: T, value: T): any {
 
         if(container instanceof PathAccumulator) {
-
             const pathAccumulator = <PathAccumulator><any>container;
-
-
-            //console.log("Is map " + Immutable.Map.isMap(pathAccumulator.___rootElement));
-            //if(pathAccumulator.___rootElement instanceof Immutable.Map) {
-            //console.log("----- setting in " + pathAccumulator.___rootElement + " " + pathAccumulator.___path+" "+value);
-            //console.log("----- got "  + (<Immutable.Map<any, any>>pathAccumulator.___rootElement).setIn(pathAccumulator.___path, value));
-                return (<Immutable.Map<any, any>>pathAccumulator.___rootElement).setIn(pathAccumulator.___path, value);
-            //} else if(pathAccumulator.___rootElement instanceof Immutable.List) {
-            //    throw new Error("List not yet supported");
-            //} else {
-            //    throw new Error("Only Immutable.Map is supported, not " + (typeof pathAccumulator.___rootElement)+" "+ JSON.stringify(pathAccumulator.___rootElement));
-            //}
-
+            return pathAccumulator.___rootElement.setIn(pathAccumulator.___path, value);
         } else {
             throw new Error("Container must be PathAccumulator, not " + (typeof container));
         }
