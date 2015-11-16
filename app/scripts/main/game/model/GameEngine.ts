@@ -3,10 +3,6 @@
 
 namespace game {
 
-    import I = Lens;
-
-
-
     export abstract class PhaseHandler {
 
         abstract getPhase(): GamePhase;
@@ -31,11 +27,11 @@ namespace game {
             const currentCellState:CellState = state.playerBoard.get(y).get(x);
             const newCellState = currentCellState === CellState.empty ? CellState.ship : CellState.empty;
 
-            return state.setIn(I.path(I.of(state).playerBoard).concat([y, x]), newCellState);
+            return Lens.setIn(Lens.of(state).playerBoard.get(y).get(x), newCellState);
         }
 
         submitBoard(state: game.GameState): game.GameState {
-            return state.setIn(I.path(I.of(state).gamePhase), GamePhase.waitForSecondPlayer);
+            return Lens.setIn(Lens.of(state).gamePhase, GamePhase.waitForSecondPlayer);
         }
     }
 

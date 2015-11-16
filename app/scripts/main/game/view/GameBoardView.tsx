@@ -2,7 +2,6 @@
 
 namespace gameView {
 
-    import Board = game.Board;
     import CellState = game.CellState;
 
     export class BoardXY {
@@ -26,7 +25,7 @@ namespace gameView {
 
     export class GameBoardViewProps {
         active: boolean;
-        board: Board;
+        board: Immutable.List<Immutable.List<CellState>>;
         gameInterface: GameInterface;
     }
 
@@ -77,7 +76,7 @@ namespace gameView {
             );
         }
 
-        renderRows(board: Board) {
+        renderRows(board: Immutable.List<Immutable.List<CellState>>) {
             return board.map((cells: Immutable.List<CellState>, y: number) => (
                 <div className="boardRow" key={y}>
                     {this.renderCells(y, cells)}

@@ -5,10 +5,8 @@ namespace game {
 
     export const enum GamePhase {initPlayerBoard, waitForSecondPlayer, playerTurn, otherPlayerTurn, gameEnded}
 
-    export type Board = Immutable.List<Immutable.List<CellState>>;
-
     const EMPTY_BOARD = createEmptyBoard();
-    function createEmptyBoard():Board {
+    function createEmptyBoard():Immutable.List<Immutable.List<CellState>> {
         return Immutable.Range(0, GAME_BOARD_SIZE).map(y =>
             Immutable.Range(0, GAME_BOARD_SIZE).map(x =>
                 CellState.empty).toList()
@@ -23,12 +21,12 @@ namespace game {
         opponentBoard:undefined}) {
 
         gamePhase: GamePhase;
-        playerBoard: Board;
-        opponentBoard: Board;
+        playerBoard: Immutable.List<Immutable.List<CellState>>;
+        opponentBoard: Immutable.List<Immutable.List<CellState>>;
 
         static initial = new GameState().init(GamePhase.initPlayerBoard, EMPTY_BOARD, EMPTY_BOARD);
 
-        init(gamePhase: GamePhase, playerBoard: Board, opponentBoard: Board): GameState {
+        init(gamePhase: GamePhase, playerBoard: Immutable.List<Immutable.List<CellState>>, opponentBoard: Immutable.List<Immutable.List<CellState>>): GameState {
             return <GameState><any>this.merge({
                 gamePhase:gamePhase,
                 playerBoard:playerBoard,
