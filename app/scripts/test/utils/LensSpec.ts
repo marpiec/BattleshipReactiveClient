@@ -50,7 +50,7 @@ namespace LensSpec {
 
         it("can mutate Immutable Map", function () {
 
-            const someMap = Immutable.Map<string, string>(["hello", "world"]);
+            const someMap = Immutable.Map<string, string>([["hello", "world"]]);
 
             const newMap: Immutable.Map<string, string> = Lens.setIn(Lens.of(someMap).get("hello"), "Mars");
 
@@ -73,9 +73,14 @@ namespace LensSpec {
 
             const someList = Immutable.List<string>(["hello", "world"]);
 
+            console.log(Lens.of(someList));
+            console.log(Lens.of(someList).get(1));
+
             const newList: Immutable.List<string> = Lens.setIn(Lens.of(someList).get(1), "Mars");
 
-            expect(newList.toJS()).toBe(["hello", "Mars"]);
+            expect(newList.get(0)).toBe("hello");
+            expect(newList.get(1)).toBe("Mars");
+            expect(newList.size).toBe(2);
 
         });
 
