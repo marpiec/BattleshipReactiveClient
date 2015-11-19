@@ -68,8 +68,8 @@ namespace gameView {
                     <p>Game Id: <span>{this.props.params.gameId}</span></p>
                     <GameBoardView board={this.state.gameState.playerBoard} gameInterface={this.gameInterface} active={this.state.gameState.playerBoardActive} />
                     <GameBoardView board={this.state.gameState.opponentBoard} gameInterface={this.gameInterface} active={this.state.gameState.opponentBoardActive} />
-                    {this.isInitPlayerBoardPhase() ?
-                        <button onClick={this.submitBoardClicked.bind(this)}>Join game</button> : false}
+                    {this.isInitPlayerBoardPhase() &&
+                        <button onClick={this.submitBoardClicked.bind(this)}>Join game</button>}
                 </div>
             )
         }
