@@ -31,8 +31,21 @@ namespace game {
         }
 
         submitBoard(state: game.GameState): game.GameState {
-            return Lens.setIn(Lens.of(state).gamePhase, GamePhase.waitForSecondPlayer);
+
+            const ships = this.countShipsInBoard(state.playerBoard);
+
+            if(ships === 10) {
+                return Lens.setIn(Lens.of(state).gamePhase, GamePhase.waitForSecondPlayer);
+            } else {
+                alert("Invalid number of ships " + ships);
+                return state;
+            }
         }
+
+        private countShipsInBoard(board: Immutable.List<Immutable.List<CellState>>): number {
+            const shipsInRows = board.map(row => row.count(cell => cell === CellState.ship));
+            return shipsInRows.reduce((acc: number, el: number) => acc + el);
+        };
     }
 
 
