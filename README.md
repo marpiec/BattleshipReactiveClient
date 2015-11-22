@@ -20,5 +20,8 @@ And maybe those:
 * **RxJS** for reactive streams support
 * **D3** for data visualization
 * **Flux** Architecture framework for React.js
+* **gulp-svgstore** Combines svg files into one with <symbol> elements
+* **gulp-rev** Static asset revisioning by appending content hash to filenames
+* **gulp-preprocess** Gulp plugin to preprocess HTML, JavaScript, and other files based on custom context or environment configuration
 
 It communicates with server using REST calls.
