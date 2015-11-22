@@ -1,4 +1,4 @@
-/// <reference path="../../utils/Optional.ts"/>
+/// <reference path="../utils/Optional.ts"/>
 
 namespace gameView {
 

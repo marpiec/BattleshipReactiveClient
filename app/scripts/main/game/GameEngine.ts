@@ -1,5 +1,5 @@
 /// <reference path="GameState.ts"/>
-/// <reference path="../../utils/Lens.ts"/>
+/// <reference path="../utils/Lens.ts"/>
 
 namespace game {
 

@@ -1,6 +1,6 @@
-/// <reference path="game/model/GameState.ts"/>
-/// <reference path="game/model/GameEngine.ts"/>
-/// <reference path="game/view/GameBoardView.tsx"/>
+/// <reference path="game/GameState.ts"/>
+/// <reference path="game/GameEngine.ts"/>
+/// <reference path="view/GameBoardView.tsx"/>
 
 namespace gameView {
 
