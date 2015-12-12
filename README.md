@@ -15,6 +15,7 @@ It uses various modern technologies of web development:
 * **Bootstrap** to provide basic look&feel
 * **Font Awesome** to provide set of nice looking icons
 * **Jasmine** for writing tests
+* **Source Map** for translating javascript to typescript
 
 And maybe those:
 * **RxJS** for reactive streams support
