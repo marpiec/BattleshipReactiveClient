@@ -1,8 +1,14 @@
 namespace game {
 
+    export class GameServiceProvider {
+        static getGameService() {
+            return new MockGameService();
+        }
+    }
+
     export interface GameService {
 
-        joinGame(onSuccess: (gameId: string) => void): void;
+        joinGame(onSuccess: (gameId: string, playerId: string) => void): void;
 
         submitPlayerBoard(gameId: string, playerBoard: Immutable.List<Immutable.List<CellState>>,
                           onSuccess: () => void): void;
@@ -25,8 +31,8 @@ namespace game {
     export class MockGameService implements GameService {
 
 
-        joinGame(onSuccess:(gameId:string)=>void) {
-            throw new Error("Not yet implemented");
+        joinGame(onSuccess:(gameId:string, playerId: string)=>void) {
+            onSuccess("someGameId", "somePlayerId");
         }
 
         submitPlayerBoard(gameId:string, playerBoard:Immutable.List<Immutable.List<game.CellState>>,

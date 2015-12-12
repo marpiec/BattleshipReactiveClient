@@ -9,6 +9,7 @@ namespace gameView {
     import GameEngine = game.GameEngine;
     import GamePhase = game.GamePhase;
     import MockGameService = game.MockGameService;
+    import GameServiceProvider = game.GameServiceProvider;
 
     export class GamePageParams {
         gameId: string;
@@ -60,10 +61,10 @@ namespace gameView {
         constructor(props:GamePageProps) {
             super(props);
             this.state = new GamePageState(GameState.initial(props.params.gameId, props.params.playerId));
-            this.gameEngine = new GameEngine(new MockGameService());
+            this.gameEngine = new GameEngine(GameServiceProvider.getGameService());
         }
 
-        submitBoardClicked() {
+        submitBoard() {
             this.gameInterface.submitBoard();
         }
 
@@ -76,7 +77,7 @@ namespace gameView {
                     <GameBoardView board={this.state.gameState.playerBoard} gameInterface={this.gameInterface} active={this.state.gameState.playerBoardActive} />
                     <GameBoardView board={this.state.gameState.opponentBoard} gameInterface={this.gameInterface} active={this.state.gameState.opponentBoardActive} />
                     {this.isInitPlayerBoardPhase() &&
-                        <button onClick={this.submitBoardClicked.bind(this)}>Join game</button>}
+                        <button onClick={this.submitBoard.bind(this)}>Submit your board</button>}
                 </div>
             )
         }

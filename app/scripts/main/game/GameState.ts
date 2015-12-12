@@ -38,6 +38,8 @@ namespace game {
 
         init(gameId: string, playerId: string, gamePhase: GamePhase, playerBoard: Immutable.List<Immutable.List<CellState>>, opponentBoard: Immutable.List<Immutable.List<CellState>>): GameState {
             return <GameState><any>this.merge({
+                gameId: gameId,
+                playerId: playerId,
                 gamePhase:gamePhase,
                 playerBoard:playerBoard,
                 opponentBoard:opponentBoard});
