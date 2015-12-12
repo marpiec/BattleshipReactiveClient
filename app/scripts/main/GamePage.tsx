@@ -12,6 +12,7 @@ namespace gameView {
 
     export class GamePageParams {
         gameId: string;
+        playerId: string;
     }
 
     export class GamePageProps {
@@ -58,7 +59,7 @@ namespace gameView {
 
         constructor(props:GamePageProps) {
             super(props);
-            this.state = new GamePageState(GameState.initial);
+            this.state = new GamePageState(GameState.initial(props.params.gameId, props.params.playerId));
             this.gameEngine = new GameEngine(new MockGameService());
         }
 

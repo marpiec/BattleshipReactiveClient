@@ -8,17 +8,6 @@ namespace game {
 
     export const enum GamePhase {initPlayerBoard, waitForSecondPlayer, playerTurn, opponentTurn, playerWon, opponentWon}
 
-    export class GameId {
-        private _gameId: string;
-
-        constructor(gameId:string) {
-            this._gameId = gameId;
-        }
-
-        get gameId():string {
-            return this._gameId;
-        }
-    }
 
     const EMPTY_BOARD = createEmptyBoard();
     function createEmptyBoard():Immutable.List<Immutable.List<CellState>> {
@@ -31,17 +20,23 @@ namespace game {
 
 
     export class GameState extends Immutable.Record({
+        gameId:undefined,
+        playerId:undefined,
         gamePhase:undefined,
         playerBoard:undefined,
         opponentBoard:undefined}) {
 
+        gameId: string;
+        playerId: string;
         gamePhase: GamePhase;
         playerBoard: Immutable.List<Immutable.List<CellState>>;
         opponentBoard: Immutable.List<Immutable.List<CellState>>;
 
-        static initial = new GameState().init(GamePhase.initPlayerBoard, EMPTY_BOARD, EMPTY_BOARD);
+        static initial(gameId: string, playerId: string) {
+           return new GameState().init(gameId, playerId, GamePhase.initPlayerBoard, EMPTY_BOARD, EMPTY_BOARD);
+        }
 
-        init(gamePhase: GamePhase, playerBoard: Immutable.List<Immutable.List<CellState>>, opponentBoard: Immutable.List<Immutable.List<CellState>>): GameState {
+        init(gameId: string, playerId: string, gamePhase: GamePhase, playerBoard: Immutable.List<Immutable.List<CellState>>, opponentBoard: Immutable.List<Immutable.List<CellState>>): GameState {
             return <GameState><any>this.merge({
                 gamePhase:gamePhase,
                 playerBoard:playerBoard,

@@ -17,7 +17,7 @@ namespace main {
         <Router>
             <Route path="/" component={AppTemplate}>
                 <IndexRoute component={MainPage} />
-                <Route path="game/:gameId" component={GamePage}/>
+                <Route path="game/:gameId/:playerId" component={GamePage}/>
                 <Route path="*" component={NotFoundPage}/>
             </Route>
         </Router>

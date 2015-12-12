@@ -2,19 +2,19 @@ namespace game {
 
     export interface GameService {
 
-        joinGame(onSuccess: (gameId: GameId) => void): void;
+        joinGame(onSuccess: (gameId: string) => void): void;
 
-        submitPlayerBoard(gameId: GameId, playerBoard: Immutable.List<Immutable.List<CellState>>,
+        submitPlayerBoard(gameId: string, playerBoard: Immutable.List<Immutable.List<CellState>>,
                           onSuccess: () => void): void;
 
-        waitForOpponentToJoin(gameId: GameId,
+        waitForOpponentToJoin(gameId: string,
                               onOpponentJoined: (opponentBoard: Immutable.List<Immutable.List<CellState>>, newGamePhase: GamePhase) => void,
                               onOpponentNotYetJoined: () => void): void;
 
-        shoot(gameId: GameId, x: number, y: number,
+        shoot(gameId: string, x: number, y: number,
               onSuccess: (shootResult: ShootResult, newGamePhase: GamePhase) => void): void;
 
-        waitForOpponentShot(gameId: GameId,
+        waitForOpponentShot(gameId: string,
                             onOpponentShot: (x: number, y: number, newGamePhase: GamePhase) => void,
                             onOpponentNotYetShot: () => void): void;
 
@@ -25,27 +25,27 @@ namespace game {
     export class MockGameService implements GameService {
 
 
-        joinGame(onSuccess:(gameId:game.GameId)=>void) {
+        joinGame(onSuccess:(gameId:string)=>void) {
             throw new Error("Not yet implemented");
         }
 
-        submitPlayerBoard(gameId:game.GameId, playerBoard:Immutable.List<Immutable.List<game.CellState>>,
+        submitPlayerBoard(gameId:string, playerBoard:Immutable.List<Immutable.List<game.CellState>>,
                           onSuccess:()=>void) {
             throw new Error("Not yet implemented");
         }
 
-        waitForOpponentToJoin(gameId:game.GameId,
+        waitForOpponentToJoin(gameId:string,
                               onOpponentJoined:(opponentBoard:Immutable.List<Immutable.List<game.CellState>>, newGamePhase:game.GamePhase)=>void,
                               onOpponentNotYetJoined:()=>void) {
             throw new Error("Not yet implemented");
         }
 
-        shoot(gameId:game.GameId, x:number, y:number,
+        shoot(gameId:string, x:number, y:number,
               onSuccess:(shootResult:game.ShootResult, newGamePhase:game.GamePhase)=>void) {
             throw new Error("Not yet implemented");
         }
 
-        waitForOpponentShot(gameId:game.GameId,
+        waitForOpponentShot(gameId:string,
                             onOpponentShot:(x:number, y:number, newGamePhase:game.GamePhase)=>void,
                             onOpponentNotYetShot:()=>void) {
             throw new Error("Not yet implemented");

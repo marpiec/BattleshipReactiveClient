@@ -56,6 +56,12 @@ namespace game {
                 return Lens.setIn(Lens.of(state).gamePhase, GamePhase.waitForSecondPlayer);
             } else {
                 alert("Invalid number of ships " + ships);
+
+
+                this.gameService.submitPlayerBoard(state.gameId, state.playerBoard, () => {
+                   alert("Player board submitted");
+                });
+
                 return state;
             }
         }
