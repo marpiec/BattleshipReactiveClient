@@ -133,9 +133,9 @@ gulp.task('browser-sync', ['scripts'], function() {
         }
     });
 
-    gulp.watch(appDir('**/*.ts*'), ['scripts']);
-    gulp.watch(appDir('**/*.scss'), ['styles']);
-    gulp.watch(appDir('**/*.html'), ['html']);
+    gulp.watch(appDir('**/*.ts*'), ['revreplace']);
+    gulp.watch(appDir('**/*.scss'), ['revreplace']);
+    gulp.watch(appDir('**/*.html'), ['revreplace']);
     gulp.watch(appDir('**/*.html')).on('change', browserSync.reload);
 });
 
