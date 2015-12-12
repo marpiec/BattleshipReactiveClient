@@ -53,15 +53,15 @@ namespace game {
             const ships = this.countShipsInBoard(state.playerBoard);
 
             if(ships === 10) {
+                this.gameService.submitPlayerBoard(state.gameId, state.playerBoard, () => {
+                    alert("Player board submitted");
+                }, (errors: string[]) => {
+                    alert(JSON.stringify(errors));
+                });
+
                 return Lens.setIn(Lens.of(state).gamePhase, GamePhase.waitForSecondPlayer);
             } else {
                 alert("Invalid number of ships " + ships);
-
-
-                this.gameService.submitPlayerBoard(state.gameId, state.playerBoard, () => {
-                   alert("Player board submitted");
-                });
-
                 return state;
             }
         }
