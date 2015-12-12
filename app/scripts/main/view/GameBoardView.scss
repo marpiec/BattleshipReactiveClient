@@ -28,9 +28,11 @@
 
 
 
-
       &.empty {
         background-color: $cellEmptyColor;
+        &:active {
+          background-color: #aaa;
+        }
       }
 
       &.ship {

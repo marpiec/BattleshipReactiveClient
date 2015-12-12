@@ -51,18 +51,6 @@ namespace gameView {
             }
         }
 
-        cellMouseDown(x: number, y: number) {
-            if (this.props.active) {
-                this.setState(new GameBoardViewState(Some(new BoardXY(x, y))));
-            }
-        }
-
-        cellMouseUp() {
-            if (this.props.active) {
-                this.setState(new GameBoardViewState(None));
-            }
-        }
-
         cellIsPressed(x: number, y: number) {
             const cellDown = this.state.cellDown;
             return cellDown.isPresent && cellDown.value.x === x && cellDown.value.y === y;
@@ -107,9 +95,7 @@ namespace gameView {
                     {pressed: this.cellIsPressed(x, y)});
                 return (
                     <div className={cellClasses} key={x}
-                         onClick={this.cellClicked.bind(this, x, y)}
-                         onMouseDown={this.cellMouseDown.bind(this, x, y)}
-                         onMouseOut={this.cellMouseUp.bind(this)}>
+                         onClick={this.cellClicked.bind(this, x, y)}>
                     </div>
                 )
             });
