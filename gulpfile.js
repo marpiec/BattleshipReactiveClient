@@ -13,12 +13,13 @@ var revReplace = require('gulp-rev-replace');
 var gulpFilter = require('gulp-filter');
 
 
-var tmpDir = function(path) {return './tmp/' + path};
-var testTmpDir = function(path) {return './tmp/test/' + path};
+var buildDir = function(path) {return './build/' + path};
+var tmpDir = function(path) {return './build/tmp/' + path};
+var testTmpDir = function(path) {return './build/tmp/test/' + path};
 var appDir = function(path) {return './app/' + path};
 var nodeDir = function(path) {return './node_modules/' + path};
-var releaseDevDir = function(path) {return './releaseDev/' + path};
-var releaseDir = function(path) {return './release/' + path};
+var releaseDevDir = function(path) {return './build/releaseDev/' + path};
+var releaseDir = function(path) {return './build/release/' + path};
 
 
 // HTML
@@ -142,6 +143,7 @@ gulp.task('browser-sync', ['scripts'], function() {
 
 gulp.task('clean', function() {
     return merge([
+        gulp.src(buildDir(''), {read: false}).pipe(clean()),
         gulp.src(testTmpDir(''), {read: false}).pipe(clean()),
         gulp.src(releaseDevDir(''), {read: false}).pipe(clean()),
         gulp.src(releaseDir(''), {read: false}).pipe(clean())]);
@@ -160,7 +162,7 @@ gulp.task('revision', ['clean-release', 'html', 'scripts-libs', 'scripts', 'styl
         .pipe(rev())
         .pipe(gulp.dest(releaseDir('')))
         .pipe(rev.manifest())
-        .pipe(gulp.dest(tmpDir('')))
+        .pipe(gulp.dest(buildDir('')))
         .pipe(revisionedFilter.restore)
         .pipe(nonRevisionedFilter)
         .pipe(gulp.dest(releaseDir('')))
@@ -168,7 +170,7 @@ gulp.task('revision', ['clean-release', 'html', 'scripts-libs', 'scripts', 'styl
 });
 
 gulp.task("revreplace", ["revision"], function(){
-    var manifest = gulp.src(tmpDir('rev-manifest.json'));
+    var manifest = gulp.src(buildDir('rev-manifest.json'));
 
     return gulp.src(releaseDir('**/*.*'))
         .pipe(revReplace({manifest: manifest}))
