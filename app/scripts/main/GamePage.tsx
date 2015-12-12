@@ -2,7 +2,7 @@
 /// <reference path="game/GameState.ts"/>
 /// <reference path="game/GameService.ts"/>
 /// <reference path="game/GameEngine.ts"/>
-/// <reference path="view/GameBoardView.tsx"/>
+/// <reference path="view/GameBoardComponent.tsx"/>
 
 namespace gameView {
 
@@ -106,14 +106,14 @@ namespace gameView {
 
         render() {
             return (
-                <div>
+                <div className="gamePage">
                     <p>Game page</p>
                     <p>Game Phase: <span>{this.phaseNames.get(this.state.gameState.gamePhase)}</span></p>
                     <p>Game Id: <span>{this.props.params.gameId}</span></p>
                     {this.isInitPlayerBoardPhase() &&
                         <p>Ships to place left {10 - this.state.gameState.playerBoard.getShipsCount()}</p>}
-                    <GameBoardView board={this.state.gameState.playerBoard} gameInterface={this.gameInterface} active={this.state.gameState.playerBoardActive} />
-                    <GameBoardView board={this.state.gameState.opponentBoard} gameInterface={this.gameInterface} active={this.state.gameState.opponentBoardActive} />
+                    <GameBoardComponent board={this.state.gameState.playerBoard} gameInterface={this.gameInterface} active={this.state.gameState.playerBoardActive} />
+                    <GameBoardComponent board={this.state.gameState.opponentBoard} gameInterface={this.gameInterface} active={this.state.gameState.opponentBoardActive} />
                     {this.isInitPlayerBoardPhase() &&
                         <button onClick={this.submitBoard.bind(this)}>Submit your board</button>}
                 </div>

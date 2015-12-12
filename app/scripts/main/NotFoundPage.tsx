@@ -16,7 +16,7 @@ namespace page {
 
         render() {
             return (
-                <div>
+                <div className="notFoundPage">
                     <p>This is not the page you are looking for.</p>
                 </div>
             )

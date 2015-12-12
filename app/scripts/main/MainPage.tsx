@@ -30,7 +30,7 @@ namespace page {
 
         render() {
             return (
-                <div>
+                <div className="mainPage">
                     <p>Main page</p>
                     <button onClick={this.joinGame.bind(this)}>Join game</button>
                 </div>

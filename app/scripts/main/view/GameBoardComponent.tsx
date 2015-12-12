@@ -39,7 +39,7 @@ namespace gameView {
     }
 
 
-    export class GameBoardView extends React.Component<GameBoardViewProps, GameBoardViewState> {
+    export class GameBoardComponent extends React.Component<GameBoardViewProps, GameBoardViewState> {
         constructor(props: GameBoardViewProps) {
             super(props);
             this.state = new GameBoardViewState(None);
@@ -57,7 +57,7 @@ namespace gameView {
         }
 
         render() {
-            const boardClasses = classNames("gameBoard", {active: this.props.active});
+            const boardClasses = classNames("gameBoardComponent", {active: this.props.active});
             return (
                 <div className={boardClasses}>
                     {this.renderRows(this.props.board.rows)}

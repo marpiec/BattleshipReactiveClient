@@ -17,7 +17,7 @@ namespace page {
 
         render() {
             return (
-                <div>
+                <div className="appTemplate">
                     <p>Ships battle</p>
                     <div>
                         {this.props.children}
