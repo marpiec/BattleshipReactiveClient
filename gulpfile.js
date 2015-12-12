@@ -144,6 +144,7 @@ gulp.task('browser-sync', ['scripts'], function() {
 gulp.task('clean', function() {
     return merge([
         gulp.src(buildDir(''), {read: false}).pipe(clean()),
+        gulp.src(tmpDir(''), {read: false}).pipe(clean()),
         gulp.src(testTmpDir(''), {read: false}).pipe(clean()),
         gulp.src(releaseDevDir(''), {read: false}).pipe(clean()),
         gulp.src(releaseDir(''), {read: false}).pipe(clean())]);
