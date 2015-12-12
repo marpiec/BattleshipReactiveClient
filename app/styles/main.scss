@@ -1,13 +1,9 @@
 @import "../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
 @import "../../node_modules/font-awesome/scss/font-awesome";
-@import "styles";
+
+@import "browser";
+@import "theme/theme";
 
 
-.hello {
-  color: white;
-  .world {
-    font-weight: bold;
-  }
-}
 
 @import "../scripts/main/view/GameBoardView";
