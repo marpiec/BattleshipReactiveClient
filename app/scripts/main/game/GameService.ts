@@ -28,7 +28,7 @@ namespace game {
         private opponentBoard: GameBoard;
 
         private eventsCounter = 1;
-        private onServerEvent: (event: GameEvent) => void;
+        private onServerEvent: (event: GameEvent) => void = (event: GameEvent) => {}; //ignore by default
 
         listenOnServerEvents(gameId: string, onEvent: (event: GameEvent) => void) {
             this.onServerEvent = onEvent;

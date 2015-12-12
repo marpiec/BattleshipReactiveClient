@@ -54,7 +54,9 @@ namespace game {
 
             if(ships === 10) {
                 this.gameService.submitPlayerBoard(state.gameId, state.playerBoard, () => {
-                    alert("Player board submitted");
+
+                    console.log("Player board submitted");
+
                 }, (errors: string[]) => {
                     alert(JSON.stringify(errors));
                 });

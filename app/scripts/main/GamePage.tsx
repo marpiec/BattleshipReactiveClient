@@ -1,3 +1,4 @@
+/// <reference path="game/GameEvents.ts"/>
 /// <reference path="game/GameState.ts"/>
 /// <reference path="game/GameService.ts"/>
 /// <reference path="game/GameEngine.ts"/>
@@ -73,6 +74,7 @@ namespace gameView {
             this.gameEngine = new GameEngine(this.gameService);
 
             this.gameService.listenOnServerEvents(props.params.gameId, (event: GameEvent) => {
+                console.log("Event received " + event.eventType, event)
                if(JoinedGame.is(event)) {
                  // ignore
                } else if (PlayerBoardSubmitted.is(event)) {
