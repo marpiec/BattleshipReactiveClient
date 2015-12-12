@@ -77,7 +77,7 @@ namespace game {
         }
 
         getPhase() {
-            return GamePhase.initPlayerBoard;
+            return GamePhase.waitForSecondPlayer;
         }
 
         opponentBoardSubmitted(state:game.GameState, opponentBoard:Immutable.List<Immutable.List<game.CellState>>, newPhase: GamePhase):GameState {

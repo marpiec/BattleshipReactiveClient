@@ -1,4 +1,5 @@
 /// <reference path="game/GameState.ts"/>
+/// <reference path="game/GameService.ts"/>
 /// <reference path="game/GameEngine.ts"/>
 /// <reference path="view/GameBoardView.tsx"/>
 
