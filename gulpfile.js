@@ -17,14 +17,14 @@ var tmpDir = function(path) {return './tmp/' + path};
 var testTmpDir = function(path) {return './tmp/test/' + path};
 var appDir = function(path) {return './app/' + path};
 var nodeDir = function(path) {return './node_modules/' + path};
-var releaseTmpDir = function(path) {return './tmp/release/' + path};
+var releaseDevDir = function(path) {return './releaseDev/' + path};
 var releaseDir = function(path) {return './release/' + path};
 
 
 // HTML
 gulp.task('html', function() {
     return gulp.src('app/*.html')
-        .pipe(gulp.dest(releaseTmpDir('')))
+        .pipe(gulp.dest(releaseDevDir('')))
 });
 
 
@@ -39,7 +39,7 @@ gulp.task('scripts-libs', function() {
         nodeDir('jquery/dist/jquery'+min+'.js'),
         nodeDir('bootstrap-sass/assets/javascripts/bootstrap'+min+'.js'),
         nodeDir('immutable/dist/immutable' +min+ '.js')
-    ]).pipe(concat('libs.js')).pipe(gulp.dest(releaseTmpDir('scripts/')))
+    ]).pipe(concat('libs.js')).pipe(gulp.dest(releaseDevDir('scripts/')))
 });
 
 
@@ -64,11 +64,11 @@ gulp.task('scripts', function () {
 
 
     return merge([
-        tsResult.dts.pipe(concat('main.d.ts')).pipe(gulp.dest(releaseTmpDir('scripts'))),
+        tsResult.dts.pipe(concat('main.d.ts')).pipe(gulp.dest(releaseDevDir('scripts'))),
         tsResult.js
             .pipe(concat('main.js'))
             .pipe(sourcemaps.write("../maps")) // Now the sourcemaps are added to the .js file
-            .pipe(gulp.dest(releaseTmpDir('scripts')))
+            .pipe(gulp.dest(releaseDevDir('scripts')))
     ]);
 });
 
@@ -107,13 +107,13 @@ gulp.task('styles', function () {
         .pipe(sourcemaps.init())
         .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
         .pipe(sourcemaps.write('.'))
-        .pipe(gulp.dest(releaseTmpDir('styles')));
+        .pipe(gulp.dest(releaseDevDir('styles')));
 });
 
 // HTML
 gulp.task('fonts', function() {
     return gulp.src([nodeDir('font-awesome/fonts/*')])
-        .pipe(gulp.dest(releaseTmpDir('fonts')))
+        .pipe(gulp.dest(releaseDevDir('fonts')))
 });
 
 
@@ -129,13 +129,13 @@ gulp.task('test', ['test-scripts'], function (done) {
 gulp.task('browser-sync', ['scripts'], function() {
     browserSync.init({
         server: {
-            baseDir: releaseDir('')
+            baseDir: releaseDevDir('')
         }
     });
 
-    gulp.watch(appDir('**/*.ts*'), ['revreplace']);
-    gulp.watch(appDir('**/*.scss'), ['revreplace']);
-    gulp.watch(appDir('**/*.html'), ['revreplace']);
+    gulp.watch(appDir('**/*.ts*'), ['scripts']);
+    gulp.watch(appDir('**/*.scss'), ['styles']);
+    gulp.watch(appDir('**/*.html'), ['html']);
     gulp.watch(appDir('**/*.html')).on('change', browserSync.reload);
 });
 
@@ -143,7 +143,7 @@ gulp.task('browser-sync', ['scripts'], function() {
 gulp.task('clean', function() {
     return merge([
         gulp.src(testTmpDir(''), {read: false}).pipe(clean()),
-        gulp.src(releaseTmpDir(''), {read: false}).pipe(clean()),
+        gulp.src(releaseDevDir(''), {read: false}).pipe(clean()),
         gulp.src(releaseDir(''), {read: false}).pipe(clean())]);
 });
 
@@ -155,7 +155,7 @@ gulp.task('clean-release', function() {
 gulp.task('revision', ['clean-release', 'html', 'scripts-libs', 'scripts', 'styles', 'fonts'], function() {
     const revisionedFilter = gulpFilter(['**/*.*', '!index.html'], {restore: true});
     const nonRevisionedFilter = gulpFilter(['index.html']);
-    return gulp.src([releaseTmpDir('**/*')])
+    return gulp.src([releaseDevDir('**/*')])
         .pipe(revisionedFilter)
         .pipe(rev())
         .pipe(gulp.dest(releaseDir('')))
@@ -175,6 +175,8 @@ gulp.task("revreplace", ["revision"], function(){
         .pipe(gulp.dest(releaseDir('')));
 });
 
-gulp.task('default', ['html', 'scripts-libs', 'scripts', 'styles', 'fonts', 'revreplace']);
+gulp.task('release', ['default', 'revreplace']);
+
+gulp.task('default', ['html', 'scripts-libs', 'scripts', 'styles', 'fonts']);
 
 gulp.task('server', ['default', 'browser-sync']);
