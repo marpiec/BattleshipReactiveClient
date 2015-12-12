@@ -1,5 +1,4 @@
 var gulp = require('gulp');
-var bower = require('gulp-bower');
 var ts = require('gulp-typescript');
 var typescript = require('typescript');
 var merge = require('merge2');
@@ -17,24 +16,19 @@ var gulpFilter = require('gulp-filter');
 var tmpDir = function(path) {return './tmp/' + path};
 var testTmpDir = function(path) {return './tmp/test/' + path};
 var appDir = function(path) {return './app/' + path};
-var bowerDir = function(path) {return './bower_components/' + path};
 var nodeDir = function(path) {return './node_modules/' + path};
 var releaseTmpDir = function(path) {return './tmp/release/' + path};
 var releaseDir = function(path) {return './release/' + path};
 
 
-gulp.task('bower', function() {
-  return bower()
-});
-
 // HTML
-gulp.task('html', ['bower'], function() {
+gulp.task('html', [], function() {
     return gulp.src('app/*.html')
         .pipe(gulp.dest(releaseTmpDir('')))
 });
 
 
-gulp.task('scripts-libs', ['bower'], function() {
+gulp.task('scripts-libs', [], function() {
     var min = '';
     return gulp.src([
         nodeDir('react/dist/react'+min+'.js'),
@@ -42,14 +36,14 @@ gulp.task('scripts-libs', ['bower'], function() {
         nodeDir('history/umd/History' +min+ '.js'),
         nodeDir('react-router/umd/ReactRouter' +min+ '.js'),
         nodeDir('classnames/index.js'),
-        bowerDir('jquery/dist/jquery'+min+'.js'),
-        bowerDir('bootstrap-sass/assets/javascripts/bootstrap'+min+'.js'),
+        nodeDir('jquery/dist/jquery'+min+'.js'),
+        nodeDir('bootstrap-sass/assets/javascripts/bootstrap'+min+'.js'),
         nodeDir('immutable/dist/immutable' +min+ '.js')
     ]).pipe(concat('libs.js')).pipe(gulp.dest(releaseTmpDir('scripts/')))
 });
 
 
-gulp.task('scripts', ['bower'], function () {
+gulp.task('scripts', [], function () {
 
     var tsResult = gulp.src([appDir('scripts/main/**/*.ts*'), appDir('scripts/main/libs.d/**/*.d.ts')])
         .pipe(sourcemaps.init()) // This means sourcemaps will be generated
@@ -108,7 +102,7 @@ gulp.task('test-scripts', function () {
 
 
 
-gulp.task('styles', ['bower'], function () {
+gulp.task('styles', [''], function () {
     gulp.src(appDir('styles/**/*.scss'))
         .pipe(sourcemaps.init())
         .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
@@ -118,7 +112,7 @@ gulp.task('styles', ['bower'], function () {
 
 // HTML
 gulp.task('fonts', function() {
-    return gulp.src([bowerDir('font-awesome/fonts/*')])
+    return gulp.src([nodeDir('font-awesome/fonts/*')])
         .pipe(gulp.dest(releaseTmpDir('fonts')))
 });
 
