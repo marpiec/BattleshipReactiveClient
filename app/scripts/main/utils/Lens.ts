@@ -1,4 +1,4 @@
-module Lens {
+namespace Lens {
 
     export class PathAccumulator {
         ___rootElement: any;
