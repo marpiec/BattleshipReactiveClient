@@ -7,6 +7,7 @@ namespace gameView {
     import GameState = game.GameState;
     import GameEngine = game.GameEngine;
     import GamePhase = game.GamePhase;
+    import MockGameService = game.MockGameService;
 
     export class GamePageParams {
         gameId: string;
@@ -32,28 +33,32 @@ namespace gameView {
 
     export class GamePage extends React.Component<GamePageProps, GamePageState> {
 
-        gameInterface: GameInterface = {
+        private gameEngine: GameEngine;
+
+        private gameInterface: GameInterface = {
             toggleCell: (x: number, y: number) => {
-                const gameState = GameEngine.getPhaseHandler(this.state.gameState).toggleCell(this.state.gameState, x, y);
+                const gameState = this.gameEngine.getPhaseHandler(this.state.gameState).toggleCell(this.state.gameState, x, y);
                 this.setState(new GamePageState(gameState));
             },
             submitBoard: () => {
-                const gameState = GameEngine.getPhaseHandler(this.state.gameState).submitBoard(this.state.gameState);
+                const gameState = this.gameEngine.getPhaseHandler(this.state.gameState).submitBoard(this.state.gameState);
                 this.setState(new GamePageState(gameState));
             }
         };
 
-        phaseNames = Immutable.Map<GamePhase, string>([[GamePhase.initPlayerBoard, "Place your ships."],
-                                                       [GamePhase.waitForSecondPlayer, "Please wait for second player."],
-                                                       [GamePhase.playerTurn, "Your turn."],
-                                                       [GamePhase.opponentTurn, "Opponent's turn."],
-                                                       [GamePhase.gameEnded, "End of game"]]);
+        private phaseNames = Immutable.Map<GamePhase, string>([[GamePhase.initPlayerBoard, "Place your ships."],
+                                                               [GamePhase.waitForSecondPlayer, "Please wait for second player."],
+                                                               [GamePhase.playerTurn, "Your turn."],
+                                                               [GamePhase.opponentTurn, "Opponent's turn."],
+                                                               [GamePhase.playerWon, "Player Won!"],
+                                                               [GamePhase.opponentWon, "Opponent Won!"]]);
 
 
 
         constructor(props:GamePageProps) {
             super(props);
             this.state = new GamePageState(GameState.initial);
+            this.gameEngine = new GameEngine(new MockGameService());
         }
 
         submitBoardClicked() {

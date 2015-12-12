@@ -29,6 +29,13 @@ namespace game {
 
     export class InitPlayerBoardHandler extends PhaseHandler {
 
+        private gameService: GameService;
+
+        constructor(gameService:game.GameService) {
+            super();
+            this.gameService = gameService;
+        }
+
         getPhase() {
             return GamePhase.initPlayerBoard;
         }
@@ -62,6 +69,13 @@ namespace game {
 
     export class WaitForSecondPlayerHandler extends PhaseHandler {
 
+        private gameService: GameService;
+
+        constructor(gameService:game.GameService) {
+            super();
+            this.gameService = gameService;
+        }
+
         getPhase() {
             return GamePhase.initPlayerBoard;
         }
@@ -73,6 +87,14 @@ namespace game {
     }
 
     export class PlayerTurnHandler extends PhaseHandler {
+
+        private gameService: GameService;
+
+        constructor(gameService:game.GameService) {
+            super();
+            this.gameService = gameService;
+        }
+
         getPhase() {
             return GamePhase.playerTurn;
         }
@@ -83,22 +105,37 @@ namespace game {
     }
 
     export class OpponentTurnHandler extends PhaseHandler {
+
+        private gameService: GameService;
+
+        constructor(gameService:game.GameService) {
+            super();
+            this.gameService = gameService;
+        }
+
         getPhase() {
             return GamePhase.opponentTurn;
         }
 
-
         opponentShoot(state:game.GameState, x:number, y:number):GameState {
-            return return state;
+            return state;
         }
     }
 
     export class GameEngine {
 
-        private static phaseHandlers = GameEngine.initPhaseHandlers(new InitPlayerBoardHandler(), new WaitForSecondPlayerHandler(),
-                                                                    new PlayerTurnHandler(), new OpponentTurnHandler());
+        private gameService: GameService;
 
-        private static initPhaseHandlers(...handlers: PhaseHandler[]): {[phase: number]: PhaseHandler} {
+        private phaseHandlers: {[phase: number]: PhaseHandler};
+
+
+        constructor(gameService:game.GameService) {
+            this.gameService = gameService;
+            this.phaseHandlers = this.initPhaseHandlers(new InitPlayerBoardHandler(gameService), new WaitForSecondPlayerHandler(gameService),
+                new PlayerTurnHandler(gameService), new OpponentTurnHandler(gameService));
+        }
+
+        private initPhaseHandlers(...handlers: PhaseHandler[]): {[phase: number]: PhaseHandler} {
             const phaseHandlers:{[phase: number]: PhaseHandler} = {};
 
             handlers.forEach((handler:PhaseHandler) => {
@@ -108,8 +145,8 @@ namespace game {
             return phaseHandlers;
         }
 
-        static getPhaseHandler(state:GameState): PhaseHandler {
-            return GameEngine.phaseHandlers[state.gamePhase];
+        getPhaseHandler(state:GameState): PhaseHandler {
+            return this.phaseHandlers[state.gamePhase];
         }
 
 

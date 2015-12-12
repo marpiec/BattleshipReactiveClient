@@ -2,21 +2,21 @@ namespace game {
 
     export interface GameService {
 
-        joinGame(onSuccess: (gameId: GameId) => void);
+        joinGame(onSuccess: (gameId: GameId) => void): void;
 
         submitPlayerBoard(gameId: GameId, playerBoard: Immutable.List<Immutable.List<CellState>>,
-                          onSuccess: () => void);
+                          onSuccess: () => void): void;
 
         waitForOpponentToJoin(gameId: GameId,
                               onOpponentJoined: (opponentBoard: Immutable.List<Immutable.List<CellState>>, newGamePhase: GamePhase) => void,
-                              onOpponentNotYetJoined: () => void);
+                              onOpponentNotYetJoined: () => void): void;
 
         shoot(gameId: GameId, x: number, y: number,
-              onSuccess: (shootResult: ShootResult, newGamePhase: GamePhase) => void);
+              onSuccess: (shootResult: ShootResult, newGamePhase: GamePhase) => void): void;
 
         waitForOpponentShot(gameId: GameId,
                             onOpponentShot: (x: number, y: number, newGamePhase: GamePhase) => void,
-                            onOpponentNotYetShot: () => void);
+                            onOpponentNotYetShot: () => void): void;
 
 
     }
