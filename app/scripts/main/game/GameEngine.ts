@@ -12,29 +12,22 @@ namespace game {
         toggleCell(state:GameState, x:number, y:number):GameState {
             throw PhaseHandler.NotAllowed;
         }
-        submitBoard(state:GameState):GameState {
+        playerBoardSubmitted(state:GameState, playerBoard: GameBoard, newPhase: GamePhase):GameState {
             throw PhaseHandler.NotAllowed;
         }
         opponentBoardSubmitted(state: GameState, newPhase: GamePhase):GameState {
             throw PhaseHandler.NotAllowed;
         }
-        playerShoot(state: GameState, x: number, y: number):GameState {
+        playerShot(state: GameState, x: number, y: number):GameState {
             throw PhaseHandler.NotAllowed;
         }
-        opponentShoot(state: GameState, x: number, y: number):GameState {
+        opponentShot(state: GameState, x: number, y: number):GameState {
             throw PhaseHandler.NotAllowed;
         }
     }
 
 
     export class InitPlayerBoardHandler extends PhaseHandler {
-
-        private gameService: GameService;
-
-        constructor(gameService:game.GameService) {
-            super();
-            this.gameService = gameService;
-        }
 
         getPhase() {
             return GamePhase.initPlayerBoard;
@@ -48,37 +41,14 @@ namespace game {
             return Lens.setIn(Lens.of(state).playerBoard.rows.get(y).get(x), newCellState);
         }
 
-        submitBoard(state: game.GameState): game.GameState {
-
-            const ships = state.playerBoard.getShipsCount();
-
-            if(ships === 10) {
-                this.gameService.submitPlayerBoard(state.gameId, state.playerBoard, () => {
-
-                    console.log("Player board submitted");
-
-                }, (errors: string[]) => {
-                    alert(JSON.stringify(errors));
-                });
-
-                return Lens.setIn(Lens.of(state).gamePhase, GamePhase.waitForSecondPlayer);
-            } else {
-                alert("Invalid number of ships " + ships);
-                return state;
-            }
+        playerBoardSubmitted(state:GameState, playerBoard: GameBoard, newPhase: GamePhase): game.GameState {
+           return Lens.setIn(Lens.of(state).gamePhase, newPhase);
         }
 
     }
 
 
     export class WaitForSecondPlayerHandler extends PhaseHandler {
-
-        private gameService: GameService;
-
-        constructor(gameService:game.GameService) {
-            super();
-            this.gameService = gameService;
-        }
 
         getPhase() {
             return GamePhase.waitForSecondPlayer;
@@ -91,51 +61,33 @@ namespace game {
 
     export class PlayerTurnHandler extends PhaseHandler {
 
-        private gameService: GameService;
-
-        constructor(gameService:game.GameService) {
-            super();
-            this.gameService = gameService;
-        }
-
         getPhase() {
             return GamePhase.playerTurn;
         }
 
-        playerShoot(state:game.GameState, x:number, y:number):GameState {
+        playerShot(state:game.GameState, x:number, y:number):GameState {
             return state;
         }
     }
 
     export class OpponentTurnHandler extends PhaseHandler {
 
-        private gameService: GameService;
-
-        constructor(gameService:game.GameService) {
-            super();
-            this.gameService = gameService;
-        }
-
         getPhase() {
             return GamePhase.opponentTurn;
         }
 
-        opponentShoot(state:game.GameState, x:number, y:number):GameState {
+        opponentShot(state:game.GameState, x:number, y:number):GameState {
             return state;
         }
     }
 
     export class GameEngine {
 
-        private gameService: GameService;
-
         private phaseHandlers: {[phase: number]: PhaseHandler};
 
-
-        constructor(gameService:game.GameService) {
-            this.gameService = gameService;
-            this.phaseHandlers = this.initPhaseHandlers(new InitPlayerBoardHandler(gameService), new WaitForSecondPlayerHandler(gameService),
-                new PlayerTurnHandler(gameService), new OpponentTurnHandler(gameService));
+        constructor() {
+            this.phaseHandlers = this.initPhaseHandlers(new InitPlayerBoardHandler(), new WaitForSecondPlayerHandler(),
+                new PlayerTurnHandler(), new OpponentTurnHandler());
         }
 
         private initPhaseHandlers(...handlers: PhaseHandler[]): {[phase: number]: PhaseHandler} {

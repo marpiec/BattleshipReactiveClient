@@ -53,8 +53,11 @@ namespace gameView {
                 this.setState(new GamePageState(gameState));
             },
             submitBoard: () => {
-                const gameState = this.gameEngine.getPhaseHandler(this.state.gameState).submitBoard(this.state.gameState);
-                this.setState(new GamePageState(gameState));
+                this.gameService.submitPlayerBoard(this.state.gameState.gameId, this.state.gameState.playerBoard, () => {
+                   console.log("Handle submitPlayerBoard success");
+                }, () => {
+                    console.log("Handle submitPlayerBoard failure");
+                });
             }
         };
 
@@ -71,14 +74,15 @@ namespace gameView {
             super(props);
             this.state = new GamePageState(GameState.initial(props.params.gameId, props.params.playerId));
             this.gameService = GameServiceProvider.getGameService();
-            this.gameEngine = new GameEngine(this.gameService);
+            this.gameEngine = new GameEngine();
 
             this.gameService.listenOnServerEvents(props.params.gameId, (event: GameEvent) => {
-                console.log("Event received " + event.eventType, event)
+                console.log("Event received " + event.eventType, event);
                if(JoinedGame.is(event)) {
                  // ignore
                } else if (PlayerBoardSubmitted.is(event)) {
-                 // ignore
+                   const gameState = this.gameEngine.getPhaseHandler(this.state.gameState).playerBoardSubmitted(this.state.gameState, event.playerBoard, event.newGamePhase);
+                   this.setState(new GamePageState(gameState));
                } else if (OpponentJoined.is(event)) {
                  const gameState = this.gameEngine.getPhaseHandler(this.state.gameState).opponentBoardSubmitted(this.state.gameState, event.newGamePhase);
                  this.setState(new GamePageState(gameState));
