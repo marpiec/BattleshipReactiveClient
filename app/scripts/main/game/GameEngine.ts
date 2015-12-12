@@ -15,7 +15,7 @@ namespace game {
         submitBoard(state:GameState):GameState {
             throw PhaseHandler.NotAllowed;
         }
-        opponentBoardSubmitted(state: GameState, opponentBoard: GameBoard, newPhase: GamePhase):GameState {
+        opponentBoardSubmitted(state: GameState, newPhase: GamePhase):GameState {
             throw PhaseHandler.NotAllowed;
         }
         playerShoot(state: GameState, x: number, y: number):GameState {
@@ -82,9 +82,8 @@ namespace game {
             return GamePhase.waitForSecondPlayer;
         }
 
-        opponentBoardSubmitted(state:game.GameState, opponentBoard:GameBoard, newPhase: GamePhase):GameState {
-            const withBoard = Lens.setIn(Lens.of(state).opponentBoard, opponentBoard);
-            return Lens.setIn(Lens.of(withBoard).gamePhase, newPhase);
+        opponentBoardSubmitted(state:game.GameState, newPhase: GamePhase):GameState {
+            return Lens.setIn(Lens.of(state).gamePhase, newPhase);
         }
     }
 

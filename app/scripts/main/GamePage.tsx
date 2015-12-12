@@ -10,6 +10,13 @@ namespace gameView {
     import GamePhase = game.GamePhase;
     import MockGameService = game.MockGameService;
     import GameServiceProvider = game.GameServiceProvider;
+    import GameService = game.GameService;
+    import GameEvent = game.GameEvent;
+    import JoinedGame = game.JoinedGame;
+    import PlayerBoardSubmitted = game.PlayerBoardSubmitted;
+    import OpponentShot = game.OpponentShot;
+    import PlayerShot = game.PlayerShot;
+    import OpponentJoined = game.OpponentJoined;
 
     export class GamePageParams {
         gameId: string;
@@ -36,6 +43,7 @@ namespace gameView {
 
     export class GamePage extends React.Component<GamePageProps, GamePageState> {
 
+        private gameService: GameService;
         private gameEngine: GameEngine;
 
         private gameInterface: GameInterface = {
@@ -61,7 +69,27 @@ namespace gameView {
         constructor(props:GamePageProps) {
             super(props);
             this.state = new GamePageState(GameState.initial(props.params.gameId, props.params.playerId));
-            this.gameEngine = new GameEngine(GameServiceProvider.getGameService());
+            this.gameService = GameServiceProvider.getGameService();
+            this.gameEngine = new GameEngine(this.gameService);
+
+            this.gameService.listenOnServerEvents(props.params.gameId, (event: GameEvent) => {
+               if(JoinedGame.is(event)) {
+                 // ignore
+               } else if (PlayerBoardSubmitted.is(event)) {
+                 // ignore
+               } else if (OpponentJoined.is(event)) {
+                 const gameState = this.gameEngine.getPhaseHandler(this.state.gameState).opponentBoardSubmitted(this.state.gameState, event.newGamePhase);
+                 this.setState(new GamePageState(gameState));
+               } else if (PlayerShot.is(event)) {
+
+               } else if (OpponentShot.is(event)) {
+
+               } else {
+                   throw new Error("Unsupported event type " + JSON.stringify(event));
+               }
+
+            });
+
         }
 
         submitBoard() {

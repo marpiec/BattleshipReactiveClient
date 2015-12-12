@@ -26,6 +26,9 @@ namespace game {
                 playerId:playerId});
         }
 
+        static is(event: GameEvent):event is JoinedGame {
+            return event.eventType === "JoinedGame";
+        }
     }
 
 
@@ -48,6 +51,10 @@ namespace game {
                 playerBoard:playerBoard,
                 newGamePhase:newGamePhase});
         }
+
+        static is(event: GameEvent):event is PlayerBoardSubmitted {
+            return event.eventType === "PlayerBoardSubmitted";
+        }
     }
 
 
@@ -66,6 +73,10 @@ namespace game {
                 id: id,
                 eventType: "OpponentJoined",
                 newGamePhase:newGamePhase});
+        }
+
+        static is(event: GameEvent): event is OpponentJoined {
+            return event.eventType === "OpponentJoined";
         }
     }
 
@@ -94,6 +105,10 @@ namespace game {
                 result:result,
                 newGamePhase: newGamePhase});
         }
+
+        static is(event: GameEvent): event is PlayerShot {
+            return event.eventType === "PlayerShot";
+        }
     }
 
     export class OpponentShot extends Immutable.Record({
@@ -121,35 +136,12 @@ namespace game {
                 result:result,
                 newGamePhase: newGamePhase});
         }
-    }
 
-    export class PlayerWon extends Immutable.Record({
-        id: undefined,
-        eventType: undefined}) implements GameEvent {
-
-        id: number;
-        eventType: string;
-
-        init(id: number): PlayerWon {
-            return <PlayerWon><any>this.merge({
-                id: id,
-                eventType: "PlayerWon"});
+        static is(event: GameEvent): event is OpponentShot {
+            return event.eventType === "OpponentShot";
         }
     }
 
-    export class OpponentWon extends Immutable.Record({
-        id: undefined,
-        eventType: undefined}) implements GameEvent {
-
-        id: number;
-        eventType: string;
-
-        init(id: number): OpponentWon {
-            return <OpponentWon><any>this.merge({
-                id: id,
-                eventType: "OpponentWon"});
-        }
-    }
 
 
 

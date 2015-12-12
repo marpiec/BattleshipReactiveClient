@@ -8,7 +8,7 @@ namespace game {
 
     export interface GameService {
 
-        listenOnServerEvents(gameId: string, onEvent: (event: GameEvent) => void);
+        listenOnServerEvents(gameId: string, onEvent: (event: GameEvent) => void): void;
 
         joinGame(onSuccess: (gameId: string, playerId: string) => void): void;
 
