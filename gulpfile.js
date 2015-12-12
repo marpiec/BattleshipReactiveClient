@@ -22,13 +22,13 @@ var releaseDir = function(path) {return './release/' + path};
 
 
 // HTML
-gulp.task('html', [], function() {
+gulp.task('html', function() {
     return gulp.src('app/*.html')
         .pipe(gulp.dest(releaseTmpDir('')))
 });
 
 
-gulp.task('scripts-libs', [], function() {
+gulp.task('scripts-libs', function() {
     var min = '';
     return gulp.src([
         nodeDir('react/dist/react'+min+'.js'),
@@ -43,7 +43,7 @@ gulp.task('scripts-libs', [], function() {
 });
 
 
-gulp.task('scripts', [], function () {
+gulp.task('scripts', function () {
 
     var tsResult = gulp.src([appDir('scripts/main/**/*.ts*'), appDir('scripts/main/libs.d/**/*.d.ts')])
         .pipe(sourcemaps.init()) // This means sourcemaps will be generated
@@ -102,7 +102,7 @@ gulp.task('test-scripts', function () {
 
 
 
-gulp.task('styles', [''], function () {
+gulp.task('styles', function () {
     gulp.src(appDir('styles/**/*.scss'))
         .pipe(sourcemaps.init())
         .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
