@@ -3,6 +3,7 @@
 namespace gameView {
 
     import CellState = game.CellState;
+    import GameBoard = game.GameBoard;
 
     export class BoardXY {
         private _x: number;
@@ -25,7 +26,7 @@ namespace gameView {
 
     export class GameBoardViewProps {
         active: boolean;
-        board: Immutable.List<Immutable.List<CellState>>;
+        board: GameBoard;
         gameInterface: GameInterface;
     }
 
@@ -71,7 +72,7 @@ namespace gameView {
             const boardClasses = classNames("gameBoard", {active: this.props.active});
             return (
                 <div className={boardClasses}>
-                    {this.renderRows(this.props.board)}
+                    {this.renderRows(this.props.board.rows)}
                 </div>
             );
         }

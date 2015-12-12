@@ -9,14 +9,31 @@ namespace game {
     export const enum GamePhase {initPlayerBoard, waitForSecondPlayer, playerTurn, opponentTurn, playerWon, opponentWon}
 
 
-    const EMPTY_BOARD = createEmptyBoard();
-    function createEmptyBoard():Immutable.List<Immutable.List<CellState>> {
-        return Immutable.Range(0, GAME_BOARD_SIZE).map(y =>
-            Immutable.Range(0, GAME_BOARD_SIZE).map(x =>
-                CellState.empty).toList()
-        ).toList();
-    }
+    export class GameBoard extends Immutable.Record({
+        rows: undefined}) {
+        rows: Immutable.List<Immutable.List<CellState>>;
 
+        static EMPTY = GameBoard.createEmptyBoard();
+
+        static createEmptyBoard() {
+            const rows = Immutable.Range(0, GAME_BOARD_SIZE).map(y =>
+                Immutable.Range(0, GAME_BOARD_SIZE).map(x =>
+                    CellState.empty).toList()
+            ).toList();
+            return new GameBoard().init(rows);
+        }
+
+        init(rows: Immutable.List<Immutable.List<CellState>>): GameBoard {
+            return <GameBoard><any>this.merge({
+                rows: rows});
+        }
+
+        getShipsCount() {
+            const shipsInRows = this.rows.map(row => row.count(cell => cell === CellState.ship));
+            return shipsInRows.reduce((acc: number, el: number) => acc + el);
+        }
+
+    }
 
 
     export class GameState extends Immutable.Record({
@@ -29,14 +46,14 @@ namespace game {
         gameId: string;
         playerId: string;
         gamePhase: GamePhase;
-        playerBoard: Immutable.List<Immutable.List<CellState>>;
-        opponentBoard: Immutable.List<Immutable.List<CellState>>;
+        playerBoard: GameBoard;
+        opponentBoard: GameBoard;
 
         static initial(gameId: string, playerId: string) {
-           return new GameState().init(gameId, playerId, GamePhase.initPlayerBoard, EMPTY_BOARD, EMPTY_BOARD);
+           return new GameState().init(gameId, playerId, GamePhase.initPlayerBoard, GameBoard.EMPTY, GameBoard.EMPTY);
         }
 
-        init(gameId: string, playerId: string, gamePhase: GamePhase, playerBoard: Immutable.List<Immutable.List<CellState>>, opponentBoard: Immutable.List<Immutable.List<CellState>>): GameState {
+        init(gameId: string, playerId: string, gamePhase: GamePhase, playerBoard: GameBoard, opponentBoard: GameBoard): GameState {
             return <GameState><any>this.merge({
                 gameId: gameId,
                 playerId: playerId,
@@ -53,10 +70,6 @@ namespace game {
             return this.gamePhase === GamePhase.playerTurn;
         }
 
-        getPlayerShipsCount() {
-            const shipsInRows = this.playerBoard.map(row => row.count(cell => cell === CellState.ship));
-            return shipsInRows.reduce((acc: number, el: number) => acc + el);
-        }
 
 
         setIn(keyPath: Array<any>, value: any): GameState;

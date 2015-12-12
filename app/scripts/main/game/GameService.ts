@@ -10,7 +10,7 @@ namespace game {
 
         joinGame(onSuccess: (gameId: string, playerId: string) => void): void;
 
-        submitPlayerBoard(gameId: string, playerBoard: Immutable.List<Immutable.List<CellState>>,
+        submitPlayerBoard(gameId: string, playerBoard: GameBoard,
                           onSuccess: () => void, onFailure: (errors: string[]) => void): void;
 
         waitForOpponentToJoin(gameId: string,
@@ -30,15 +30,15 @@ namespace game {
 
     export class MockGameService implements GameService {
 
-        private playerBoard: Immutable.List<Immutable.List<game.CellState>>;
-        private opponentBoard: Immutable.List<Immutable.List<game.CellState>>;
+        private playerBoard: GameBoard;
+        private opponentBoard: GameBoard;
 
 
         joinGame(onSuccess:(gameId:string, playerId: string)=>void) {
             onSuccess("someGameId", "somePlayerId");
         }
 
-        submitPlayerBoard(gameId:string, playerBoard:Immutable.List<Immutable.List<game.CellState>>,
+        submitPlayerBoard(gameId:string, playerBoard:GameBoard,
                           onSuccess:()=>void, onFailure: (errors: string[]) => void) {
             this.playerBoard = playerBoard;
             onSuccess();

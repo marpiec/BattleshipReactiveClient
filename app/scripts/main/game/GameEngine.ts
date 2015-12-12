@@ -15,7 +15,7 @@ namespace game {
         submitBoard(state:GameState):GameState {
             throw PhaseHandler.NotAllowed;
         }
-        opponentBoardSubmitted(state: GameState, opponentBoard: Immutable.List<Immutable.List<CellState>>, newPhase: GamePhase):GameState {
+        opponentBoardSubmitted(state: GameState, opponentBoard: GameBoard, newPhase: GamePhase):GameState {
             throw PhaseHandler.NotAllowed;
         }
         playerShoot(state: GameState, x: number, y: number):GameState {
@@ -42,15 +42,15 @@ namespace game {
 
         toggleCell(state: game.GameState, x: number, y: number): game.GameState {
             console.log(" playerBoard "+state.playerBoard);
-            const currentCellState:CellState = state.playerBoard.get(y).get(x);
+            const currentCellState:CellState = state.playerBoard.rows.get(y).get(x);
             const newCellState = currentCellState === CellState.empty ? CellState.ship : CellState.empty;
 
-            return Lens.setIn(Lens.of(state).playerBoard.get(y).get(x), newCellState);
+            return Lens.setIn(Lens.of(state).playerBoard.rows.get(y).get(x), newCellState);
         }
 
         submitBoard(state: game.GameState): game.GameState {
 
-            const ships = this.countShipsInBoard(state.playerBoard);
+            const ships = state.playerBoard.getShipsCount();
 
             if(ships === 10) {
                 this.gameService.submitPlayerBoard(state.gameId, state.playerBoard, () => {
@@ -66,10 +66,6 @@ namespace game {
             }
         }
 
-        private countShipsInBoard(board: Immutable.List<Immutable.List<CellState>>): number {
-            const shipsInRows = board.map(row => row.count(cell => cell === CellState.ship));
-            return shipsInRows.reduce((acc: number, el: number) => acc + el);
-        };
     }
 
 
@@ -86,7 +82,7 @@ namespace game {
             return GamePhase.waitForSecondPlayer;
         }
 
-        opponentBoardSubmitted(state:game.GameState, opponentBoard:Immutable.List<Immutable.List<game.CellState>>, newPhase: GamePhase):GameState {
+        opponentBoardSubmitted(state:game.GameState, opponentBoard:GameBoard, newPhase: GamePhase):GameState {
             const withBoard = Lens.setIn(Lens.of(state).opponentBoard, opponentBoard);
             return Lens.setIn(Lens.of(withBoard).gamePhase, newPhase);
         }
