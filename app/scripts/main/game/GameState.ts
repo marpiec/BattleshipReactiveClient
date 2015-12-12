@@ -53,6 +53,10 @@ namespace game {
             return this.gamePhase === GamePhase.playerTurn;
         }
 
+        getPlayerShipsCount() {
+            const shipsInRows = this.playerBoard.map(row => row.count(cell => cell === CellState.ship));
+            return shipsInRows.reduce((acc: number, el: number) => acc + el);
+        }
 
 
         setIn(keyPath: Array<any>, value: any): GameState;

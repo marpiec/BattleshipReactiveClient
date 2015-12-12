@@ -74,6 +74,8 @@ namespace gameView {
                     <p>Game page</p>
                     <p>Game Phase: <span>{this.phaseNames.get(this.state.gameState.gamePhase)}</span></p>
                     <p>Game Id: <span>{this.props.params.gameId}</span></p>
+                    {this.isInitPlayerBoardPhase() &&
+                        <p>Ships to place left {10 - this.state.gameState.getPlayerShipsCount()}</p>}
                     <GameBoardView board={this.state.gameState.playerBoard} gameInterface={this.gameInterface} active={this.state.gameState.playerBoardActive} />
                     <GameBoardView board={this.state.gameState.opponentBoard} gameInterface={this.gameInterface} active={this.state.gameState.opponentBoardActive} />
                     {this.isInitPlayerBoardPhase() &&
