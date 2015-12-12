@@ -52,12 +52,12 @@ gulp.task('scripts-libs', ['bower'], function() {
 gulp.task('scripts', ['bower'], function () {
 
     var tsResult = gulp.src([appDir('scripts/main/**/*.ts*'), appDir('scripts/main/libs.d/**/*.d.ts')])
+        .pipe(sourcemaps.init()) // This means sourcemaps will be generated
         .pipe(ts({
             'module': 'amd',
             'noImplicitAny': true,
             'removeComments': true,
             'preserveConstEnums': true,
-            'sourceMap': true,
             'declaration': true,
             'target': 'ES5',
             'jsx': 'React',
@@ -71,7 +71,10 @@ gulp.task('scripts', ['bower'], function () {
 
     return merge([
         tsResult.dts.pipe(concat('main.d.ts')).pipe(gulp.dest(releaseTmpDir('scripts'))),
-        tsResult.js.pipe(concat('main.js')).pipe(gulp.dest(releaseTmpDir('scripts')))
+        tsResult.js
+            .pipe(concat('main.js'))
+            .pipe(sourcemaps.write("../maps")) // Now the sourcemaps are added to the .js file
+            .pipe(gulp.dest(releaseTmpDir('scripts')))
     ]);
 });
 
@@ -86,7 +89,6 @@ gulp.task('test-scripts', function () {
             'noImplicitAny': true,
             'removeComments': true,
             'preserveConstEnums': true,
-            'sourceMap': true,
             'declaration': true,
             'target': 'ES5',
             'jsx': 'React',
