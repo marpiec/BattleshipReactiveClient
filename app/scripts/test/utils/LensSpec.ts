@@ -73,9 +73,6 @@ namespace LensSpec {
 
             const someList = Immutable.List<string>(["hello", "world"]);
 
-            console.log(Lens.of(someList));
-            console.log(Lens.of(someList).get(1));
-
             const newList: Immutable.List<string> = Lens.setIn(Lens.of(someList).get(1), "Mars");
 
             expect(newList.get(0)).toBe("hello");
