@@ -8,21 +8,15 @@ namespace game {
 
     export interface GameService {
 
+        listenOnServerEvents(gameId: string, onEvent: (event: GameEvent) => void);
+
         joinGame(onSuccess: (gameId: string, playerId: string) => void): void;
 
         submitPlayerBoard(gameId: string, playerBoard: GameBoard,
                           onSuccess: () => void, onFailure: (errors: string[]) => void): void;
 
-        waitForOpponentToJoin(gameId: string,
-                              onOpponentJoined: (newGamePhase: GamePhase) => void,
-                              onOpponentNotYetJoined: () => void): void;
-
         shoot(gameId: string, x: number, y: number,
-              onSuccess: (shootResult: ShootResult, newGamePhase: GamePhase) => void): void;
-
-        waitForOpponentShot(gameId: string,
-                            onOpponentShot: (x: number, y: number, newGamePhase: GamePhase) => void,
-                            onOpponentNotYetShot: () => void): void;
+              onSuccess: (shootResult: ShotResult, newGamePhase: GamePhase) => void): void;
 
 
     }
@@ -33,37 +27,35 @@ namespace game {
         private playerBoard: GameBoard;
         private opponentBoard: GameBoard;
 
+        private eventsCounter = 1;
+        private onServerEvent: (event: GameEvent) => void;
+
+        listenOnServerEvents(gameId: string, onEvent: (event: GameEvent) => void) {
+            this.onServerEvent = onEvent;
+        }
 
         joinGame(onSuccess:(gameId:string, playerId: string)=>void) {
             onSuccess("someGameId", "somePlayerId");
+            this.onServerEvent(new JoinedGame().init(this.eventsCounter++, "someGameId", "somePlayerId"));
         }
 
         submitPlayerBoard(gameId:string, playerBoard:GameBoard,
                           onSuccess:()=>void, onFailure: (errors: string[]) => void) {
             this.playerBoard = playerBoard;
             onSuccess();
-        }
+            this.onServerEvent(new PlayerBoardSubmitted().init(this.eventsCounter++, playerBoard, GamePhase.waitForSecondPlayer));
 
-        waitForOpponentToJoin(gameId:string,
-                              onOpponentJoined:(newGamePhase:game.GamePhase)=>void,
-                              onOpponentNotYetJoined:()=>void) {
-            this.opponentBoard = this.playerBoard;
-
-            const newPhase = [GamePhase.playerTurn, GamePhase.opponentTurn][Math.floor(Math.random() * 2)];
-
-            onOpponentJoined(newPhase);
+            setTimeout(() => {
+                const newPhase = [GamePhase.playerTurn, GamePhase.opponentTurn][Math.floor(Math.random() * 2)];
+                this.onServerEvent(new OpponentJoined().init(this.eventsCounter++, newPhase));
+            }, 5000); //wait 5 seconds for opponent to join
         }
 
         shoot(gameId:string, x:number, y:number,
-              onSuccess:(shootResult:game.ShootResult, newGamePhase:game.GamePhase)=>void) {
+              onSuccess:(shootResult:game.ShotResult, newGamePhase:game.GamePhase)=>void) {
             throw new Error("Not yet implemented");
         }
 
-        waitForOpponentShot(gameId:string,
-                            onOpponentShot:(x:number, y:number, newGamePhase:game.GamePhase)=>void,
-                            onOpponentNotYetShot:()=>void) {
-            throw new Error("Not yet implemented");
-        }
     }
 
 

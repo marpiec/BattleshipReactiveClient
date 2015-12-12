@@ -2,7 +2,7 @@ namespace game {
 
     const GAME_BOARD_SIZE = 10;
 
-    export const enum ShootResult {hit, miss, invalid}
+    export const enum ShotResult {hit, miss, invalid}
 
     export const enum CellState {empty, miss, ship, hit}
 
