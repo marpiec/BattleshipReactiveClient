@@ -1,9 +1,24 @@
 namespace game {
 
     const GAME_BOARD_SIZE = 10;
+
+    export const enum ShootResult {hit, miss, invalid}
+
     export const enum CellState {empty, miss, ship, hit}
 
-    export const enum GamePhase {initPlayerBoard, waitForSecondPlayer, playerTurn, otherPlayerTurn, gameEnded}
+    export const enum GamePhase {initPlayerBoard, waitForSecondPlayer, playerTurn, opponentTurn, playerWon, opponentWon}
+
+    export class GameId {
+        private _gameId: string;
+
+        constructor(gameId:string) {
+            this._gameId = gameId;
+        }
+
+        get gameId():string {
+            return this._gameId;
+        }
+    }
 
     const EMPTY_BOARD = createEmptyBoard();
     function createEmptyBoard():Immutable.List<Immutable.List<CellState>> {

@@ -46,7 +46,7 @@ namespace gameView {
         phaseNames = Immutable.Map<GamePhase, string>([[GamePhase.initPlayerBoard, "Place your ships."],
                                                        [GamePhase.waitForSecondPlayer, "Please wait for second player."],
                                                        [GamePhase.playerTurn, "Your turn."],
-                                                       [GamePhase.otherPlayerTurn, "Opponent's turn."],
+                                                       [GamePhase.opponentTurn, "Opponent's turn."],
                                                        [GamePhase.gameEnded, "End of game"]]);
 
 

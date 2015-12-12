@@ -7,11 +7,22 @@ namespace game {
 
         abstract getPhase(): GamePhase;
 
+        private static NotAllowed = new Error("Method not allowed in this phase");
+
         toggleCell(state:GameState, x:number, y:number):GameState {
-            throw "Method not allowed in this phase";
+            throw PhaseHandler.NotAllowed;
         }
         submitBoard(state:GameState):GameState {
-            throw "Method not allowed in this phase";
+            throw PhaseHandler.NotAllowed;
+        }
+        opponentBoardSubmitted(state: GameState, opponentBoard: Immutable.List<Immutable.List<CellState>>, newPhase: GamePhase):GameState {
+            throw PhaseHandler.NotAllowed;
+        }
+        playerShoot(state: GameState, x: number, y: number):GameState {
+            throw PhaseHandler.NotAllowed;
+        }
+        opponentShoot(state: GameState, x: number, y: number):GameState {
+            throw PhaseHandler.NotAllowed;
         }
     }
 
@@ -49,9 +60,43 @@ namespace game {
     }
 
 
+    export class WaitForSecondPlayerHandler extends PhaseHandler {
+
+        getPhase() {
+            return GamePhase.initPlayerBoard;
+        }
+
+        opponentBoardSubmitted(state:game.GameState, opponentBoard:Immutable.List<Immutable.List<game.CellState>>, newPhase: GamePhase):GameState {
+            const withBoard = Lens.setIn(Lens.of(state).opponentBoard, opponentBoard);
+            return Lens.setIn(Lens.of(withBoard).gamePhase, newPhase);
+        }
+    }
+
+    export class PlayerTurnHandler extends PhaseHandler {
+        getPhase() {
+            return GamePhase.playerTurn;
+        }
+
+        playerShoot(state:game.GameState, x:number, y:number):GameState {
+            return state;
+        }
+    }
+
+    export class OpponentTurnHandler extends PhaseHandler {
+        getPhase() {
+            return GamePhase.opponentTurn;
+        }
+
+
+        opponentShoot(state:game.GameState, x:number, y:number):GameState {
+            return return state;
+        }
+    }
+
     export class GameEngine {
 
-        private static phaseHandlers = GameEngine.initPhaseHandlers(new InitPlayerBoardHandler());
+        private static phaseHandlers = GameEngine.initPhaseHandlers(new InitPlayerBoardHandler(), new WaitForSecondPlayerHandler(),
+                                                                    new PlayerTurnHandler(), new OpponentTurnHandler());
 
         private static initPhaseHandlers(...handlers: PhaseHandler[]): {[phase: number]: PhaseHandler} {
             const phaseHandlers:{[phase: number]: PhaseHandler} = {};
