@@ -87,9 +87,11 @@ namespace gameView {
                  const gameState = this.gameEngine.getPhaseHandler(this.state.gameState).opponentBoardSubmitted(this.state.gameState, event.newGamePhase);
                  this.setState(new GamePageState(gameState));
                } else if (PlayerShot.is(event)) {
-
+                   const gameState = this.gameEngine.getPhaseHandler(this.state.gameState).playerShot(this.state.gameState, event.x, event.y, event.result, event.newGamePhase);
+                   this.setState(new GamePageState(gameState));
                } else if (OpponentShot.is(event)) {
-
+                   const gameState = this.gameEngine.getPhaseHandler(this.state.gameState).opponentShot(this.state.gameState, event.x, event.y, event.result, event.newGamePhase);
+                   this.setState(new GamePageState(gameState));
                } else {
                    throw new Error("Unsupported event type " + JSON.stringify(event));
                }

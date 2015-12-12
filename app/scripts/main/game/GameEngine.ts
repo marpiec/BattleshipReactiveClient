@@ -18,10 +18,10 @@ namespace game {
         opponentBoardSubmitted(state: GameState, newPhase: GamePhase):GameState {
             throw PhaseHandler.NotAllowed;
         }
-        playerShot(state: GameState, x: number, y: number):GameState {
+        playerShot(state: GameState, x: number, y: number, result: ShotResult, newPhase: GamePhase):GameState {
             throw PhaseHandler.NotAllowed;
         }
-        opponentShot(state: GameState, x: number, y: number):GameState {
+        opponentShot(state: GameState, x: number, y: number, result: ShotResult, newPhase: GamePhase):GameState {
             throw PhaseHandler.NotAllowed;
         }
     }
