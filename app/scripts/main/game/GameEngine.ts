@@ -64,8 +64,8 @@ namespace game {
             return GamePhase.playerTurn;
         }
 
-        playerShot(state:game.GameState, x:number, y:number):GameState {
-            return state;
+        playerShot(state: GameState, x: number, y: number, result: ShotResult, newPhase: GamePhase):GameState {
+            return Lens.setIn(Lens.of(state).gamePhase, newPhase);
         }
     }
 
@@ -75,8 +75,8 @@ namespace game {
             return GamePhase.opponentTurn;
         }
 
-        opponentShot(state:game.GameState, x:number, y:number):GameState {
-            return state;
+        opponentShot(state: GameState, x: number, y: number, result: ShotResult, newPhase: GamePhase):GameState {
+            return Lens.setIn(Lens.of(state).gamePhase, newPhase);
         }
     }
 

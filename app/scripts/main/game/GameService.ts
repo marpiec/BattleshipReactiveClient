@@ -45,17 +45,43 @@ namespace game {
             onSuccess();
             this.onServerEvent(new PlayerBoardSubmitted().init(this.eventsCounter++, playerBoard, GamePhase.waitForSecondPlayer));
 
-            setTimeout(() => {
-                const newPhase = [GamePhase.playerTurn, GamePhase.opponentTurn][Math.floor(Math.random() * 2)];
-                this.onServerEvent(new OpponentJoined().init(this.eventsCounter++, newPhase));
-            }, 2000); //wait 2 seconds for opponent to join
+            setTimeout(() => this.opponentJoin(playerBoard), 2000); //wait 2 seconds for opponent to join
         }
+
 
         shoot(gameId:string, x:number, y:number,
               onSuccess:(shootResult:game.ShotResult, newGamePhase:game.GamePhase)=>void) {
-            throw new Error("Not yet implemented");
+            const cellState = this.opponentBoard.rows.get(y).get(x);
+            if(cellState === CellState.ship) {
+                onSuccess(ShotResult.hit, GamePhase.opponentTurn);
+                setTimeout(() => this.opponentTurn(), 2000); //wait 2 seconds for opponent turn
+            } else {
+                onSuccess(ShotResult.miss, GamePhase.opponentTurn);
+                setTimeout(() => this.opponentTurn(), 2000); //wait 2 seconds for opponent turn
+            }
         }
 
+        private opponentJoin(opponentBoard: GameBoard) {
+            this.opponentBoard = opponentBoard;
+            const newPhase = [GamePhase.playerTurn, GamePhase.opponentTurn][Math.floor(Math.random() * 2)];
+            this.onServerEvent(new OpponentJoined().init(this.eventsCounter++, newPhase));
+            if(newPhase === GamePhase.opponentTurn) {
+                setTimeout(() => this.opponentTurn(), 2000); //wait 2 seconds for opponent turn
+            }
+        }
+
+
+        private opponentTurn() {
+            const y = Math.floor(Math.random() * 10);
+            const x = Math.floor(Math.random() * 10);
+            const cellState = this.playerBoard.rows.get(y).get(x);
+            if(cellState === CellState.ship) {
+                this.onServerEvent(new OpponentShot().init(this.eventsCounter++, x, y, ShotResult.hit, GamePhase.playerTurn));
+            } else {
+                this.onServerEvent(new OpponentShot().init(this.eventsCounter++, x, y, ShotResult.miss, GamePhase.playerTurn));
+            }
+
+        }
     }
 
 

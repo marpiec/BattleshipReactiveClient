@@ -19,6 +19,7 @@ namespace gameView {
     import OpponentShot = game.OpponentShot;
     import PlayerShot = game.PlayerShot;
     import OpponentJoined = game.OpponentJoined;
+    import ShotResult = game.ShotResult;
 
     export class GamePageParams {
         gameId: string;
@@ -62,8 +63,10 @@ namespace gameView {
                 });
             },
             shoot: (x: number, y: number) => {
-                this.gameService.shoot(this.state.gameState.gameId, x, y, () => {
-                    console.log("Handle submitPlayerBoard success");
+                this.gameService.shoot(this.state.gameState.gameId, x, y, (shootResult: ShotResult, newGamePhase: GamePhase) => {
+                    console.log("Handle shoot success " + shootResult);
+                    const gameState = this.gameEngine.getPhaseHandler(this.state.gameState).playerShot(this.state.gameState, x, y, shootResult, newGamePhase);
+                    this.setState(new GamePageState(gameState));
                 });
             }
         };
@@ -97,6 +100,7 @@ namespace gameView {
                    const gameState = this.gameEngine.getPhaseHandler(this.state.gameState).playerShot(this.state.gameState, event.x, event.y, event.result, event.newGamePhase);
                    this.setState(new GamePageState(gameState));
                } else if (OpponentShot.is(event)) {
+                   console.log(`Opponent shoot ${event.x} ${event.y} ${event.newGamePhase}`);
                    const gameState = this.gameEngine.getPhaseHandler(this.state.gameState).opponentShot(this.state.gameState, event.x, event.y, event.result, event.newGamePhase);
                    this.setState(new GamePageState(gameState));
                } else {
