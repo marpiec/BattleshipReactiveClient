@@ -105,19 +105,32 @@ namespace gameView {
         }
 
         render() {
+//{this.renderRemainingShips()}
             return (
                 <div className="gamePage">
                     <p>Game page</p>
                     <p>Game Phase: <span>{this.phaseNames.get(this.state.gameState.gamePhase)}</span></p>
                     <p>Game Id: <span>{this.props.params.gameId}</span></p>
                     {this.isInitPlayerBoardPhase() &&
-                        <p>Ships to place left {10 - this.state.gameState.playerBoard.getShipsCount()}</p>}
-                    <GameBoardComponent board={this.state.gameState.playerBoard} gameInterface={this.gameInterface} active={this.state.gameState.playerBoardActive} />
-                    <GameBoardComponent board={this.state.gameState.opponentBoard} gameInterface={this.gameInterface} active={this.state.gameState.opponentBoardActive} />
+                        this.renderRemainingShips()}
+                    <GameBoardComponent label={"Your board"} board={this.state.gameState.playerBoard} gameInterface={this.gameInterface} active={this.state.gameState.playerBoardActive} />
+                    <GameBoardComponent label={"Opponents board"} board={this.state.gameState.opponentBoard} gameInterface={this.gameInterface} active={this.state.gameState.opponentBoardActive} />
                     {this.isInitPlayerBoardPhase() &&
                         <button onClick={this.submitBoard.bind(this)}>Submit your board</button>}
                 </div>
             )
+        }
+
+        renderRemainingShips() {
+            const remainingShips = 10 - this.state.gameState.playerBoard.getShipsCount();
+            return (
+                <div className="remainingShips">
+                    <p>Ships to place left {remainingShips}</p>
+                    {Immutable.Range(0, remainingShips).map(i =>
+                        <div className="remainingShip"></div>
+                    )}
+                </div>
+            );
         }
 
         isInitPlayerBoardPhase() {

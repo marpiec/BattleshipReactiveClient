@@ -11,61 +11,71 @@
 
   $cellSize: 4rem;
 
-  border: solid #555;
-  border-width: 0 1px 1px 0;
+
   display: inline-block;
   margin: $cellSize;
 
-  .boardRow {
-    height: $cellSize;
-    .boardCell {
-      width: $cellSize;
+  .board {
+    border: solid #555;
+    border-width: 0 1px 1px 0;
+    .boardRow {
       height: $cellSize;
-      border: solid $gridBorderColor;
-      border-width: 1px 0 0 1px;
-      display: inline-block;
-      cursor: default;
+      .boardCell {
+        width: $cellSize;
+        height: $cellSize;
+        border: solid $gridBorderColor;
+        border-width: 1px 0 0 1px;
+        display: inline-block;
+        cursor: default;
 
+        &.empty {
+          background-color: $cellEmptyColor;
+        }
 
+        &.ship {
+          background-color: $cellShipColor;
+        }
 
+        &.miss {
+          background-color: $cellMissColor;
+        }
 
-      &.empty {
-        background-color: $cellEmptyColor;
-        &:active {
-          background-color: #aaa;
+        &.hit {
+          background-color: $cellHitColor;
         }
       }
 
-      &.ship {
-        background-color: $cellShipColor;
-      }
-
-      &.miss {
-        background-color: $cellMissColor;
-      }
-
-      &.hit {
-        background-color: $cellHitColor;
-      }
     }
-
   }
 
   &.active {
 
+    .board {
 
-    .boardRow {
-      .boardCell {
-        cursor: pointer;
-        &:hover {
-          opacity: 0.5;
-        }
+      .boardRow {
+        .boardCell {
+          cursor: pointer;
 
-        &.pressed {
-          background-color: $cellShipColor;
+          &.empty {
+            &:active {
+              background-color: #aaa;
+            }
+          }
+
+          &:hover {
+            opacity: 0.5;
+          }
+
+          &.pressed {
+            background-color: $cellShipColor;
+          }
         }
       }
     }
+  }
+
+  &.inactive {
+    opacity: 0.5;
   }
 
 

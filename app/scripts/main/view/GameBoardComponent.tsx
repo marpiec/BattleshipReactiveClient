@@ -26,6 +26,7 @@ namespace gameView {
 
     export class GameBoardViewProps {
         active: boolean;
+        label: string;
         board: GameBoard;
         gameInterface: GameInterface;
     }
@@ -57,10 +58,13 @@ namespace gameView {
         }
 
         render() {
-            const boardClasses = classNames("gameBoardComponent", {active: this.props.active});
+            const boardClasses = classNames("gameBoardComponent", {active: this.props.active, inactive: !this.props.active});
             return (
                 <div className={boardClasses}>
-                    {this.renderRows(this.props.board.rows)}
+                    <div className="boardLabel">{this.props.label}</div>
+                    <div className="board">
+                        {this.renderRows(this.props.board.rows)}
+                    </div>
                 </div>
             );
         }
