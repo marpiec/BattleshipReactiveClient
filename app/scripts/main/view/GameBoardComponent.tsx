@@ -52,11 +52,6 @@ namespace gameView {
             }
         }
 
-        cellIsPressed(x: number, y: number) {
-            const cellDown = this.state.cellDown;
-            return cellDown.isPresent && cellDown.value.x === x && cellDown.value.y === y;
-        }
-
         render() {
             const boardClasses = classNames("gameBoardComponent", {active: this.props.active, inactive: !this.props.active});
             return (
@@ -95,8 +90,7 @@ namespace gameView {
 
         renderCells(y: number, cells: Immutable.List<CellState>) {
             return cells.map((cell: CellState, x: number) => {
-                const cellClasses: string = classNames("boardCell", this.cellToClassName(cell),
-                    {pressed: this.cellIsPressed(x, y)});
+                const cellClasses: string = classNames("boardCell", this.cellToClassName(cell));
                 return (
                     <div className={cellClasses} key={x}
                          onClick={this.cellClicked.bind(this, x, y)}>
