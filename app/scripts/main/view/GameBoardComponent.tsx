@@ -40,17 +40,13 @@ namespace gameView {
     }
 
 
-    export class GameBoardComponent extends React.Component<GameBoardViewProps, GameBoardViewState> {
+    export abstract class GameBoardComponent extends React.Component<GameBoardViewProps, GameBoardViewState> {
         constructor(props: GameBoardViewProps) {
             super(props);
             this.state = new GameBoardViewState(None);
         }
 
-        cellClicked(x: number, y: number) {
-            if (this.props.active) {
-                this.props.gameInterface.toggleCell(x, y);
-            }
-        }
+        abstract cellClicked(x: number, y: number): void;
 
         render() {
             const boardClasses = classNames("gameBoardComponent", {active: this.props.active, inactive: !this.props.active});

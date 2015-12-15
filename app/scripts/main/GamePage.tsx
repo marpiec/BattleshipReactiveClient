@@ -2,7 +2,8 @@
 /// <reference path="game/GameState.ts"/>
 /// <reference path="game/GameService.ts"/>
 /// <reference path="game/GameEngine.ts"/>
-/// <reference path="view/GameBoardComponent.tsx"/>
+/// <reference path="view/PlayerGameBoardComponent.tsx"/>
+/// <reference path="view/OpponentGameBoardComponent.tsx"/>
 
 namespace gameView {
 
@@ -40,6 +41,7 @@ namespace gameView {
     export interface GameInterface {
         toggleCell(x: number, y: number): void;
         submitBoard(): void;
+        shoot(x: number, y: number): void;
     }
 
     export class GamePage extends React.Component<GamePageProps, GamePageState> {
@@ -57,6 +59,11 @@ namespace gameView {
                    console.log("Handle submitPlayerBoard success");
                 }, () => {
                     console.log("Handle submitPlayerBoard failure");
+                });
+            },
+            shoot: (x: number, y: number) => {
+                this.gameService.shoot(this.state.gameState.gameId, x, y, () => {
+                    console.log("Handle submitPlayerBoard success");
                 });
             }
         };
@@ -105,7 +112,6 @@ namespace gameView {
         }
 
         render() {
-//{this.renderRemainingShips()}
             return (
                 <div className="gamePage">
                     <p>Game page</p>
@@ -113,8 +119,8 @@ namespace gameView {
                     <p>Game Id: <span>{this.props.params.gameId}</span></p>
                     {this.isInitPlayerBoardPhase() &&
                         this.renderRemainingShips()}
-                    <GameBoardComponent label={"Your board"} board={this.state.gameState.playerBoard} gameInterface={this.gameInterface} active={this.state.gameState.playerBoardActive} />
-                    <GameBoardComponent label={"Opponents board"} board={this.state.gameState.opponentBoard} gameInterface={this.gameInterface} active={this.state.gameState.opponentBoardActive} />
+                    <PlayerGameBoardComponent label={"Your board"} board={this.state.gameState.playerBoard} gameInterface={this.gameInterface} active={this.state.gameState.playerBoardActive} />
+                    <OpponentGameBoardComponent label={"Opponents board"} board={this.state.gameState.opponentBoard} gameInterface={this.gameInterface} active={this.state.gameState.opponentBoardActive} />
                     {this.isInitPlayerBoardPhase() &&
                         <button onClick={this.submitBoard.bind(this)}>Submit your board</button>}
                 </div>
@@ -127,7 +133,7 @@ namespace gameView {
                 <div className="remainingShips">
                     <p>Ships to place left {remainingShips}</p>
                     {Immutable.Range(0, remainingShips).map(i =>
-                        <div className="remainingShip"></div>
+                        <div className="remainingShip" key={i}></div>
                     )}
                 </div>
             );

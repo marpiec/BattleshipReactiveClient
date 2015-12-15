@@ -48,7 +48,7 @@ namespace game {
             setTimeout(() => {
                 const newPhase = [GamePhase.playerTurn, GamePhase.opponentTurn][Math.floor(Math.random() * 2)];
                 this.onServerEvent(new OpponentJoined().init(this.eventsCounter++, newPhase));
-            }, 5000); //wait 5 seconds for opponent to join
+            }, 2000); //wait 2 seconds for opponent to join
         }
 
         shoot(gameId:string, x:number, y:number,
