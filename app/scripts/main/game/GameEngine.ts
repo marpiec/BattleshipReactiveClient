@@ -65,7 +65,17 @@ namespace game {
         }
 
         playerShot(state: GameState, x: number, y: number, result: ShotResult, newPhase: GamePhase):GameState {
-            return Lens.setIn(Lens.of(state).gamePhase, newPhase);
+
+            let newCellState: CellState;
+            if(result === ShotResult.hit) {
+                newCellState = CellState.hit;
+            } else {
+                newCellState = CellState.miss;
+            }
+
+            const withShot = Lens.setIn(Lens.of(state).opponentBoard.rows.get(y).get(x), newCellState);
+
+            return Lens.setIn(Lens.of(withShot).gamePhase, newPhase);
         }
     }
 
@@ -76,7 +86,18 @@ namespace game {
         }
 
         opponentShot(state: GameState, x: number, y: number, result: ShotResult, newPhase: GamePhase):GameState {
-            return Lens.setIn(Lens.of(state).gamePhase, newPhase);
+
+            let newCellState: CellState;
+            if(result === ShotResult.hit) {
+                newCellState = CellState.hit;
+            } else {
+                newCellState = CellState.miss;
+            }
+
+            const withShot = Lens.setIn(Lens.of(state).playerBoard.rows.get(y).get(x), newCellState);
+
+
+            return Lens.setIn(Lens.of(withShot).gamePhase, newPhase);
         }
     }
 
