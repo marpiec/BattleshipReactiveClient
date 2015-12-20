@@ -41,6 +41,9 @@ namespace gameView {
 
 
     export abstract class GameBoardComponent extends React.Component<GameBoardViewProps, GameBoardViewState> {
+
+        private static COLUMN_LABELS = ["", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
+
         constructor(props: GameBoardViewProps) {
             super(props);
             this.state = new GameBoardViewState(None);
@@ -54,15 +57,25 @@ namespace gameView {
                 <div className={boardClasses}>
                     <div className="boardLabel">{this.props.label}</div>
                     <div className="board">
+                        {this.renderColumnsHeader()}
                         {this.renderRows(this.props.board.rows)}
                     </div>
                 </div>
             );
         }
 
+        renderColumnsHeader() {
+            return (
+                <div className="boardColumnsHeader">
+                    {Immutable.Range(0, GameBoardComponent.COLUMN_LABELS.length).map(i =>
+                    <div className="columnHeader" key={i}>{GameBoardComponent.COLUMN_LABELS[i]}</div>)}
+                </div>);
+        }
+
         renderRows(board: Immutable.List<Immutable.List<CellState>>) {
             return board.map((cells: Immutable.List<CellState>, y: number) => (
                 <div className="boardRow" key={y}>
+                    <div className="rowLabel">{y + 1}</div>
                     {this.renderCells(y, cells)}
                 </div>
             ));

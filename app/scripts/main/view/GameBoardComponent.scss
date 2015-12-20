@@ -16,10 +16,17 @@
   margin: $cellSize;
 
   .board {
-    border: solid #555;
-    border-width: 0 1px 1px 0;
     .boardRow {
       height: $cellSize;
+
+      .rowLabel {
+        width: $cellSize;
+        height: $cellSize;
+        display: inline-block;
+        text-align: center;
+        overflow: hidden;
+        line-height: $cellSize;
+      }
       .boardCell {
         width: $cellSize;
         height: $cellSize;
@@ -27,6 +34,10 @@
         border-width: 1px 0 0 1px;
         display: inline-block;
         cursor: default;
+
+        &:last-child {
+          border-right-width: 1px;
+        }
 
         &.empty {
           background-color: $cellEmptyColor;
@@ -45,6 +56,24 @@
         }
       }
 
+      &:last-child {
+        .boardCell {
+          border-bottom-width: 1px;
+        }
+      }
+
+    }
+
+    .boardColumnsHeader {
+      height: $cellSize;
+      .columnHeader {
+        width: $cellSize;
+        height: $cellSize;
+        display: inline-block;
+        text-align: center;
+        overflow: hidden;
+        line-height: $cellSize;
+      }
     }
   }
 
