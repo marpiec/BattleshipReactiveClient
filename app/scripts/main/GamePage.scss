@@ -1,6 +1,17 @@
+$cellEmptyColor: #f0f8fa;
+$cellHoverColor: #fafafa;
+$cellShipColor: #999;
+$cellMissColor: #ffffff;
+$cellHitColor: #ecb182;
+$gridBorderColor: #555;
+
+$cellSize: 4rem;
+
 .gamePage {
 
+
   @import "view/GameBoardComponent";
+  @import "view/ShipsPaletteComponent";
 
   .remainingShip {
     width: 2rem;

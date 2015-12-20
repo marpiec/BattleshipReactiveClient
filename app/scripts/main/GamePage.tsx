@@ -4,6 +4,7 @@
 /// <reference path="game/GameEngine.ts"/>
 /// <reference path="view/PlayerGameBoardComponent.tsx"/>
 /// <reference path="view/OpponentGameBoardComponent.tsx"/>
+/// <reference path="view/ShipsPaletteComponent.tsx"/>
 
 namespace gameView {
 
@@ -121,27 +122,16 @@ namespace gameView {
                     <p>Game page</p>
                     <p>Game Phase: <span>{this.phaseNames.get(this.state.gameState.gamePhase)}</span></p>
                     <p>Game Id: <span>{this.props.params.gameId}</span></p>
-                    {this.isInitPlayerBoardPhase() &&
-                        this.renderRemainingShips()}
                     <PlayerGameBoardComponent label={"Your board"} board={this.state.gameState.playerBoard} gameInterface={this.gameInterface} active={this.state.gameState.playerBoardActive} />
                     <OpponentGameBoardComponent label={"Opponents board"} board={this.state.gameState.opponentBoard} gameInterface={this.gameInterface} active={this.state.gameState.opponentBoardActive} />
+                    <ShipsPaletteComponent ships={this.state.gameState.shipsPalette}/>
                     {this.isInitPlayerBoardPhase() &&
                         <button onClick={this.submitBoard.bind(this)}>Submit your board</button>}
                 </div>
             )
         }
 
-        renderRemainingShips() {
-            const remainingShips = 10 - this.state.gameState.playerBoard.getShipsCount();
-            return (
-                <div className="remainingShips">
-                    <p>Ships to place left {remainingShips}</p>
-                    {Immutable.Range(0, remainingShips).map(i =>
-                        <div className="remainingShip" key={i}></div>
-                    )}
-                </div>
-            );
-        }
+
 
         isInitPlayerBoardPhase() {
             return this.state.gameState.gamePhase === GamePhase.initPlayerBoard;

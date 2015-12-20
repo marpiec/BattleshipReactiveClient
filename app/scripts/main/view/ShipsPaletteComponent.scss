@@ -1,0 +1,23 @@
+.shipsPalette {
+
+  white-space: nowrap;
+
+  .ship {
+    display: inline-block;
+    width: $cellSize;
+    margin-right: $cellSize / 2;
+    vertical-align: top;
+
+    .shipCell {
+      width: $cellSize;
+      height: $cellSize;
+      border: solid $gridBorderColor;
+      border-width: 1px 1px 0 1px;
+      background-color: $cellShipColor;
+
+      &:last-child {
+        border-bottom-width: 1px;
+      }
+    }
+  }
+}

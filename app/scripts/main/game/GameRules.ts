@@ -1,16 +1,16 @@
 namespace game {
 
     export class ShipsCount {
-        private _size:number;
+        private _length:number;
         private _count:number;
 
-        constructor(size:number, count:number) {
-            this._size = size;
+        constructor(length:number, count:number) {
+            this._length = length;
             this._count = count;
         }
 
-        get size():number {
-            return this._size;
+        get length():number {
+            return this._length;
         }
 
         get count():number {
@@ -21,10 +21,10 @@ namespace game {
     export class GameRules {
         static GAME_BOARD_SIZE = 10;
 
-        static SHIPS_SIZES = [new ShipsCount(1, 4),
-                              new ShipsCount(2, 3),
-                              new ShipsCount(3, 2),
-                              new ShipsCount(4, 1)];
+        static SHIPS_SIZES: Immutable.List<ShipsCount> = Immutable.List([new ShipsCount(1, 4),
+                                                new ShipsCount(2, 3),
+                                                new ShipsCount(3, 2),
+                                                new ShipsCount(4, 1)]);
 
     }
 
