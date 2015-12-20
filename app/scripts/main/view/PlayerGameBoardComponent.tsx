@@ -4,7 +4,7 @@ namespace gameView {
 
     export class PlayerGameBoardComponent extends GameBoardComponent {
 
-        constructor(props: GameBoardViewProps) {
+        constructor(props: GameBoardProps) {
             super(props);
         }
 

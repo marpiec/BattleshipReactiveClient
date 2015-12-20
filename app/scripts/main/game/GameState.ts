@@ -1,6 +1,8 @@
+/// <reference path="GameRules.ts"/>
+
 namespace game {
 
-    const GAME_BOARD_SIZE = 10;
+
 
     export const enum ShotResult {hit, miss, invalid}
 
@@ -16,8 +18,8 @@ namespace game {
         static EMPTY = GameBoard.createEmptyBoard();
 
         static createEmptyBoard() {
-            const rows = Immutable.Range(0, GAME_BOARD_SIZE).map(y =>
-                Immutable.Range(0, GAME_BOARD_SIZE).map(x =>
+            const rows = Immutable.Range(0, GameRules.GAME_BOARD_SIZE).map(y =>
+                Immutable.Range(0, GameRules.GAME_BOARD_SIZE).map(x =>
                     CellState.empty).toList()
             ).toList();
             return new GameBoard().init(rows);

@@ -24,14 +24,14 @@ namespace gameView {
         }
     }
 
-    export class GameBoardViewProps {
+    export class GameBoardProps {
         active: boolean;
         label: string;
         board: GameBoard;
         gameInterface: GameInterface;
     }
 
-    export class GameBoardViewState {
+    export class GameBoardState {
         cellDown: Optional<BoardXY>;
 
         constructor(cellDown: Optional<BoardXY>) {
@@ -40,13 +40,13 @@ namespace gameView {
     }
 
 
-    export abstract class GameBoardComponent extends React.Component<GameBoardViewProps, GameBoardViewState> {
+    export abstract class GameBoardComponent extends React.Component<GameBoardProps, GameBoardState> {
 
         private static COLUMN_LABELS = ["", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
 
-        constructor(props: GameBoardViewProps) {
+        constructor(props: GameBoardProps) {
             super(props);
-            this.state = new GameBoardViewState(None);
+            this.state = new GameBoardState(None);
         }
 
         abstract cellClicked(x: number, y: number): void;

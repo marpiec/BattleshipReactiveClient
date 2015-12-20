@@ -72,8 +72,8 @@ namespace game {
 
 
         private opponentTurn() {
-            const y = Math.floor(Math.random() * 10);
-            const x = Math.floor(Math.random() * 10);
+            const y = Math.floor(Math.random() * GameRules.GAME_BOARD_SIZE);
+            const x = Math.floor(Math.random() * GameRules.GAME_BOARD_SIZE);
             const cellState = this.playerBoard.rows.get(y).get(x);
             if(cellState === CellState.ship) {
                 this.onServerEvent(new OpponentShot().init(this.eventsCounter++, x, y, ShotResult.hit, GamePhase.playerTurn));
