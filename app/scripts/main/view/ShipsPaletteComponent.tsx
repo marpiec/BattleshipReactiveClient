@@ -22,6 +22,7 @@ namespace gameView {
 
         dragStarted(eventPosition:XY, node:JQuery, model:game.PlayerShip):void {
             node.removeClass("animatePosition")
+                .css({transitionDuration: "0s"})
                 .css({top: eventPosition.y, left: eventPosition.x});
         }
 
@@ -30,8 +31,12 @@ namespace gameView {
         }
 
         dragEnded(eventPosition:XY, node:JQuery, model:game.PlayerShip):void {
-            node.addClass("animatePosition")
-                .css({top: 0, left: 0});
+            const returnDistance = Math.sqrt(eventPosition.x * eventPosition.x + eventPosition.y * eventPosition.y);
+
+            node.css({top: eventPosition.y, left: eventPosition.x})
+                .addClass("animatePosition")
+                .css({transitionDuration: 0.2 * returnDistance / 1000 + "s"}); //1000 pixels in 0.2s
+            node.css({top: 0, left: 0});
         }
 
     }
