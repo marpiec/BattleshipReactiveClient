@@ -12,6 +12,12 @@
     left: 0;
     cursor: pointer;
 
+    &.valid {
+      .shipCell {
+        border-color: blue;
+      }
+    }
+
     .shipCell {
       width: $cellSize;
       height: $cellSize;

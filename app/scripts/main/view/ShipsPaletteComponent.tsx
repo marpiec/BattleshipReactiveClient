@@ -34,7 +34,26 @@ namespace gameView {
         dragged(eventPosition:XY, node:JQuery, model:game.PlayerShip):void {
             node.css({top: eventPosition.y, left: eventPosition.x});
 
-            nodes.getElementPosition($(".gameBoardComponent").get(0));
+            const boardElement = $(".gameBoardComponent .board").get(0);
+            const shipElement = node.get(0);
+            const boardSize = nodes.getElementSize(boardElement).scale(10 / 11);
+            const cellSize = boardSize.width / 10;
+            const boardPosition = nodes.getElementPosition(boardElement).plusSize(boardSize.scale(1 / 10));
+            const shipPosition = nodes.getElementPosition(shipElement);
+            const shipSize = nodes.getElementSize(shipElement);
+            const shipGridSize = shipSize.scaleFloor(1 / cellSize);
+
+            const shipRelativePosition = shipPosition.minus(boardPosition).plus(new XY(cellSize / 2, cellSize / 2));
+
+            const shipGridPosition = shipRelativePosition.scaleFloor(1 / cellSize);
+
+            console.log(shipGridPosition)
+
+            node.toggleClass("valid", shipGridPosition.x + shipGridSize.width - 1 < 10 && shipGridPosition.x >= 0
+                                   && shipGridPosition.y + shipGridSize.height - 1 < 10 && shipGridPosition.y >= 0);
+
+
+            console.log(shipPosition);
 
         }
 
@@ -45,6 +64,8 @@ namespace gameView {
                 .addClass("animatePosition")
                 .css({transitionDuration: 0.2 * returnDistance / 1000 + "s"}); //1000 pixels in 0.2s
             node.css({top: 0, left: 0});
+
+            node.toggleClass("valid", false);
         }
 
     }

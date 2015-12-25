@@ -17,11 +17,19 @@ class XY {
     }
 
     plus(other: XY) {
-        return new XY(this.x + other.x, this.y + other.y);
+        return new XY(this._x + other._x, this._y + other._y);
     }
 
     minus(other: XY) {
-        return new XY(this.x - other.x, this.y - other.y);
+        return new XY(this._x - other._x, this._y - other._y);
+    }
+
+    plusSize(size: Size) {
+        return new XY(this._x + size.width, this._y + size.height);
+    }
+
+    scaleFloor(scale: number) {
+        return new XY(Math.floor(this._x * scale), Math.floor(this._y * scale));
     }
 }
 
@@ -41,5 +49,13 @@ class Size {
 
     get height(): number {
         return this._height;
+    }
+
+    scale(scale: number): Size {
+        return new Size(this._width * scale, this._height * scale);
+    }
+
+    scaleFloor(scale: number) {
+        return new Size(Math.floor(this._width * scale), Math.floor(this._height * scale));
     }
 }
