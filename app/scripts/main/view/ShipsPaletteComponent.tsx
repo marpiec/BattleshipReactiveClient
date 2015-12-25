@@ -44,8 +44,7 @@ namespace gameView {
         }
 
         shipMounted(ship: PlayerShip, node: DOMComponent<HTMLAttributes>) {
-            $(node).dragHandler(new PaletteShipDrag(ship));
-            console.log("componentDidMount", ship, node);
+            $(node).handlerDrag(new PaletteShipDrag(ship));
         }
 
         render() {

@@ -4,7 +4,7 @@
 module pointer {
 
 
-    $.fn.dragHandler = function (mouseDrag: MouseDrag<any>) {
+    $.fn.handlerDrag = function (mouseDrag: MouseDrag<any>) {
         mouseDrag.init(this);
         return this;
     };

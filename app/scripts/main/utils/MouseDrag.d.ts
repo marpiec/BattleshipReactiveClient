@@ -1,3 +1,3 @@
 interface JQuery {
-    dragHandler(mouseDrag: pointer.MouseDrag<any>): JQuery;
+    handlerDrag(mouseDrag: pointer.MouseDrag<any>): JQuery;
 }
