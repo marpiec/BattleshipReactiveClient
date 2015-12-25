@@ -33,6 +33,9 @@ namespace gameView {
 
         dragged(eventPosition:XY, node:JQuery, model:game.PlayerShip):void {
             node.css({top: eventPosition.y, left: eventPosition.x});
+
+            nodes.getElementPosition($(".gameBoardComponent").get(0));
+
         }
 
         dragEnded(eventPosition:XY, node:JQuery, model:game.PlayerShip):void {
