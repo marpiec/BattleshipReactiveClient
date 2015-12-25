@@ -16,6 +16,11 @@ namespace gameView {
     }
 
     export class PaletteShipDrag extends MouseDrag<PlayerShip> {
+
+        constructor(model: PlayerShip) {
+            super(model);
+        }
+
         dragInit(node:JQuery, model:game.PlayerShip):XY {
             return new XY(0, 0);
         }
