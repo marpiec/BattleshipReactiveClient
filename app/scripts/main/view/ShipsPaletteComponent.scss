@@ -7,6 +7,10 @@
     width: $cellSize;
     margin-right: $cellSize / 2;
     vertical-align: top;
+    position: relative;
+    top: 0;
+    left: 0;
+    cursor: pointer;
 
     .shipCell {
       width: $cellSize;
