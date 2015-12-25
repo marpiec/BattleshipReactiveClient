@@ -1,9 +1,10 @@
 /// <reference path="../libs.d/jquery/jquery.d.ts"/>
+/// <reference path="UniqueId.ts"/>
 
 module pointer {
 
 
-    $.fn.dragHandler = function(mouseDrag: MouseDrag<any>) {
+    $.fn.dragHandler = function (mouseDrag: MouseDrag<any>) {
         mouseDrag.init(this);
         return this;
     };
@@ -11,43 +12,95 @@ module pointer {
 
     export abstract class MouseDrag<M> {
 
+        private uniqueIdentifier: number;
         private model: M;
         private node: JQuery;
 
         private initialDragPositionWithInitialMouse: XY = null;
 
         constructor(model: M) {
+            this.uniqueIdentifier = UniqueId.next();
             this.model = model;
         }
 
         init(node: JQuery) {
-           this.node = node;
-           this.initialDragPositionWithInitialMouse = null;
+            this.node = node;
+            this.initialDragPositionWithInitialMouse = null;
 
-           this.node.mousedown((eventObject: JQueryMouseEventObject) => {
-               console.log("eventObject", eventObject);
-               if(eventObject.which === 1) { //this means left button, which is standarized by jquery acros browsers
-                   const initialMousePosition = new XY(eventObject.pageX, eventObject.pageY);
-                   const initialPosition = this.dragInit(this.node, this.model);
-                   this.initialDragPositionWithInitialMouse = initialPosition.minus(initialMousePosition);
-                   this.dragStarted(initialPosition, this.node, this.model);
-               }
+            this.initElementListening();
+        }
+
+        private initElementListening() {
+            this.node.on("mousedown.MouseDrag" + this.uniqueIdentifier, (eventObject: JQueryMouseEventObject) => {
+                this.mouseDown(eventObject);
+            });
+        }
+
+        private stopElementListening() {
+            this.node.off("mousedown.MouseDrag" + this.uniqueIdentifier);
+        }
+
+        private initWindowListening() {
+            console.log("mousemove");
+            $(document).on("mousemove.MouseDrag" + this.uniqueIdentifier, (eventObject: JQueryMouseEventObject) => {
+                this.mouseMove(eventObject);
             });
 
-           $(window).mousemove((eventObject: JQueryMouseEventObject) => {
-               if(this.initialDragPositionWithInitialMouse !== null) {
-                   const currentMousePosition = new XY(eventObject.pageX, eventObject.pageY);
-                   this.dragged(this.initialDragPositionWithInitialMouse.plus(currentMousePosition), this.node, this.model);
-               }
+            console.log("mouseup");
+            $(document).on("mouseup.MouseDrag" + this.uniqueIdentifier, (eventObject: JQueryMouseEventObject) => {
+                this.mouseUp(eventObject);
             });
+        }
 
-            $(window).mouseup((eventObject: JQueryMouseEventObject) => {
-                if(this.initialDragPositionWithInitialMouse !== null) {
-                    const currentMousePosition = new XY(eventObject.pageX, eventObject.pageY);
-                    this.dragEnded(this.initialDragPositionWithInitialMouse.plus(currentMousePosition), this.node, this.model);
-                    this.initialDragPositionWithInitialMouse = null;
-                }
-            });
+        private mouseDown(eventObject: JQueryMouseEventObject) {
+            if (this.nodeRemoved()) {
+                this.stop();
+            }
+            if (eventObject.which === 1) { //this means left button, which is standardized by jquery across browsers
+                const initialMousePosition = new XY(eventObject.pageX, eventObject.pageY);
+                const initialPosition = this.dragInit(this.node, this.model);
+                this.initialDragPositionWithInitialMouse = initialPosition.minus(initialMousePosition);
+                this.dragStarted(initialPosition, this.node, this.model);
+                this.initWindowListening();
+            }
+        };
+
+        private mouseUp(eventObject: JQueryMouseEventObject) {
+            if (this.nodeRemoved()) {
+                this.stop();
+            }
+            if (this.initialDragPositionWithInitialMouse !== null) {
+                const currentMousePosition = new XY(eventObject.pageX, eventObject.pageY);
+                this.dragEnded(this.initialDragPositionWithInitialMouse.plus(currentMousePosition), this.node, this.model);
+                this.initialDragPositionWithInitialMouse = null;
+                this.stopWindowListening();
+            }
+        };
+
+        private mouseMove(eventObject: JQueryMouseEventObject) {
+            console.log("mousemoved", eventObject);
+            if (this.nodeRemoved()) {
+                this.stop();
+            } else if (this.initialDragPositionWithInitialMouse !== null) {
+                const currentMousePosition = new XY(eventObject.pageX, eventObject.pageY);
+                this.dragged(this.initialDragPositionWithInitialMouse.plus(currentMousePosition), this.node, this.model);
+            }
+        };
+
+        private stopWindowListening() {
+            console.log("stop mousemove");
+            $(document).off("mousemove.MouseDrag" + this.uniqueIdentifier);
+            console.log("stop mouseup");
+            $(document).off("mouseup.MouseDrag" + this.uniqueIdentifier);
+        }
+
+        private nodeRemoved(): boolean {
+            return this.node.get(0).parentNode === null;
+        };
+
+        private stop(): void {
+            this.stopElementListening();
+            this.stopWindowListening();
         }
 
 
