@@ -9,7 +9,6 @@ module pointer {
         return this;
     };
 
-
     export abstract class MouseDrag<M> {
 
         private uniqueIdentifier: number;
@@ -33,6 +32,7 @@ module pointer {
         private initElementListening() {
             this.node.on("mousedown.MouseDrag" + this.uniqueIdentifier, (eventObject: JQueryMouseEventObject) => {
                 this.mouseDown(eventObject);
+                return false;
             });
         }
 
@@ -41,14 +41,14 @@ module pointer {
         }
 
         private initWindowListening() {
-            console.log("mousemove");
-            $(document).on("mousemove.MouseDrag" + this.uniqueIdentifier, (eventObject: JQueryMouseEventObject) => {
+            $(window).on("mousemove.MouseDrag" + this.uniqueIdentifier, (eventObject: JQueryMouseEventObject) => {
                 this.mouseMove(eventObject);
+                return false;
             });
 
-            console.log("mouseup");
-            $(document).on("mouseup.MouseDrag" + this.uniqueIdentifier, (eventObject: JQueryMouseEventObject) => {
+            $(window).on("mouseup.MouseDrag" + this.uniqueIdentifier, (eventObject: JQueryMouseEventObject) => {
                 this.mouseUp(eventObject);
+                return false;
             });
         }
 
@@ -56,13 +56,18 @@ module pointer {
             if (this.nodeRemoved()) {
                 this.stop();
             }
-            if (eventObject.which === 1) { //this means left button, which is standardized by jquery across browsers
+            if (MouseDrag.leftButtonIsPressed(eventObject)) {
                 const initialMousePosition = new XY(eventObject.pageX, eventObject.pageY);
                 const initialPosition = this.dragInit(this.node, this.model);
                 this.initialDragPositionWithInitialMouse = initialPosition.minus(initialMousePosition);
                 this.dragStarted(initialPosition, this.node, this.model);
                 this.initWindowListening();
             }
+        };
+
+        private static leftButtonIsPressed(eventObject: JQueryMouseEventObject) {
+            //this means left button, which is standardized by jquery across browsers
+            return eventObject.which === 1;
         };
 
         private mouseUp(eventObject: JQueryMouseEventObject) {
@@ -78,9 +83,11 @@ module pointer {
         };
 
         private mouseMove(eventObject: JQueryMouseEventObject) {
-            console.log("mousemoved", eventObject);
             if (this.nodeRemoved()) {
                 this.stop();
+            } else if (!MouseDrag.leftButtonIsPressed(eventObject)) {
+                // if for some reason mouse up event was not registered
+                this.mouseUp(eventObject);
             } else if (this.initialDragPositionWithInitialMouse !== null) {
                 const currentMousePosition = new XY(eventObject.pageX, eventObject.pageY);
                 this.dragged(this.initialDragPositionWithInitialMouse.plus(currentMousePosition), this.node, this.model);
@@ -88,10 +95,8 @@ module pointer {
         };
 
         private stopWindowListening() {
-            console.log("stop mousemove");
-            $(document).off("mousemove.MouseDrag" + this.uniqueIdentifier);
-            console.log("stop mouseup");
-            $(document).off("mouseup.MouseDrag" + this.uniqueIdentifier);
+            $(window).off("mousemove.MouseDrag" + this.uniqueIdentifier);
+            $(window).off("mouseup.MouseDrag" + this.uniqueIdentifier);
         }
 
         private nodeRemoved(): boolean {
