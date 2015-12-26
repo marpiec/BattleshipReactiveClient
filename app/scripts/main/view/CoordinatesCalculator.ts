@@ -1,6 +1,8 @@
 namespace gameView {
 
     import GameRules = game.GameRules;
+    import PlayerShip = game.PlayerShip;
+
     export class CoordinatesCalculator {
 
 
@@ -33,6 +35,18 @@ namespace gameView {
         }
 
 
+        static getShipRelativePosition(ship: PlayerShip): XY {
+
+            const boardElement = $(".gameBoardComponent .board").get(0);
+            const boardSize = nodes.getElementSize(boardElement);
+            const boardPosition = nodes.getElementPosition(boardElement);
+            const cellSize = boardSize.width / GameRules.GAME_BOARD_SIZE;
+
+            const shipContainerPosition = nodes.getElementPosition($(`.shipContainer${ship.id}`).get(0));
+
+            return boardPosition.plus(new XY(ship.xy.value.x * cellSize, ship.xy.value.y * cellSize)).minus(shipContainerPosition);
+
+        }
     }
 
 }

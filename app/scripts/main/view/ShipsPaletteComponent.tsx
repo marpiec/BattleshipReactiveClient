@@ -89,30 +89,17 @@ namespace gameView {
 
     export class ShipsPaletteComponent extends React.Component<ShipsPaletteProps, ShipsPaletteState> {
 
-        private shipsElements: [PlayerShip, DOMComponent<HTMLAttributes>][] = [];
-
-        private initialized = false;
-
         constructor(props: ShipsPaletteProps) {
             super(props);
             this.state = new ShipsPaletteState();
         }
 
-        shipMounted(ship: PlayerShipPosition, node: DOMComponent<HTMLAttributes>) {
-            if(!this.initialized) {
-                this.shipsElements.push([ship, node])
-            }
-
-        }
-
         componentDidMount(): void {
             this.updateShipsPosition();
 
-            this.shipsElements.forEach(se => {
-                $(se[1]).handlerDrag(new PaletteShipDrag(se[0], this.props.gameInterface));
+            this.props.ships.forEach(ship => {
+               $(`.shipContainer${ship.id} .ship`).handlerDrag(new PaletteShipDrag(ship, this.props.gameInterface))
             });
-            this.initialized = true;
-
         }
 
         componentDidUpdate(prevPros: ShipsPaletteProps, prevState: ShipsPaletteState): void {
@@ -120,12 +107,15 @@ namespace gameView {
         }
 
         updateShipsPosition():void {
-            this.shipsElements.forEach(se => {
-               const ship = this.props.ships.find(s => s.id === se[0].id);
+
+            this.props.ships.forEach(ship => {
                 if(ship.xy.isPresent) {
-                    $(se[1]).addClass("placed");
+
+                    const xy = CoordinatesCalculator.getShipRelativePosition(ship);
+                    $(`.shipContainer${ship.id} .ship`).css({top: xy.y, left: xy.x});
+
                 } else {
-                    $(se[1]).removeClass("placed");
+                    $(`.shipContainer${ship.id} .ship`).css({top: 0, left: 0});
                 }
             });
         }
@@ -139,8 +129,8 @@ namespace gameView {
 
         renderShip(ship: PlayerShipPosition, index: number) {
             return (
-                <div className="shipContainer" key={index}>
-                    <div className="ship" ref={(node) => this.shipMounted(ship, node)}>
+                <div className={"shipContainer shipContainer" + ship.id} key={index}>
+                    <div className="ship">
                         {Immutable.Range(0, ship.shipLength).map(i => <div className="shipCell" key={i}></div>)}
                     </div>
                 </div>
