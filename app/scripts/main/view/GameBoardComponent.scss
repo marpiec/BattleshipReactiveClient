@@ -37,6 +37,14 @@
 
     .board {
       display: inline-block;
+      position: relative;
+
+      .shipMock {
+        position: absolute;
+        background-color: $cellShipColor;
+        border: 1px solid $gridBorderColor;
+      }
+
       .boardRow {
         height: $cellSize;
 

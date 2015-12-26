@@ -16,11 +16,6 @@
 
     &.dragged {
       opacity: 0.5;
-      &.valid {
-        .shipCell {
-          border-color: blue;
-        }
-      }
     }
 
 

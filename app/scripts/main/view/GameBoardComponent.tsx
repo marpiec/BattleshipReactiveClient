@@ -62,6 +62,7 @@ namespace gameView {
                         {this.renderColumnsHeader()}
                         {this.renderRowsHeader()}
                         <div className="board">
+                            <div className="shipMock hidden"></div>
                             {this.renderRows(this.props.board.rows)}
                         </div>
                     </div>

@@ -43,10 +43,17 @@ namespace gameView {
             draggedNode.css({top: eventPosition.y, left: eventPosition.x});
 
             const shipBoardPosition = CoordinatesCalculator.getShipBoardPosition(draggedNode);
-            draggedNode.toggleClass("valid", shipBoardPosition.isPresent);
 
             if(shipBoardPosition.isPresent) {
+
+                const shipMock = $(".gameBoardComponent .board .shipMock").first();
+                shipMock.css({width: 10 + "%", height: model.length * 10 + "%", top: shipBoardPosition.value.y * 10 + "%", left: shipBoardPosition.value.x * 10 + "%"});
+                shipMock.removeClass("hidden");
+
                 //this.gameInterface.shipIsBeingDragged(new PlayerShipPosition().init(shipBoardPosition.value.x, shipBoardPosition.value.y, model, ShipDirection.vertical));
+            } else {
+                const shipMock = $(".gameBoardComponent .board .shipMock").first();
+                shipMock.addClass("hidden");
             }
 
         }
