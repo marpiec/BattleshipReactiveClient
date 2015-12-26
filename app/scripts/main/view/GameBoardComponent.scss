@@ -6,56 +6,100 @@
   display: inline-block;
   margin: $cellSize;
 
-  .board {
-    .boardRow {
-      height: $cellSize;
+  .boardWithHeaders {
 
-      .rowLabel {
+    position: relative;
+
+    .shipMock {
+      position: absolute;
+      top: 0;
+      left: 0;
+      background-color: whitesmoke;
+
+      .mockCell {
         width: $cellSize;
         height: $cellSize;
-        display: inline-block;
-        text-align: center;
-        overflow: hidden;
-        line-height: $cellSize;
       }
-      .boardCell {
-        width: $cellSize;
+
+      &.horizontal {
         height: $cellSize;
-        border: solid $gridBorderColor;
-        border-width: 1px 0 0 1px;
-        display: inline-block;
-        cursor: default;
-
-        &:last-child {
-          border-right-width: 1px;
-        }
-
-        &.empty {
-          background-color: $cellEmptyColor;
-        }
-
-        &.ship {
-          background-color: $cellShipColor;
-        }
-
-        &.miss {
-          background-color: $cellMissColor;
-        }
-
-        &.hit {
-          background-color: $cellHitColor;
+        .mockCell {
+          display: inline-block;
         }
       }
 
-      &:last-child {
-        .boardCell {
-          border-bottom-width: 1px;
-        }
+      &.vertical {
+        width: $cellSize;
+        display: inline-block;
       }
 
     }
 
+    .board {
+      display: inline-block;
+      .boardRow {
+        height: $cellSize;
+
+        .rowLabel {
+          width: $cellSize;
+          height: $cellSize;
+          display: inline-block;
+          text-align: center;
+          overflow: hidden;
+          line-height: $cellSize;
+        }
+        .boardCell {
+          width: $cellSize;
+          height: $cellSize;
+          border: solid $gridBorderColor;
+          border-width: 1px 0 0 1px;
+          display: inline-block;
+          cursor: default;
+
+          &:last-child {
+            border-right-width: 1px;
+          }
+
+          &.empty {
+            background-color: $cellEmptyColor;
+          }
+
+          &.ship {
+            background-color: $cellShipColor;
+          }
+
+          &.miss {
+            background-color: $cellMissColor;
+          }
+
+          &.hit {
+            background-color: $cellHitColor;
+          }
+        }
+
+        &:last-child {
+          .boardCell {
+            border-bottom-width: 1px;
+          }
+        }
+
+      }
+    }
+
+    .boardRowsHeader {
+      width: $cellSize;
+      display: inline-block;
+      .rowHeader {
+        width: $cellSize;
+        height: $cellSize;
+        text-align: center;
+        overflow: hidden;
+        line-height: $cellSize;
+      }
+    }
+
     .boardColumnsHeader {
+      margin-left: $cellSize;
       height: $cellSize;
       .columnHeader {
         width: $cellSize;

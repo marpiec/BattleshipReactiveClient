@@ -10,7 +10,7 @@ namespace game {
 
     export const enum GamePhase {initPlayerBoard, waitForSecondPlayer, playerTurn, opponentTurn, playerWon, opponentWon}
 
-    export const enum ShipDirection {south, east}
+    export const enum ShipDirection {vertical, horizontal}
 
     export class PlayerShip extends Immutable.Record({
         length: undefined}) {
@@ -40,12 +40,12 @@ namespace game {
                 x: x, y: y, ship: ship, direction: direction});
         }
 
-        isSouth():boolean {
-            return this.direction === ShipDirection.south;
+        isVertical():boolean {
+            return this.direction === ShipDirection.vertical;
         }
 
-        isEast():boolean {
-            return this.direction === ShipDirection.east;8
+        isHorizontal():boolean {
+            return this.direction === ShipDirection.horizontal;
         }
     }
 
@@ -78,10 +78,10 @@ namespace game {
                 Immutable.Range(0, position.ship.length).forEach(cell => {
                     let x = position.x;
                     let y = position.y;
-                    if(position.isSouth()) {
+                    if(position.isVertical()) {
                         y += cell;
                     }
-                    if(position.isEast()) {
+                    if(position.isHorizontal()) {
                         x += cell;
                     }
 

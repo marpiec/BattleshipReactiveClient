@@ -18,11 +18,11 @@ class Optional<T> {
         return this._value;
     }
 
-    get isPresent() {
+    get isPresent(): boolean {
         return this._value !== undefined;
     }
 
-    get isEmpty() {
+    get isEmpty(): boolean {
         return this._value === undefined;
     }
 

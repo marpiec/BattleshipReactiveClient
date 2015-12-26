@@ -111,11 +111,11 @@ module pointer {
 
         abstract dragInit(node: JQuery, model: M): XY;
 
-        abstract dragStarted(eventPosition: XY, node: JQuery, model: M): void;
+        abstract dragStarted(eventPosition: XY, draggedNode: JQuery, model: M): void;
 
-        abstract dragged(eventPosition: XY, node: JQuery, model: M): void;
+        abstract dragged(eventPosition: XY, draggedNode: JQuery, model: M): void;
 
-        abstract dragEnded(eventPosition: XY, node: JQuery, model: M): void;
+        abstract dragEnded(eventPosition: XY, draggedNode: JQuery, model: M): void;
 
 
     }

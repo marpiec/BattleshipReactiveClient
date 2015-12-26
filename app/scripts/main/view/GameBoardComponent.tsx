@@ -4,6 +4,7 @@ namespace gameView {
 
     import CellState = game.CellState;
     import GameBoard = game.GameBoard;
+    import PlayerShipPosition = game.PlayerShipPosition;
 
     export class BoardXY {
         private _x: number;
@@ -42,7 +43,8 @@ namespace gameView {
 
     export abstract class GameBoardComponent extends React.Component<GameBoardProps, GameBoardState> {
 
-        private static COLUMN_LABELS = ["", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
+        private static COLUMN_LABELS = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
+        private static ROWS_LABELS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
 
         constructor(props: GameBoardProps) {
             super(props);
@@ -56,9 +58,12 @@ namespace gameView {
             return (
                 <div className={boardClasses}>
                     <div className="boardLabel">{this.props.label}</div>
-                    <div className="board">
+                    <div className="boardWithHeaders">
                         {this.renderColumnsHeader()}
-                        {this.renderRows(this.props.board.rows)}
+                        {this.renderRowsHeader()}
+                        <div className="board">
+                            {this.renderRows(this.props.board.rows)}
+                        </div>
                     </div>
                 </div>
             );
@@ -72,10 +77,17 @@ namespace gameView {
                 </div>);
         }
 
+        renderRowsHeader() {
+            return (
+                <div className="boardRowsHeader">
+                    {Immutable.Range(0, GameBoardComponent.ROWS_LABELS.length).map(i =>
+                    <div className="rowHeader" key={i}>{GameBoardComponent.ROWS_LABELS[i]}</div>)}
+                </div>);
+        }
+
         renderRows(board: Immutable.List<Immutable.List<CellState>>) {
             return board.map((cells: Immutable.List<CellState>, y: number) => (
                 <div className="boardRow" key={y}>
-                    <div className="rowLabel">{y + 1}</div>
                     {this.renderCells(y, cells)}
                 </div>
             ));

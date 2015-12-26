@@ -11,12 +11,19 @@
     top: 0;
     left: 0;
     cursor: pointer;
+    opacity: 1;
 
-    &.valid {
-      .shipCell {
-        border-color: blue;
+
+    &.dragged {
+      opacity: 0.5;
+      &.valid {
+        .shipCell {
+          border-color: blue;
+        }
       }
     }
+
+
 
     .shipCell {
       width: $cellSize;

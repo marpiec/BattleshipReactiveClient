@@ -2,13 +2,16 @@
 
 namespace gameView {
 
+    import PlayerShipPosition = game.PlayerShipPosition;
     import PlayerShip = game.PlayerShip;
     import MouseDrag = pointer.MouseDrag;
     import DOMComponent = __React.DOMComponent;
     import HTMLAttributes = __React.HTMLAttributes;
+    import ShipDirection = game.ShipDirection;
 
     export class ShipsPaletteProps {
         ships: Immutable.List<PlayerShip>;
+        gameInterface: GameInterface;
     }
 
     export class ShipsPaletteState {
@@ -17,55 +20,47 @@ namespace gameView {
 
     export class PaletteShipDrag extends MouseDrag<PlayerShip> {
 
-        constructor(model: PlayerShip) {
+        private gameInterface: GameInterface;
+
+        constructor(model: PlayerShip, gameInterface: GameInterface) {
             super(model);
+            this.gameInterface = gameInterface;
         }
 
         dragInit(node:JQuery, model:game.PlayerShip):XY {
             return new XY(0, 0);
         }
 
-        dragStarted(eventPosition:XY, node:JQuery, model:game.PlayerShip):void {
-            node.removeClass("animatePosition")
+        dragStarted(eventPosition:XY, draggedNode:JQuery, model:game.PlayerShip):void {
+            draggedNode
+                .removeClass("animatePosition")
+                .addClass("dragged")
                 .css({transitionDuration: "0s"})
                 .css({top: eventPosition.y, left: eventPosition.x});
         }
 
-        dragged(eventPosition:XY, node:JQuery, model:game.PlayerShip):void {
-            node.css({top: eventPosition.y, left: eventPosition.x});
+        dragged(eventPosition:XY, draggedNode:JQuery, model:game.PlayerShip):void {
+            draggedNode.css({top: eventPosition.y, left: eventPosition.x});
 
-            const boardElement = $(".gameBoardComponent .board").get(0);
-            const shipElement = node.get(0);
-            const boardSize = nodes.getElementSize(boardElement).scale(10 / 11);
-            const cellSize = boardSize.width / 10;
-            const boardPosition = nodes.getElementPosition(boardElement).plusSize(boardSize.scale(1 / 10));
-            const shipPosition = nodes.getElementPosition(shipElement);
-            const shipSize = nodes.getElementSize(shipElement);
-            const shipGridSize = shipSize.scaleFloor(1 / cellSize);
+            const shipBoardPosition = CoordinatesCalculator.getShipBoardPosition(draggedNode);
+            draggedNode.toggleClass("valid", shipBoardPosition.isPresent);
 
-            const shipRelativePosition = shipPosition.minus(boardPosition).plus(new XY(cellSize / 2, cellSize / 2));
-
-            const shipGridPosition = shipRelativePosition.scaleFloor(1 / cellSize);
-
-            console.log(shipGridPosition)
-
-            node.toggleClass("valid", shipGridPosition.x + shipGridSize.width - 1 < 10 && shipGridPosition.x >= 0
-                                   && shipGridPosition.y + shipGridSize.height - 1 < 10 && shipGridPosition.y >= 0);
-
-
-            console.log(shipPosition);
+            if(shipBoardPosition.isPresent) {
+                //this.gameInterface.shipIsBeingDragged(new PlayerShipPosition().init(shipBoardPosition.value.x, shipBoardPosition.value.y, model, ShipDirection.vertical));
+            }
 
         }
 
-        dragEnded(eventPosition:XY, node:JQuery, model:game.PlayerShip):void {
+        dragEnded(eventPosition:XY, draggedNode:JQuery, model:game.PlayerShip):void {
             const returnDistance = Math.sqrt(eventPosition.x * eventPosition.x + eventPosition.y * eventPosition.y);
 
-            node.css({top: eventPosition.y, left: eventPosition.x})
+            draggedNode.css({top: eventPosition.y, left: eventPosition.x})
+                .removeClass("dragged")
                 .addClass("animatePosition")
                 .css({transitionDuration: 0.2 * returnDistance / 1000 + "s"}); //1000 pixels in 0.2s
-            node.css({top: 0, left: 0});
+            draggedNode.css({top: 0, left: 0});
 
-            node.toggleClass("valid", false);
+            draggedNode.toggleClass("valid", false);
         }
 
     }
@@ -78,7 +73,7 @@ namespace gameView {
         }
 
         shipMounted(ship: PlayerShip, node: DOMComponent<HTMLAttributes>) {
-            $(node).handlerDrag(new PaletteShipDrag(ship));
+            $(node).handlerDrag(new PaletteShipDrag(ship, this.props.gameInterface));
         }
 
         render() {
