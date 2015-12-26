@@ -21,7 +21,8 @@ namespace gameView {
     import PlayerShot = game.PlayerShot;
     import OpponentJoined = game.OpponentJoined;
     import ShotResult = game.ShotResult;
-    import PlayerShipPosition = game.PlayerShipPosition;
+    import PlayerShip = game.PlayerShip;
+    import ShipDirection = game.ShipDirection;
 
     export class GamePageParams {
         gameId: string;
@@ -42,7 +43,8 @@ namespace gameView {
     }
 
     export interface GameInterface {
-        shipPutOnBoard(playerShipPosition: PlayerShipPosition):void;
+        shipPutOnBoard(shipId: number, position: XY, direction: ShipDirection):void;
+        shipRemoveFromBoard(shipId: number):void;
         toggleCell(x: number, y: number): void;
         submitBoard(): void;
         shoot(x: number, y: number): void;
@@ -54,8 +56,12 @@ namespace gameView {
         private gameEngine: GameEngine;
 
         private gameInterface: GameInterface = {
-            shipPutOnBoard: (playerShipPosition: game.PlayerShipPosition) => {
-                const gameState = this.gameEngine.getPhaseHandler(this.state.gameState).shipPutOnBoard(this.state.gameState, playerShipPosition);
+            shipPutOnBoard: (shipId: number, position: XY, direction: ShipDirection) => {
+                const gameState = this.gameEngine.getPhaseHandler(this.state.gameState).shipPutOnBoard(this.state.gameState, shipId, position, direction);
+                this.setState(new GamePageState(gameState));
+            },
+            shipRemoveFromBoard: (shipId: number) => {
+                const gameState = this.gameEngine.getPhaseHandler(this.state.gameState).shipRemoveFromBoard(this.state.gameState, shipId);
                 this.setState(new GamePageState(gameState));
             },
             toggleCell: (x: number, y: number) => {
@@ -130,7 +136,7 @@ namespace gameView {
                     <p>Game Id: <span>{this.props.params.gameId}</span></p>
                     <PlayerGameBoardComponent label={"Your board"} board={this.state.gameState.playerBoard} gameInterface={this.gameInterface} active={this.state.gameState.playerBoardActive} />
                     <OpponentGameBoardComponent label={"Opponents board"} board={this.state.gameState.opponentBoard} gameInterface={this.gameInterface} active={this.state.gameState.opponentBoardActive} />
-                    <ShipsPaletteComponent ships={this.state.gameState.shipsPalette} gameInterface={this.gameInterface}/>
+                    <ShipsPaletteComponent ships={this.state.gameState.playerShips} gameInterface={this.gameInterface}/>
                     {this.isInitPlayerBoardPhase() &&
                         <button onClick={this.submitBoard.bind(this)}>Submit your board</button>}
                 </div>

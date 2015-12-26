@@ -12,32 +12,21 @@ namespace game {
 
     export const enum ShipDirection {vertical, horizontal}
 
+
     export class PlayerShip extends Immutable.Record({
-        length: undefined}) {
-
-        length: number;
-
-        init(length: number): PlayerShip {
-            return <PlayerShip><any>this.merge({
-                length: length});
-        }
-
-    }
-
-    export class PlayerShipPosition extends Immutable.Record({
-        x: undefined,
-        y: undefined,
-        ship: PlayerShip,
+        id: undefined,
+        xy: undefined,
+        shipLength: undefined,
         direction: undefined}) {
 
-        x: number;
-        y: number;
-        ship: PlayerShip;
+        id: number;
+        xy: Optional<XY>;
+        shipLength: number;
         direction: ShipDirection;
 
-        init(x: number, y: number, ship: PlayerShip, direction: ShipDirection): PlayerShipPosition {
-            return <PlayerShipPosition><any>this.merge({
-                x: x, y: y, ship: ship, direction: direction});
+        init(id: number, xy: Optional<XY>, shipLength: number, direction: ShipDirection): PlayerShip {
+            return <PlayerShip><any>this.merge({
+                id: id, xy: xy, shipLength: shipLength, direction: direction});
         }
 
         isVertical():boolean {
@@ -46,6 +35,14 @@ namespace game {
 
         isHorizontal():boolean {
             return this.direction === ShipDirection.horizontal;
+        }
+
+        setPosition(position: XY, direction: ShipDirection): PlayerShip {
+            return new PlayerShip().init(this.id, Some(position), this.shipLength, direction);
+        }
+
+        removePosition(): PlayerShip {
+            return new PlayerShip().init(this.id, None, this.shipLength, ShipDirection.vertical);
         }
     }
 
@@ -70,14 +67,14 @@ namespace game {
                 rows: rows});
         }
 
-        placeShips(shipsPositions: Immutable.List<PlayerShipPosition>): GameBoard {
+        placeShips(shipsPositions: Immutable.List<PlayerShip>): GameBoard {
 
             let currentBoard: GameBoard = this;
 
             shipsPositions.forEach(position => {
-                Immutable.Range(0, position.ship.length).forEach(cell => {
-                    let x = position.x;
-                    let y = position.y;
+                Immutable.Range(0, position.shipLength).forEach(cell => {
+                    let x = position.xy.value.x;
+                    let y = position.xy.value.y;
                     if(position.isVertical()) {
                         y += cell;
                     }
@@ -100,7 +97,6 @@ namespace game {
         gameId:undefined,
         playerId:undefined,
         gamePhase:undefined,
-        shipsPalette:undefined,
         playerShips: undefined,
         playerBoard:undefined,
         opponentBoard:undefined}) {
@@ -109,29 +105,30 @@ namespace game {
         playerId: string;
         gamePhase: GamePhase;
 
-        shipsPalette: Immutable.List<PlayerShip>;
-        playerShips: Immutable.List<PlayerShipPosition>;
+        playerShips: Immutable.List<PlayerShip>;
 
         playerBoard: GameBoard;
         opponentBoard: GameBoard;
 
         static initial(gameId: string, playerId: string) {
 
-            const initialShips = GameRules.SHIPS_SIZES.map((sc: ShipsCount) => Immutable.Range(0, sc.count).map(s => new PlayerShip().init(sc.length))).flatten(1).toList();
+            let shipId = 0;
+            const initialShips = GameRules.SHIPS_SIZES.map((sc: ShipsCount) => Immutable.Range(0, sc.count).map(s => {
+                return new PlayerShip().init(shipId++, None, sc.length, ShipDirection.vertical)
+            })).flatten(1).toList();
 
             console.log("initialShips", initialShips.toJS());
 
-           return new GameState().init(gameId, playerId, GamePhase.initPlayerBoard, initialShips, Immutable.List<PlayerShipPosition>(), GameBoard.EMPTY, GameBoard.EMPTY);
+           return new GameState().init(gameId, playerId, GamePhase.initPlayerBoard, initialShips, GameBoard.EMPTY, GameBoard.EMPTY);
         }
 
         init(gameId: string, playerId: string, gamePhase: GamePhase,
-             shipsPalette: Immutable.List<PlayerShip>, playerShips: Immutable.List<PlayerShipPosition>,
+             playerShips: Immutable.List<PlayerShip>,
              playerBoard: GameBoard, opponentBoard: GameBoard): GameState {
             return <GameState><any>this.merge({
                 gameId: gameId,
                 playerId: playerId,
                 gamePhase:gamePhase,
-                shipsPalette:shipsPalette,
                 playerShips:playerShips,
                 playerBoard:playerBoard,
                 opponentBoard:opponentBoard});

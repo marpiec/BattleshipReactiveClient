@@ -4,7 +4,8 @@ namespace gameView {
 
     import CellState = game.CellState;
     import GameBoard = game.GameBoard;
-    import PlayerShipPosition = game.PlayerShipPosition;
+    import PlayerShipPosition = game.PlayerShip;
+    import List = Immutable.List;
 
     export class BoardXY {
         private _x: number;

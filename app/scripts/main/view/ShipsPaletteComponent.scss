@@ -2,34 +2,44 @@
 
   white-space: nowrap;
 
-  .ship {
-    display: inline-block;
+  .shipContainer {
+
     width: $cellSize;
+    height: $cellSize * 4;
     margin-right: $cellSize / 2;
-    vertical-align: top;
-    position: relative;
-    top: 0;
-    left: 0;
-    cursor: pointer;
-    opacity: 1;
+    display: inline-block;
 
+    .ship {
 
-    &.dragged {
-      opacity: 0.5;
-    }
-
-
-
-    .shipCell {
       width: $cellSize;
-      height: $cellSize;
-      border: solid $gridBorderColor;
-      border-width: 1px 1px 0 1px;
-      background-color: $cellShipColor;
+      vertical-align: top;
+      position: relative;
+      top: 0;
+      left: 0;
+      cursor: pointer;
+      opacity: 1;
 
-      &:last-child {
-        border-bottom-width: 1px;
+      &.placed {
+        opacity: 0.8;
+      }
+
+      &.dragged {
+        opacity: 0.5;
+      }
+
+      .shipCell {
+        width: $cellSize;
+        height: $cellSize;
+        border: solid $gridBorderColor;
+        border-width: 1px 1px 0 1px;
+        background-color: $cellShipColor;
+
+        &:last-child {
+          border-bottom-width: 1px;
+        }
       }
     }
+
+
   }
 }

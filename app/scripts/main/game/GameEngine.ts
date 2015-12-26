@@ -9,7 +9,11 @@ namespace game {
 
         private static NotAllowed = new Error("Method not allowed in this phase");
 
-        shipPutOnBoard(state:GameState, playerShipPosition: PlayerShipPosition): GameState {
+        shipPutOnBoard(state:GameState, shipId: number, position: XY, direction: ShipDirection): GameState {
+            throw PhaseHandler.NotAllowed;
+        }
+
+        shipRemoveFromBoard(state:GameState, shipId: number): GameState {
             throw PhaseHandler.NotAllowed;
         }
 
@@ -37,8 +41,26 @@ namespace game {
             return GamePhase.initPlayerBoard;
         }
 
-        shipPutOnBoard(state:GameState, playerShipPosition: PlayerShipPosition): GameState {
-            return Lens.setIn(Lens.of(state).playerShips, state.playerShips.push(playerShipPosition));
+        shipPutOnBoard(state:GameState, shipId: number, position: XY, direction: ShipDirection): GameState {
+            const ships = state.playerShips.map(s => {
+                if(s.id === shipId) {
+                    return s.setPosition(position, direction);
+                } else {
+                    return s;
+                }
+            });
+            return Lens.setIn(Lens.of(state).playerShips, ships);
+        }
+
+        shipRemoveFromBoard(state:GameState, shipId: number): GameState {
+            const ships = state.playerShips.map(s => {
+                if(s.id === shipId) {
+                    return s.removePosition();
+                } else {
+                    return s;
+                }
+            });
+            return Lens.setIn(Lens.of(state).playerShips, ships);
         }
 
         toggleCell(state: game.GameState, x: number, y: number): game.GameState {
