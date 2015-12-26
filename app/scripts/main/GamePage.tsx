@@ -137,6 +137,7 @@ namespace gameView {
                     <PlayerGameBoardComponent label={"Your board"} board={this.state.gameState.playerBoard} gameInterface={this.gameInterface} active={this.state.gameState.playerBoardActive} />
                     <OpponentGameBoardComponent label={"Opponents board"} board={this.state.gameState.opponentBoard} gameInterface={this.gameInterface} active={this.state.gameState.opponentBoardActive} />
                     <ShipsPaletteComponent ships={this.state.gameState.playerShips} gameInterface={this.gameInterface}/>
+                    <div className="rotateArea"><div className="rotateAreaCenter"></div></div>
                     {this.isInitPlayerBoardPhase() &&
                         <button onClick={this.submitBoard.bind(this)}>Submit your board</button>}
                 </div>

@@ -47,6 +47,26 @@ namespace gameView {
             return boardPosition.plus(new XY(ship.xy.value.x * cellSize, ship.xy.value.y * cellSize)).minus(shipContainerPosition);
 
         }
+
+        static within(element: JQuery, container: JQuery): boolean {
+
+            const elementPosition = nodes.getElementPosition(element.get(0));
+
+            const containerElement = container.get(0);
+            const containerSize = nodes.getElementSize(containerElement);
+            const containerPosition = nodes.getElementPosition(containerElement);
+
+            return elementPosition.x > containerPosition.x && elementPosition.x < containerPosition.x + containerSize.width
+                && elementPosition.y > containerPosition.y && elementPosition.y < containerPosition.y + containerSize.height;
+        }
+
+        static withinRotateAreaCenter(element: JQuery): boolean {
+            return CoordinatesCalculator.within(element, $(".rotateArea .rotateAreaCenter"));
+        }
+
+        static withinRotateArea(element: JQuery): boolean {
+            return CoordinatesCalculator.within(element, $(".rotateArea"));
+        }
     }
 
 }

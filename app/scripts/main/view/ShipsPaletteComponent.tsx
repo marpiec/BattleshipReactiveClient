@@ -22,9 +22,13 @@ namespace gameView {
 
         private gameInterface: GameInterface;
 
+        private rotated = false;
+        private direction: ShipDirection;
+
         constructor(model: PlayerShipPosition, gameInterface: GameInterface) {
             super(model);
             this.gameInterface = gameInterface;
+            this.direction = model.direction;
         }
 
         dragInit(node:JQuery, model:game.PlayerShip):XY {
@@ -37,6 +41,7 @@ namespace gameView {
                 .addClass("dragged")
                 .css({transitionDuration: "0s"})
                 .css({top: eventPosition.y, left: eventPosition.x});
+
         }
 
         dragged(eventPosition:XY, draggedNode:JQuery, model:game.PlayerShip):void {
@@ -47,13 +52,37 @@ namespace gameView {
             if(shipBoardPosition.isPresent) {
 
                 const shipMock = $(".gameBoardComponent .board .shipMock").first();
-                shipMock.css({width: 10 + "%", height: model.shipLength * 10 + "%", top: shipBoardPosition.value.y * 10 + "%", left: shipBoardPosition.value.x * 10 + "%"});
+
+                if(this.direction === ShipDirection.horizontal) {
+                    shipMock.css({width: model.shipLength * 10 + "%", height: 10 + "%", top: shipBoardPosition.value.y * 10 + "%", left: shipBoardPosition.value.x * 10 + "%"});
+                } else {
+                    shipMock.css({width: 10 + "%", height: model.shipLength * 10 + "%", top: shipBoardPosition.value.y * 10 + "%", left: shipBoardPosition.value.x * 10 + "%"});
+                }
+
+
                 shipMock.removeClass("hidden");
 
                 //this.gameInterface.shipIsBeingDragged(new PlayerShip().init(shipBoardPosition.value.x, shipBoardPosition.value.y, model, ShipDirection.vertical));
             } else {
                 const shipMock = $(".gameBoardComponent .board .shipMock").first();
                 shipMock.addClass("hidden");
+            }
+
+
+            if(CoordinatesCalculator.withinRotateArea(draggedNode)) {
+                if(CoordinatesCalculator.withinRotateAreaCenter(draggedNode) && !this.rotated) {
+                    console.log("rotate!");
+                    if(this.direction === ShipDirection.horizontal) {
+                        this.direction = ShipDirection.vertical;
+                    } else {
+                        this.direction = ShipDirection.horizontal;
+                    }
+                    draggedNode.toggleClass("horizontal", this.direction === ShipDirection.horizontal);
+                    draggedNode.toggleClass("vertical", this.direction === ShipDirection.vertical);
+                    this.rotated = true;
+                }
+            } else {
+                this.rotated = false;
             }
 
         }
@@ -68,6 +97,11 @@ namespace gameView {
 
                 this.gameInterface.shipPutOnBoard(model.id, shipBoardPosition.value, model.direction);
             } else {
+
+                this.direction = ShipDirection.vertical;
+                draggedNode.toggleClass("horizontal", this.direction === ShipDirection.horizontal);
+                draggedNode.toggleClass("vertical", this.direction === ShipDirection.vertical);
+
                 const returnDistance = Math.sqrt(eventPosition.x * eventPosition.x + eventPosition.y * eventPosition.y);
 
                 draggedNode.css({top: eventPosition.y, left: eventPosition.x})

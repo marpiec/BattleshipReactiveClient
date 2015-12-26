@@ -13,12 +13,17 @@ $cellSize: 4rem;
   @import "view/GameBoardComponent";
   @import "view/ShipsPaletteComponent";
 
-  .remainingShip {
-    width: 2rem;
-    height: 2rem;
-    margin: 0.5rem;
-    display: inline-block;
-    background-color: #777;
+  .rotateArea {
+    width: 20rem;
+    height: 20rem;
+    border: 1px solid black;
+
+    .rotateAreaCenter {
+      width: 14rem;
+      height: 14rem;
+      margin: 3rem;
+      border: 1px solid black;
+    }
   }
 
 }

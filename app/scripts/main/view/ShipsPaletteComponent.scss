@@ -8,11 +8,10 @@
     height: $cellSize * 4;
     margin-right: $cellSize / 2;
     display: inline-block;
+    vertical-align: top;
 
     .ship {
 
-      width: $cellSize;
-      vertical-align: top;
       position: relative;
       top: 0;
       left: 0;
@@ -21,6 +20,19 @@
 
       &.dragged {
         opacity: 0.5;
+      }
+
+      &.vertical {
+        width: $cellSize;
+      }
+
+      &.horizontal {
+        height: $cellSize;
+
+        .shipCell {
+          display: inline-block;
+          white-space: nowrap;
+        }
       }
 
       .shipCell {
