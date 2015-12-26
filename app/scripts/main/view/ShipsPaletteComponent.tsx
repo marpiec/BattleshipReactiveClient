@@ -28,7 +28,7 @@ namespace gameView {
         }
 
         dragInit(node:JQuery, model:game.PlayerShip):XY {
-            return new XY(0, 0);
+            return new XY(parseInt(node.css("left")), parseInt(node.css("top")));
         }
 
         dragStarted(eventPosition:XY, draggedNode:JQuery, model:game.PlayerShip):void {
