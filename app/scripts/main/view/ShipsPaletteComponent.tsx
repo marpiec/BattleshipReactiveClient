@@ -59,15 +59,29 @@ namespace gameView {
         }
 
         dragEnded(eventPosition:XY, draggedNode:JQuery, model:game.PlayerShip):void {
-            const returnDistance = Math.sqrt(eventPosition.x * eventPosition.x + eventPosition.y * eventPosition.y);
 
-            draggedNode.css({top: eventPosition.y, left: eventPosition.x})
-                .removeClass("dragged")
-                .addClass("animatePosition")
-                .css({transitionDuration: 0.2 * returnDistance / 1000 + "s"}); //1000 pixels in 0.2s
-            draggedNode.css({top: 0, left: 0});
+            const shipBoardPosition = CoordinatesCalculator.getShipBoardPosition(draggedNode);
+            if(shipBoardPosition.isPresent) {
+                draggedNode
+                    .removeClass("dragged")
+                    .css({top: 0, left: 0})
+                    .addClass("invisible");
 
-            draggedNode.toggleClass("valid", false);
+                this.gameInterface.shipPutOnBoard(new PlayerShipPosition().init(shipBoardPosition.value.x, shipBoardPosition.value.y, model, ShipDirection.vertical));
+            } else {
+                const returnDistance = Math.sqrt(eventPosition.x * eventPosition.x + eventPosition.y * eventPosition.y);
+
+                draggedNode.css({top: eventPosition.y, left: eventPosition.x})
+                    .removeClass("dragged")
+                    .addClass("animatePosition")
+                    .css({transitionDuration: 0.2 * returnDistance / 1000 + "s"}); //1000 pixels in 0.2s
+                draggedNode.css({top: 0, left: 0});
+
+                draggedNode.toggleClass("valid", false);
+            }
+
+
+
         }
 
     }

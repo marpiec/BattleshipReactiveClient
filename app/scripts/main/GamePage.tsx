@@ -42,6 +42,7 @@ namespace gameView {
     }
 
     export interface GameInterface {
+        shipPutOnBoard(playerShipPosition: PlayerShipPosition):void;
         toggleCell(x: number, y: number): void;
         submitBoard(): void;
         shoot(x: number, y: number): void;
@@ -53,6 +54,10 @@ namespace gameView {
         private gameEngine: GameEngine;
 
         private gameInterface: GameInterface = {
+            shipPutOnBoard: (playerShipPosition: game.PlayerShipPosition) => {
+                const gameState = this.gameEngine.getPhaseHandler(this.state.gameState).shipPutOnBoard(this.state.gameState, playerShipPosition);
+                this.setState(new GamePageState(gameState));
+            },
             toggleCell: (x: number, y: number) => {
                 const gameState = this.gameEngine.getPhaseHandler(this.state.gameState).toggleCell(this.state.gameState, x, y);
                 this.setState(new GamePageState(gameState));

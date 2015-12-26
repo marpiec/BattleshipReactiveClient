@@ -9,6 +9,10 @@ namespace game {
 
         private static NotAllowed = new Error("Method not allowed in this phase");
 
+        shipPutOnBoard(state:GameState, playerShipPosition: PlayerShipPosition): GameState {
+            throw PhaseHandler.NotAllowed;
+        }
+
         toggleCell(state:GameState, x:number, y:number):GameState {
             throw PhaseHandler.NotAllowed;
         }
@@ -31,6 +35,10 @@ namespace game {
 
         getPhase() {
             return GamePhase.initPlayerBoard;
+        }
+
+        shipPutOnBoard(state:GameState, playerShipPosition: PlayerShipPosition): GameState {
+            return Lens.setIn(Lens.of(state).playerShips, state.playerShips.push(playerShipPosition));
         }
 
         toggleCell(state: game.GameState, x: number, y: number): game.GameState {
