@@ -23,12 +23,14 @@ namespace gameView {
         private gameInterface: GameInterface;
 
         private rotated = false;
-        private direction: ShipDirection;
 
         constructor(model: PlayerShipPosition, gameInterface: GameInterface) {
             super(model);
             this.gameInterface = gameInterface;
-            this.direction = model.direction;
+        }
+
+        updateModel(model: PlayerShipPosition) {
+            this.internalChangeModel(model);
         }
 
         dragInit(node:JQuery, model:game.PlayerShip):XY {
@@ -53,7 +55,7 @@ namespace gameView {
 
                 const shipMock = $(".gameBoardComponent .board .shipMock").first();
 
-                if(this.direction === ShipDirection.horizontal) {
+                if(model.direction === ShipDirection.horizontal) {
                     shipMock.css({width: model.shipLength * 10 + "%", height: 10 + "%", top: shipBoardPosition.value.y * 10 + "%", left: shipBoardPosition.value.x * 10 + "%"});
                 } else {
                     shipMock.css({width: 10 + "%", height: model.shipLength * 10 + "%", top: shipBoardPosition.value.y * 10 + "%", left: shipBoardPosition.value.x * 10 + "%"});
@@ -72,13 +74,18 @@ namespace gameView {
             if(CoordinatesCalculator.withinRotateArea(draggedNode)) {
                 if(CoordinatesCalculator.withinRotateAreaCenter(draggedNode) && !this.rotated) {
                     console.log("rotate!");
-                    if(this.direction === ShipDirection.horizontal) {
-                        this.direction = ShipDirection.vertical;
+
+                    let newDirection: ShipDirection;
+                    if(model.direction === ShipDirection.horizontal) {
+                        newDirection = ShipDirection.vertical;
                     } else {
-                        this.direction = ShipDirection.horizontal;
+                        newDirection = ShipDirection.horizontal;
                     }
-                    draggedNode.toggleClass("horizontal", this.direction === ShipDirection.horizontal);
-                    draggedNode.toggleClass("vertical", this.direction === ShipDirection.vertical);
+
+                    this.gameInterface.shipDirectionChanged(model.id, newDirection);
+                    draggedNode
+                        .addClass("dragged") // calling game interface clears classes
+                        .css({top: eventPosition.y, left: eventPosition.x});
                     this.rotated = true;
                 }
             } else {
@@ -98,9 +105,9 @@ namespace gameView {
                 this.gameInterface.shipPutOnBoard(model.id, shipBoardPosition.value, model.direction);
             } else {
 
-                this.direction = ShipDirection.vertical;
-                draggedNode.toggleClass("horizontal", this.direction === ShipDirection.horizontal);
-                draggedNode.toggleClass("vertical", this.direction === ShipDirection.vertical);
+                //this.direction = ShipDirection.vertical;
+                //draggedNode.toggleClass("horizontal", this.direction === ShipDirection.horizontal);
+                //draggedNode.toggleClass("vertical", this.direction === ShipDirection.vertical);
 
                 const returnDistance = Math.sqrt(eventPosition.x * eventPosition.x + eventPosition.y * eventPosition.y);
 
@@ -123,6 +130,8 @@ namespace gameView {
 
     export class ShipsPaletteComponent extends React.Component<ShipsPaletteProps, ShipsPaletteState> {
 
+        private dragHandlers: {[shipId: number]: PaletteShipDrag} = {};
+
         constructor(props: ShipsPaletteProps) {
             super(props);
             this.state = new ShipsPaletteState();
@@ -132,11 +141,16 @@ namespace gameView {
             this.updateShipsPosition();
 
             this.props.ships.forEach(ship => {
-               $(`.shipContainer${ship.id} .ship`).handlerDrag(new PaletteShipDrag(ship, this.props.gameInterface))
+                const dragHandler = new PaletteShipDrag(ship, this.props.gameInterface);
+                this.dragHandlers[ship.id] = dragHandler;
+                $(`.shipContainer${ship.id} .ship`).handlerDrag(dragHandler)
             });
         }
 
         componentDidUpdate(prevPros: ShipsPaletteProps, prevState: ShipsPaletteState): void {
+            this.props.ships.forEach(ship => {
+               this.dragHandlers[ship.id].updateModel(ship);
+            });
             this.updateShipsPosition();
         }
 
@@ -144,12 +158,8 @@ namespace gameView {
 
             this.props.ships.forEach(ship => {
                 if(ship.xy.isPresent) {
-
                     const xy = CoordinatesCalculator.getShipRelativePosition(ship);
                     $(`.shipContainer${ship.id} .ship`).css({top: xy.y, left: xy.x});
-
-                } else {
-                    $(`.shipContainer${ship.id} .ship`).css({top: 0, left: 0});
                 }
             });
         }
@@ -162,9 +172,12 @@ namespace gameView {
         }
 
         renderShip(ship: PlayerShipPosition, index: number) {
+            const shipClassNames = classNames("ship",
+                {"horizontal": ship.direction === ShipDirection.horizontal,
+                "vertical": ship.direction === ShipDirection.vertical});
             return (
                 <div className={"shipContainer shipContainer" + ship.id} key={index}>
-                    <div className="ship">
+                    <div className={shipClassNames}>
                         {Immutable.Range(0, ship.shipLength).map(i => <div className="shipCell" key={i}></div>)}
                     </div>
                 </div>

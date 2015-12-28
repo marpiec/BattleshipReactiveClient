@@ -41,6 +41,10 @@ namespace game {
             return new PlayerShip().init(this.id, Some(position), this.shipLength, direction);
         }
 
+        setDirection(direction: ShipDirection): PlayerShip {
+            return new PlayerShip().init(this.id, this.xy, this.shipLength, direction);
+        }
+
         removePosition(): PlayerShip {
             return new PlayerShip().init(this.id, None, this.shipLength, ShipDirection.vertical);
         }

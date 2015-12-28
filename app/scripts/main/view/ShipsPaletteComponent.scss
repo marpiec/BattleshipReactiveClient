@@ -28,10 +28,11 @@
 
       &.horizontal {
         height: $cellSize;
+        white-space: nowrap;
 
         .shipCell {
           display: inline-block;
-          white-space: nowrap;
+
         }
       }
 

@@ -9,6 +9,9 @@ namespace game {
 
         private static NotAllowed = new Error("Method not allowed in this phase");
 
+        shipDirectionChanged(state:GameState, shipId: number, direction: ShipDirection): GameState {
+            throw PhaseHandler.NotAllowed;
+        }
         shipPutOnBoard(state:GameState, shipId: number, position: XY, direction: ShipDirection): GameState {
             throw PhaseHandler.NotAllowed;
         }
@@ -39,6 +42,17 @@ namespace game {
 
         getPhase() {
             return GamePhase.initPlayerBoard;
+        }
+
+        shipDirectionChanged(state:GameState, shipId: number, direction: ShipDirection): GameState {
+            const ships = state.playerShips.map(s => {
+                if(s.id === shipId) {
+                    return s.setDirection(direction);
+                } else {
+                    return s;
+                }
+            });
+            return Lens.setIn(Lens.of(state).playerShips, ships);
         }
 
         shipPutOnBoard(state:GameState, shipId: number, position: XY, direction: ShipDirection): GameState {

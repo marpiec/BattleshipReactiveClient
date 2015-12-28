@@ -48,6 +48,7 @@ namespace gameView {
         toggleCell(x: number, y: number): void;
         submitBoard(): void;
         shoot(x: number, y: number): void;
+        shipDirectionChanged(shipId: number, newDirection: ShipDirection):void;
     }
 
     export class GamePage extends React.Component<GamePageProps, GamePageState> {
@@ -56,6 +57,10 @@ namespace gameView {
         private gameEngine: GameEngine;
 
         private gameInterface: GameInterface = {
+            shipDirectionChanged: (shipId: number, newDirection: ShipDirection) => {
+                const gameState = this.gameEngine.getPhaseHandler(this.state.gameState).shipDirectionChanged(this.state.gameState, shipId, newDirection);
+                this.setState(new GamePageState(gameState));
+            },
             shipPutOnBoard: (shipId: number, position: XY, direction: ShipDirection) => {
                 const gameState = this.gameEngine.getPhaseHandler(this.state.gameState).shipPutOnBoard(this.state.gameState, shipId, position, direction);
                 this.setState(new GamePageState(gameState));

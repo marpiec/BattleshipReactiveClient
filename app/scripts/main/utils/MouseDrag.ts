@@ -29,6 +29,10 @@ module pointer {
             this.initElementListening();
         }
 
+        protected internalChangeModel(model: M) {
+            this.model = model;
+        }
+
         private initElementListening() {
             this.node.on("mousedown.MouseDrag" + this.uniqueIdentifier, (eventObject: JQueryMouseEventObject) => {
                 this.mouseDown(eventObject);
