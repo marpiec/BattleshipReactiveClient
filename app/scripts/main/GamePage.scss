@@ -16,13 +16,15 @@ $cellSize: 4rem;
   .rotateArea {
     width: 20rem;
     height: 20rem;
-    border: 1px solid black;
 
     .rotateAreaCenter {
       width: 14rem;
       height: 14rem;
       margin: 3rem;
-      border: 1px solid black;
+      .rotate-icon {
+        font-size: 14rem;
+        color: #ccc;
+      }
     }
   }
 

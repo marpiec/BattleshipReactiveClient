@@ -9,6 +9,7 @@
   .boardWithHeaders {
 
     position: relative;
+    white-space: nowrap;
 
     .shipMock {
       position: absolute;
