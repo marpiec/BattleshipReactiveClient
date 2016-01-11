@@ -62,7 +62,7 @@ module pointer {
             }
             if (MouseDrag.leftButtonIsPressed(eventObject)) {
                 const initialMousePosition = new XY(eventObject.pageX, eventObject.pageY);
-                const initialPosition = this.dragInit(this.node, this.model);
+                const initialPosition = this.dragInit(initialMousePosition, this.node, this.model);
                 this.initialDragPositionWithInitialMouse = initialPosition.minus(initialMousePosition);
                 this.dragStarted(initialPosition, this.node, this.model);
                 this.initWindowListening();
@@ -113,7 +113,7 @@ module pointer {
         }
 
 
-        abstract dragInit(node: JQuery, model: M): XY;
+        abstract dragInit(pointerPosition: XY, node: JQuery, model: M): XY;
 
         abstract dragStarted(eventPosition: XY, draggedNode: JQuery, model: M): void;
 

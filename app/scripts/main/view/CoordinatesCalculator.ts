@@ -47,19 +47,18 @@ namespace gameView {
 
         }
 
-        static within(element: JQuery, container: JQuery): boolean {
-            const elementCenter = nodes.getElementPositionAndSize(element).centerPosition;
+        static within(point: XY, container: JQuery): boolean {
             const containerRect = nodes.getElementPositionAndSize(container);
 
-            return containerRect.within(elementCenter);
+            return containerRect.contains(point);
         }
 
-        static withinRotateAreaCenter(element: JQuery): boolean {
-            return CoordinatesCalculator.within(element, $(".rotateArea .rotateAreaCenter"));
+        static withinRotateAreaCenter(point: XY): boolean {
+            return CoordinatesCalculator.within(point, $(".rotateArea .rotateAreaCenter"));
         }
 
-        static withinRotateArea(element: JQuery): boolean {
-            return CoordinatesCalculator.within(element, $(".rotateArea"));
+        static withinRotateArea(point: XY): boolean {
+            return CoordinatesCalculator.within(point, $(".rotateArea"));
         }
     }
 

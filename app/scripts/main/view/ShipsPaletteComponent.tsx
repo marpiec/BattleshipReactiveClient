@@ -24,6 +24,8 @@ namespace gameView {
 
         private rotated = false;
 
+        private leftTopCornerShift: XY;
+
         constructor(model: PlayerShipPosition, gameInterface: GameInterface) {
             super(model);
             this.gameInterface = gameInterface;
@@ -33,21 +35,33 @@ namespace gameView {
             this.internalChangeModel(model);
         }
 
-        dragInit(node:JQuery, model:game.PlayerShip):XY {
-            return new XY(parseInt(node.css("left")), parseInt(node.css("top")));
+        dragInit(pointerPosition: XY, node:JQuery, model:game.PlayerShip):XY {
+
+            const elementPosition = nodes.getElementPosition(node);
+
+            const elementSize = nodes.getElementSize(node);
+
+            this.leftTopCornerShift = new XY(pointerPosition.x - elementPosition.x, pointerPosition.y - elementPosition.y);
+
+            return this.leftTopCornerShift;
+
         }
 
         dragStarted(eventPosition:XY, draggedNode:JQuery, model:game.PlayerShip):void {
+
             draggedNode
                 .removeClass("animatePosition")
                 .addClass("dragged")
                 .css({transitionDuration: "0s"})
-                .css({top: eventPosition.y, left: eventPosition.x});
+                .css({ left: eventPosition.x - this.leftTopCornerShift.x, top: eventPosition.y - this.leftTopCornerShift.y});
 
         }
 
         dragged(eventPosition:XY, draggedNode:JQuery, model:game.PlayerShip):void {
-            draggedNode.css({top: eventPosition.y, left: eventPosition.x});
+            const elementSize = nodes.getElementSize(draggedNode);
+
+            draggedNode
+                .css({ left: eventPosition.x - this.leftTopCornerShift.x, top: eventPosition.y - this.leftTopCornerShift.y});
 
             const shipBoardPosition = CoordinatesCalculator.getShipBoardPosition(draggedNode);
 
@@ -64,16 +78,15 @@ namespace gameView {
 
                 shipMock.removeClass("hidden");
 
-                //this.gameInterface.shipIsBeingDragged(new PlayerShip().init(shipBoardPosition.value.x, shipBoardPosition.value.y, model, ShipDirection.vertical));
             } else {
                 const shipMock = $(".gameBoardComponent .board .shipMock").first();
                 shipMock.addClass("hidden");
             }
 
+            const draggedPoint = nodes.getElementPositionAndSize(draggedNode).position.plus(this.leftTopCornerShift);
 
-            if(CoordinatesCalculator.withinRotateArea(draggedNode)) {
-                if(CoordinatesCalculator.withinRotateAreaCenter(draggedNode) && !this.rotated) {
-                    console.log("rotate!");
+            if(CoordinatesCalculator.withinRotateArea(draggedPoint)) {
+                if(CoordinatesCalculator.withinRotateAreaCenter(draggedPoint) && !this.rotated) {
 
                     let newDirection: ShipDirection;
                     if(model.direction === ShipDirection.horizontal) {
@@ -83,9 +96,12 @@ namespace gameView {
                     }
 
                     this.gameInterface.shipDirectionChanged(model.id, newDirection);
+
+                    this.leftTopCornerShift = this.leftTopCornerShift.transpose();
+
                     draggedNode
                         .addClass("dragged") // calling game interface clears classes
-                        .css({top: eventPosition.y, left: eventPosition.x});
+                        .css({ left: eventPosition.x - this.leftTopCornerShift.x, top: eventPosition.y - this.leftTopCornerShift.y});
                     this.rotated = true;
                 }
             } else {

@@ -20,8 +20,16 @@ class XY {
         return new XY(this._x + other._x, this._y + other._y);
     }
 
+    plusXY(x: number, y: number) {
+        return new XY(this._x + x, this._y + y);
+    }
+
     minus(other: XY) {
         return new XY(this._x - other._x, this._y - other._y);
+    }
+
+    minusXY(x: number, y: number) {
+        return new XY(this._x - x, this._y - y);
     }
 
     plusSize(size: Size) {
@@ -30,6 +38,10 @@ class XY {
 
     scaleFloor(scale: number) {
         return new XY(Math.floor(this._x * scale), Math.floor(this._y * scale));
+    }
+
+    transpose() {
+        return new XY(this._y, this._x);
     }
 }
 
@@ -102,7 +114,7 @@ class Rect {
         return new XY(this._x, this._y);
     }
 
-    within(point: XY): boolean {
+    contains(point: XY): boolean {
         return point.x > this._x && point.x < this._x + this._width
             && point.y > this._y && point.y < this._y + this._height;
     }
